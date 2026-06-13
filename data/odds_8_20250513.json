@@ -1,0 +1,2545 @@
+{
+  "get": "odds",
+  "parameters": {
+    "bet": "8",
+    "date": "2025-05-13"
+  },
+  "errors": [],
+  "results": 10,
+  "paging": {
+    "current": 1,
+    "total": 9
+  },
+  "response": [
+    {
+      "league": {
+        "id": 368,
+        "name": "Premier League",
+        "country": "Singapore",
+        "logo": "https://media.api-sports.io/football/leagues/368.png",
+        "flag": "https://media.api-sports.io/flags/sg.svg",
+        "season": 2024
+      },
+      "fixture": {
+        "id": 1196677,
+        "timezone": "UTC",
+        "date": "2025-05-13T11:45:00+00:00",
+        "timestamp": 1747136700
+      },
+      "update": "2025-05-13T08:00:31+00:00",
+      "bookmakers": [
+        {
+          "id": 1,
+          "name": "10Bet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.28"
+                },
+                {
+                  "value": "No",
+                  "odd": "3.20"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Marathonbet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.28"
+                },
+                {
+                  "value": "No",
+                  "odd": "3.20"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 16,
+          "name": "Unibet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.29"
+                },
+                {
+                  "value": "No",
+                  "odd": "3.20"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "name": "Betfair",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.30"
+                },
+                {
+                  "value": "No",
+                  "odd": "3.20"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "name": "Pinnacle",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.34"
+                },
+                {
+                  "value": "No",
+                  "odd": "3.06"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "name": "1xBet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.28"
+                },
+                {
+                  "value": "No",
+                  "odd": "3.52"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 32,
+          "name": "Betano",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.28"
+                },
+                {
+                  "value": "No",
+                  "odd": "3.05"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 34,
+          "name": "Superbet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.30"
+                },
+                {
+                  "value": "No",
+                  "odd": "3.20"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 22,
+          "name": "Tipico",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.27"
+                },
+                {
+                  "value": "No",
+                  "odd": "3.20"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "league": {
+        "id": 140,
+        "name": "La Liga",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/140.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024
+      },
+      "fixture": {
+        "id": 1208813,
+        "timezone": "UTC",
+        "date": "2025-05-13T18:00:00+00:00",
+        "timestamp": 1747159200
+      },
+      "update": "2025-05-13T16:00:25+00:00",
+      "bookmakers": [
+        {
+          "id": 1,
+          "name": "10Bet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.75"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.95"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "name": "William Hill",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.75"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.95"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "name": "Bet365",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.80"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.95"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Marathonbet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.79"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.92"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 16,
+          "name": "Unibet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.75"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.00"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "name": "Betfair",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.75"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.00"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "name": "Pinnacle",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.81"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.08"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "name": "1xBet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.79"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.98"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 32,
+          "name": "Betano",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.78"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.98"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 34,
+          "name": "Superbet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.80"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.00"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 22,
+          "name": "Tipico",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.72"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.97"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 21,
+          "name": "888Sport",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.75"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.95"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "league": {
+        "id": 140,
+        "name": "La Liga",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/140.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024
+      },
+      "fixture": {
+        "id": 1208814,
+        "timezone": "UTC",
+        "date": "2025-05-13T17:00:00+00:00",
+        "timestamp": 1747155600
+      },
+      "update": "2025-05-13T16:00:25+00:00",
+      "bookmakers": [
+        {
+          "id": 1,
+          "name": "10Bet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.67"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.10"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "name": "William Hill",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.65"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.15"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "name": "Bet365",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.67"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.10"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Marathonbet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.64"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.12"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 16,
+          "name": "Unibet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.70"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.08"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "name": "Betfair",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.60"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.25"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "name": "Pinnacle",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.72"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.20"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "name": "1xBet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.64"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.20"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 32,
+          "name": "Betano",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.65"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.15"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 34,
+          "name": "Superbet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.68"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.15"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 22,
+          "name": "Tipico",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.55"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.25"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 21,
+          "name": "888Sport",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.65"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.15"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "league": {
+        "id": 140,
+        "name": "La Liga",
+        "country": "Spain",
+        "logo": "https://media.api-sports.io/football/leagues/140.png",
+        "flag": "https://media.api-sports.io/flags/es.svg",
+        "season": 2024
+      },
+      "fixture": {
+        "id": 1208816,
+        "timezone": "UTC",
+        "date": "2025-05-13T19:30:00+00:00",
+        "timestamp": 1747164600
+      },
+      "update": "2025-05-13T16:00:25+00:00",
+      "bookmakers": [
+        {
+          "id": 1,
+          "name": "10Bet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.91"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.80"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "name": "William Hill",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.91"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.85"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "name": "Bet365",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.95"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.80"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Marathonbet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.94"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.77"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 16,
+          "name": "Unibet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.89"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.85"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "name": "Betfair",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.91"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.83"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "name": "Pinnacle",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.98"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.89"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "name": "1xBet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.94"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.82"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 32,
+          "name": "Betano",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.88"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.85"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 34,
+          "name": "Superbet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.97"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.80"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 22,
+          "name": "Tipico",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.83"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.85"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 21,
+          "name": "888Sport",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.91"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.85"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "league": {
+        "id": 136,
+        "name": "Serie B",
+        "country": "Italy",
+        "logo": "https://media.api-sports.io/football/leagues/136.png",
+        "flag": "https://media.api-sports.io/flags/it.svg",
+        "season": 2024
+      },
+      "fixture": {
+        "id": 1234960,
+        "timezone": "UTC",
+        "date": "2025-05-13T18:30:00+00:00",
+        "timestamp": 1747161000
+      },
+      "update": "2025-05-13T16:00:25+00:00",
+      "bookmakers": [
+        {
+          "id": 1,
+          "name": "10Bet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "2.05"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.67"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "name": "William Hill",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "2.05"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.70"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "name": "Bet365",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "2.05"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.70"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Marathonbet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "2.09"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.66"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 16,
+          "name": "Unibet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "2.15"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.61"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "name": "Betfair",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "2.10"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.65"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "name": "Pinnacle",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "2.06"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.77"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "name": "1xBet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "2.09"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.70"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 32,
+          "name": "Betano",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "2.07"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.70"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 34,
+          "name": "Superbet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "2.12"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.67"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 22,
+          "name": "Tipico",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.97"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.72"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 21,
+          "name": "888Sport",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "2.05"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.70"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "league": {
+        "id": 136,
+        "name": "Serie B",
+        "country": "Italy",
+        "logo": "https://media.api-sports.io/football/leagues/136.png",
+        "flag": "https://media.api-sports.io/flags/it.svg",
+        "season": 2024
+      },
+      "fixture": {
+        "id": 1234961,
+        "timezone": "UTC",
+        "date": "2025-05-13T18:30:00+00:00",
+        "timestamp": 1747161000
+      },
+      "update": "2025-05-13T16:00:25+00:00",
+      "bookmakers": [
+        {
+          "id": 1,
+          "name": "10Bet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.77"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.91"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "name": "William Hill",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.80"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.95"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "name": "Bet365",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.80"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.95"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Marathonbet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.83"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.87"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 16,
+          "name": "Unibet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.73"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.97"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "name": "Betfair",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.85"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.85"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "name": "Pinnacle",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.83"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.98"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "name": "1xBet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.83"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.92"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 32,
+          "name": "Betano",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.80"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.95"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 34,
+          "name": "Superbet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.83"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.90"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 22,
+          "name": "Tipico",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.80"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.90"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 21,
+          "name": "888Sport",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.80"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.95"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "league": {
+        "id": 136,
+        "name": "Serie B",
+        "country": "Italy",
+        "logo": "https://media.api-sports.io/football/leagues/136.png",
+        "flag": "https://media.api-sports.io/flags/it.svg",
+        "season": 2024
+      },
+      "fixture": {
+        "id": 1234962,
+        "timezone": "UTC",
+        "date": "2025-05-13T18:30:00+00:00",
+        "timestamp": 1747161000
+      },
+      "update": "2025-05-13T16:00:25+00:00",
+      "bookmakers": [
+        {
+          "id": 1,
+          "name": "10Bet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.83"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.83"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "name": "William Hill",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.95"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.80"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "name": "Bet365",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.91"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.91"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Marathonbet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.89"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.81"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 16,
+          "name": "Unibet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.90"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.78"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "name": "Betfair",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.91"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.80"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "name": "Pinnacle",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.89"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.91"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "name": "1xBet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.89"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.87"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 32,
+          "name": "Betano",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.85"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.88"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 34,
+          "name": "Superbet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.88"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.85"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 22,
+          "name": "Tipico",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.80"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.90"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 21,
+          "name": "888Sport",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.95"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.80"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "league": {
+        "id": 136,
+        "name": "Serie B",
+        "country": "Italy",
+        "logo": "https://media.api-sports.io/football/leagues/136.png",
+        "flag": "https://media.api-sports.io/flags/it.svg",
+        "season": 2024
+      },
+      "fixture": {
+        "id": 1234963,
+        "timezone": "UTC",
+        "date": "2025-05-13T18:30:00+00:00",
+        "timestamp": 1747161000
+      },
+      "update": "2025-05-13T16:00:25+00:00",
+      "bookmakers": [
+        {
+          "id": 1,
+          "name": "10Bet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.55"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.25"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "name": "William Hill",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.57"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.38"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "name": "Bet365",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.57"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.25"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Marathonbet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.57"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.25"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 16,
+          "name": "Unibet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.50"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.35"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "name": "Betfair",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.57"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.25"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "name": "Pinnacle",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.57"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.41"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "name": "1xBet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.57"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.34"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 32,
+          "name": "Betano",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.55"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.37"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 34,
+          "name": "Superbet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.58"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.27"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 22,
+          "name": "Tipico",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.55"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.25"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 21,
+          "name": "888Sport",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.57"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.38"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "league": {
+        "id": 136,
+        "name": "Serie B",
+        "country": "Italy",
+        "logo": "https://media.api-sports.io/football/leagues/136.png",
+        "flag": "https://media.api-sports.io/flags/it.svg",
+        "season": 2024
+      },
+      "fixture": {
+        "id": 1234964,
+        "timezone": "UTC",
+        "date": "2025-05-13T18:30:00+00:00",
+        "timestamp": 1747161000
+      },
+      "update": "2025-05-13T16:00:25+00:00",
+      "bookmakers": [
+        {
+          "id": 1,
+          "name": "10Bet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.83"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.83"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "name": "William Hill",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.95"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.80"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "name": "Bet365",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.95"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.80"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Marathonbet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.87"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.83"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 16,
+          "name": "Unibet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.80"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.89"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "name": "Betfair",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.85"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.85"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "name": "Pinnacle",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.87"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.93"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "name": "1xBet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.87"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.89"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 32,
+          "name": "Betano",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.85"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.90"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 34,
+          "name": "Superbet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.90"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.85"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 22,
+          "name": "Tipico",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.80"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.90"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 21,
+          "name": "888Sport",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.95"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.80"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "league": {
+        "id": 136,
+        "name": "Serie B",
+        "country": "Italy",
+        "logo": "https://media.api-sports.io/football/leagues/136.png",
+        "flag": "https://media.api-sports.io/flags/it.svg",
+        "season": 2024
+      },
+      "fixture": {
+        "id": 1234965,
+        "timezone": "UTC",
+        "date": "2025-05-13T18:30:00+00:00",
+        "timestamp": 1747161000
+      },
+      "update": "2025-05-13T16:00:25+00:00",
+      "bookmakers": [
+        {
+          "id": 1,
+          "name": "10Bet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.70"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.00"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "name": "William Hill",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.70"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.10"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "name": "Bet365",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.75"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.00"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Marathonbet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.75"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.96"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 16,
+          "name": "Unibet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.68"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.02"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "name": "Betfair",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.65"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.10"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "name": "Pinnacle",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.76"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.06"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "name": "1xBet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.75"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.03"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 32,
+          "name": "Betano",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.75"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.00"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 34,
+          "name": "Superbet",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.80"
+                },
+                {
+                  "value": "No",
+                  "odd": "1.95"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 22,
+          "name": "Tipico",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.65"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.10"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 21,
+          "name": "888Sport",
+          "bets": [
+            {
+              "id": 8,
+              "name": "Both Teams Score",
+              "values": [
+                {
+                  "value": "Yes",
+                  "odd": "1.70"
+                },
+                {
+                  "value": "No",
+                  "odd": "2.10"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

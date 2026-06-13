@@ -1,0 +1,393 @@
+date,home_team,away_team,league,country,actual_score,actual_result,predicted_result,result_correct,home_win_p,draw_p,away_win_p,confidence,data_quality,over25_p,actual_over25,over25_correct,btts_p,actual_btts,btts_correct
+2026-06-13,Mbeya City,Mtibwa Sugar,Ligi kuu Bara,Tanzania,1-0,Home,Draw,False,36.7,31.7,31.6,49.4,HIGH,41.4,False,True,42.3,False,True
+2026-06-13,FS Trebic,Velke Mezirici,4. liga - Group D,Czech Republic,0-0,Draw,Away,False,28.9,29.8,41.2,50.8,HIGH,55.2,False,False,58.5,False,False
+2026-06-13,Sparta Brno,Chotebor,4. liga - Group D,Czech Republic,0-0,Draw,Away,False,33.6,24.0,42.4,47.6,HIGH,62.7,False,False,58.8,False,False
+2026-06-13,Nove Sady,Skastice,4. liga - Group E,Czech Republic,0-0,Draw,Home,False,40.1,30.1,29.9,42.9,HIGH,52.7,False,False,47.6,False,True
+2026-06-13,Cesky Tesin,Bilovec,4. liga - Group F,Czech Republic,0-0,Draw,Away,False,19.8,25.8,54.4,60.5,HIGH,52.1,False,False,49.7,False,True
+2026-06-13,Rymarov,Pusta Polom,4. liga - Group F,Czech Republic,0-0,Draw,Home,False,43.0,28.5,28.5,47.0,HIGH,49.5,False,True,50.1,False,False
+2026-06-13,Vratimov,Sumperk,4. liga - Group F,Czech Republic,0-0,Draw,Home,False,51.9,26.7,21.3,56.9,HIGH,54.8,False,False,49.4,False,True
+2026-06-13,Vsetin,Karvina B,3. liga - 3. MSFL,Czech Republic,1-2,Away,Draw,False,38.0,29.9,32.1,54.7,HIGH,55.8,True,True,53.9,True,True
+2026-06-13,USA,Paraguay,World Cup - World Championship,Worldcup,4-1,Home,Draw,False,35.2,29.4,35.4,36.5,HIGH,52.5,True,True,56.5,True,True
+2026-06-13,Brno U19,Slavia Prague U19,1. Liga U19,Czech Republic,3-2,Home,Home,True,43.0,27.2,29.8,48.3,HIGH,63.7,True,True,58.8,True,True
+2026-06-13,FK Pardubice U19,Hradec Kralove U19,1. Liga U19,Czech Republic,3-2,Home,Away,False,26.2,22.9,50.9,57.1,HIGH,63.3,True,True,59.6,True,True
+2026-06-13,Liberec U19,Dukla Prague U19,1. Liga U19,Czech Republic,2-3,Away,Draw,False,35.3,27.9,36.9,45.2,HIGH,66.4,True,True,60.3,True,True
+2026-06-13,Zlin U19,Ostrava U19,1. Liga U19,Czech Republic,0-2,Away,Draw,False,37.1,28.5,34.4,42.0,HIGH,66.7,False,False,61.9,False,False
+2026-06-13,FK Komarov,Milevsko,4. liga - Group A,Czech Republic,0-0,Draw,Draw,True,35.0,29.0,36.1,47.0,HIGH,60.7,False,False,56.6,False,False
+2026-06-13,Horovice,Benesov,4. liga - Group A,Czech Republic,0-0,Draw,Away,False,28.6,22.2,49.3,56.1,HIGH,53.7,False,False,49.8,False,True
+2026-06-13,Milin,Krimice,4. liga - Group A,Czech Republic,0-0,Draw,Away,False,26.4,20.5,53.1,57.7,HIGH,59.4,False,False,48.7,False,True
+2026-06-13,Povltavska FA,Domazlice B,4. liga - Group A,Czech Republic,0-0,Draw,Home,False,57.4,23.3,19.3,57.8,HIGH,67.4,False,False,54.4,False,False
+2026-06-13,TJ Prestice,Doubravka,4. liga - Group A,Czech Republic,0-0,Draw,Away,False,29.3,25.2,45.5,52.3,HIGH,69.5,False,False,56.3,False,False
+2026-06-13,Louny,Spoje Prague,4. liga - Group B,Czech Republic,0-0,Draw,Draw,True,36.3,28.0,35.7,48.1,HIGH,63.4,False,False,57.1,False,False
+2026-06-13,Marianske Lazne,Psary,4. liga - Group B,Czech Republic,0-0,Draw,Away,False,17.4,23.7,58.9,64.3,HIGH,59.8,False,False,53.3,False,False
+2026-06-13,Olympie Brezova,Tempo Prague,4. liga - Group B,Czech Republic,0-0,Draw,Away,False,17.9,21.1,60.9,64.4,HIGH,67.0,False,False,60.2,False,False
+2026-06-13,Slany,Steti,4. liga - Group B,Czech Republic,0-0,Draw,Home,False,48.6,23.2,28.2,53.3,HIGH,70.9,False,False,57.5,False,False
+2026-06-13,Sokolov,Chomutov,4. liga - Group B,Czech Republic,0-0,Draw,Draw,True,35.2,24.1,40.8,57.1,HIGH,59.4,False,False,55.6,False,False
+2026-06-13,Chlumec nad Cidlinou,Vysoke Myto,4. liga - Group C,Czech Republic,0-0,Draw,Away,False,20.9,25.5,53.6,68.5,HIGH,52.9,False,False,54.1,False,False
+2026-06-13,Dobrovice,Prepere,4. liga - Group C,Czech Republic,0-0,Draw,Away,False,22.5,20.3,57.2,66.3,HIGH,62.1,False,False,52.4,False,False
+2026-06-13,Hlinsko,Brandys n. Labem,4. liga - Group C,Czech Republic,0-0,Draw,Draw,True,35.0,32.2,32.8,45.2,HIGH,64.4,False,False,60.6,False,False
+2026-06-13,Eik-Tonsberg,Arendal,2. Division - Group 1,Norway,0-0,Draw,Away,False,32.5,26.8,40.6,52.5,HIGH,58.8,False,False,56.2,False,False
+2026-06-13,Vidar,Pors,2. Division - Group 1,Norway,1-1,Draw,Away,False,33.1,25.3,41.6,71.5,HIGH,68.5,False,False,56.4,True,True
+2026-06-13,Ull/Kisa,Grorud,2. Division - Group 2,Norway,2-1,Home,Away,False,25.7,20.7,53.6,64.2,HIGH,70.5,True,True,61.3,True,True
+2026-06-13,AIK W,Djurgarden W,Damallsvenskan,Sweden,3-0,Home,Home,True,41.9,26.4,31.7,41.7,HIGH,57.8,True,True,54.2,False,False
+2026-06-13,Eskilstuna Utd W,Malmo FF W,Damallsvenskan,Sweden,1-1,Draw,Home,False,42.1,25.5,32.4,40.4,HIGH,52.0,False,False,50.6,True,True
+2026-06-13,Hammarby W,Hacken W,Damallsvenskan,Sweden,0-1,Away,Draw,False,40.0,22.2,37.8,51.3,HIGH,55.7,False,False,48.4,False,True
+2026-06-13,Pitea W,IF Brommapojkarna W,Damallsvenskan,Sweden,1-2,Away,Home,False,44.6,22.5,32.9,41.1,HIGH,56.5,True,True,53.7,True,True
+2026-06-13,Rosengard W,Norrkoping W,Damallsvenskan,Sweden,1-1,Draw,Away,False,32.7,27.3,40.0,44.1,HIGH,52.5,False,False,52.1,True,True
+2026-06-13,Asker,Lokomotiv Oslo,3. Division - Group 1,Norway,6-0,Home,Home,True,44.2,25.5,30.4,74.4,HIGH,72.4,True,True,59.5,False,False
+2026-06-13,Gamle Oslo,Ullern,3. Division - Group 1,Norway,2-3,Away,Home,False,51.8,23.9,24.3,80.8,HIGH,75.6,True,True,64.0,True,True
+2026-06-13,Grei,Ready,3. Division - Group 1,Norway,3-5,Away,Away,True,28.6,23.6,47.8,60.6,HIGH,77.5,True,True,61.9,True,True
+2026-06-13,Konnerud,Union Carl Berner,3. Division - Group 1,Norway,0-1,Away,Away,True,33.4,16.8,49.8,39.6,HIGH,61.1,False,False,52.1,False,False
+2026-06-13,Orkla,Volda TI,3. Division - Group 2,Norway,2-5,Away,Away,True,28.0,25.3,46.8,45.6,HIGH,67.7,True,True,58.5,True,True
+2026-06-13,Rosenborg 2,Molde 2,3. Division - Group 2,Norway,4-0,Home,Draw,False,37.5,29.9,32.6,34.2,HIGH,75.6,True,True,61.1,False,False
+2026-06-13,Strindheim,Spjelkavik,3. Division - Group 2,Norway,2-4,Away,Draw,False,35.3,26.7,37.9,73.7,HIGH,68.8,True,True,58.1,True,True
+2026-06-13,Askoy,OS TF,3. Division - Group 3,Norway,3-0,Home,Away,False,32.8,26.9,40.3,40.1,HIGH,70.3,True,True,63.1,False,False
+2026-06-13,Forde,V. Haugesund,3. Division - Group 3,Norway,0-1,Away,Home,False,42.1,23.3,34.6,38.2,HIGH,75.1,False,False,60.1,False,False
+2026-06-13,Sogndal 2,Djerv 1919,3. Division - Group 3,Norway,2-1,Home,Draw,False,37.1,26.1,36.9,30.3,MEDIUM,63.4,True,True,55.4,True,True
+2026-06-13,Varegg,Gneist,3. Division - Group 3,Norway,0-1,Away,Draw,False,35.4,24.7,39.8,34.5,HIGH,72.2,False,False,63.7,False,False
+2026-06-13,Brodd,Mandalskameratene,3. Division - Group 4,Norway,1-3,Away,Home,False,44.4,26.0,29.6,56.9,HIGH,72.2,True,True,60.2,True,True
+2026-06-13,Madla IL,Akra,3. Division - Group 4,Norway,3-1,Home,Home,True,50.8,27.1,22.1,43.1,HIGH,67.2,True,True,63.1,True,True
+2026-06-13,Vindbjart,Haugesund 2,3. Division - Group 4,Norway,4-0,Home,Home,True,43.7,27.1,29.2,40.9,HIGH,69.4,True,True,58.8,False,False
+2026-06-13,Skedsmo,Skjervoy,3. Division - Group 5,Norway,2-0,Home,Home,True,44.0,24.6,31.4,37.7,HIGH,66.1,False,False,54.5,False,False
+2026-06-13,Stromsgodset 2,Harstad,3. Division - Group 5,Norway,2-2,Draw,Home,False,42.1,24.4,33.5,38.7,HIGH,75.4,True,True,59.9,True,True
+2026-06-13,Bjorkelangen,Lillehammer,3. Division - Group 6,Norway,1-2,Away,Away,True,9.3,14.3,76.4,65.0,HIGH,71.2,True,True,56.1,True,True
+2026-06-13,Brumunddal,Sarpsborg 08 2,3. Division - Group 6,Norway,3-3,Draw,Draw,True,39.0,22.2,38.8,38.3,HIGH,69.9,True,True,58.8,True,True
+2026-06-13,Oppsal,Sandefjord 2,3. Division - Group 6,Norway,4-3,Home,Draw,False,36.6,22.5,40.9,39.5,HIGH,67.6,True,True,59.3,True,True
+2026-06-13,SK Gjovik-Lyn,Drobak-Frogn,3. Division - Group 6,Norway,0-0,Draw,Home,False,48.9,25.3,25.8,43.9,HIGH,49.8,False,True,51.0,False,False
+2026-06-13,Ilves,TPS,Veikkausliiga,Finland,1-0,Home,Draw,False,39.0,27.8,33.2,70.5,HIGH,64.6,False,False,56.1,False,False
+2026-06-13,Inter Turku,AC Oulu,Veikkausliiga,Finland,0-0,Draw,Home,False,46.1,24.0,29.9,75.4,HIGH,55.8,False,False,54.1,False,False
+2026-06-13,San Martin Burzaco,Villa Dalmine,Prim B Metro,Argentina,0-2,Away,Draw,False,33.5,31.4,35.1,52.3,HIGH,35.9,False,True,47.7,False,True
+2026-06-13,Alingsas W,Gamla Upsala W,Elitettan,Sweden,0-0,Draw,Draw,True,37.4,26.9,35.6,40.5,HIGH,54.8,False,False,42.4,False,True
+2026-06-13,Elfsborg W,Goteborg W,Elitettan,Sweden,1-1,Draw,Away,False,34.2,22.4,43.3,34.7,MEDIUM,50.2,False,False,52.2,True,True
+2026-06-13,Sandviken W,Husqvarna W,Elitettan,Sweden,3-4,Away,Away,True,31.6,26.6,41.8,35.5,MEDIUM,45.6,True,False,39.6,True,False
+2026-06-13,Jippo,KaPa,Ykkönen - Group Stage,Finland,3-0,Home,Home,True,42.4,30.1,27.5,64.4,HIGH,52.1,True,True,58.6,False,False
+2026-06-13,Angelholm,Utsikten,Ettan - Södra,Sweden,4-2,Home,Home,True,46.7,27.4,25.9,63.0,HIGH,59.6,True,True,54.2,True,True
+2026-06-13,Olympic,Laholms,Ettan - Södra,Sweden,3-2,Home,Draw,False,39.6,25.6,34.8,47.0,HIGH,64.5,True,True,61.0,True,True
+2026-06-13,Tvaaker,Jonkoping,Ettan - Södra,Sweden,2-1,Home,Home,True,39.4,29.0,31.6,53.6,HIGH,51.7,True,True,52.1,True,True
+2026-06-13,A. Italiano,La Serena,Primera División,Chile,1-1,Draw,Home,False,47.9,26.5,25.5,62.8,HIGH,56.1,False,False,56.3,True,True
+2026-06-13,B36 Torshavn 2,IF Fuglafjordur,1. Deild,Faroe Islands,0-4,Away,Home,False,44.6,28.1,27.3,44.4,HIGH,63.9,True,True,55.0,False,False
+2026-06-13,HB Torshavn 2,FC Suduroy,1. Deild,Faroe Islands,2-0,Home,Away,False,30.7,27.6,41.7,39.0,HIGH,58.4,False,False,57.0,False,False
+2026-06-13,Tord,Karlstad II,Division 2 - Norra Götaland,Sweden,1-1,Draw,Home,False,40.6,29.7,29.8,34.2,HIGH,50.6,False,False,57.8,True,True
+2026-06-13,Skara,Lidkoping,Division 2 - Norra Götaland,Sweden,4-2,Home,Home,True,64.7,20.0,15.3,58.2,HIGH,60.0,True,True,57.6,True,True
+2026-06-13,Enskede,IK Franke,Division 2 - Norra Svealand,Sweden,4-0,Home,Draw,False,38.5,28.0,33.5,43.1,HIGH,64.6,True,True,59.1,False,False
+2026-06-13,Kungsangen,Gute,Division 2 - Norra Svealand,Sweden,1-1,Draw,Draw,True,36.1,32.2,31.7,38.0,HIGH,56.5,False,False,57.7,True,True
+2026-06-13,IFK Berga,Torns,Division 2 - Södra Götaland,Sweden,4-1,Home,Home,True,43.0,26.6,30.4,34.9,HIGH,54.8,True,True,57.0,True,True
+2026-06-13,Vaxjo Norra,IFK Trelleborg,Division 2 - Södra Götaland,Sweden,1-1,Draw,Home,False,41.6,28.6,29.8,46.7,HIGH,59.4,False,False,55.4,True,True
+2026-06-13,Sleipner,Ragsved,Division 2 - Södra Svealand,Sweden,4-4,Draw,Home,False,44.5,25.5,30.0,45.7,HIGH,63.1,True,True,56.9,True,True
+2026-06-13,Fittja,Karlslund,Division 2 - Södra Svealand,Sweden,2-1,Home,Home,True,54.2,22.4,23.5,45.1,HIGH,56.6,True,True,58.3,True,True
+2026-06-13,Haninge,Orebro Syr.,Division 2 - Södra Svealand,Sweden,3-0,Home,Home,True,47.7,23.5,28.9,48.6,HIGH,61.1,True,True,53.6,False,False
+2026-06-13,Harju JK Laagri,Kuressaare,Meistriliiga,Estonia,2-3,Away,Home,False,47.3,23.7,29.0,60.4,HIGH,59.4,True,True,54.9,True,True
+2026-06-13,Narva,Nomme Utd,Meistriliiga,Estonia,1-2,Away,Away,True,32.8,22.3,45.0,63.2,HIGH,72.3,True,True,54.8,True,True
+2026-06-13,Boden,Skelleftea,Division 2 - Norrland,Sweden,1-1,Draw,Draw,True,33.9,27.1,39.0,41.0,HIGH,60.5,False,False,52.7,True,True
+2026-06-13,IFK Lulea,Storfors,Division 2 - Norrland,Sweden,0-1,Away,Home,False,64.9,20.3,14.8,52.6,HIGH,71.3,False,False,62.4,False,False
+2026-06-13,Ogre United,Riga FC,Virsliga,Latvia,1-4,Away,Away,True,18.7,21.1,60.2,91.7,HIGH,64.0,True,True,53.4,True,True
+2026-06-13,Grobina,RFS,Virsliga,Latvia,1-3,Away,Away,True,16.6,24.7,58.7,76.9,HIGH,53.1,True,True,52.3,True,True
+2026-06-13,WS Wanderers U21,St. George City,New South Wales NPL,Australia,1-1,Draw,Home,False,41.3,28.3,30.4,41.1,HIGH,50.8,False,False,49.6,True,False
+2026-06-13,UNSW,St George Saints,New South Wales NPL,Australia,1-4,Away,Home,False,56.6,23.0,20.4,84.8,HIGH,56.2,True,True,52.9,True,True
+2026-06-13,NWS Spirit,Sydney Olympic,New South Wales NPL,Australia,3-0,Home,Home,True,45.7,25.9,28.4,76.1,HIGH,56.5,True,True,54.1,False,False
+2026-06-13,Sutherland Sharks,Blacktown City,New South Wales NPL,Australia,1-2,Away,Home,False,40.5,27.5,32.1,71.8,HIGH,55.3,True,True,53.6,True,True
+2026-06-13,Wollongong Wolves,APIA Leichhardt,New South Wales NPL,Australia,0-2,Away,Away,True,31.2,26.4,42.3,77.9,HIGH,59.4,False,False,56.0,False,False
+2026-06-13,Northern Tigers,Inter Lions,NSW League One,Australia,1-0,Home,Home,True,45.3,27.0,27.7,76.4,HIGH,59.2,False,False,53.6,False,False
+2026-06-13,Canterbury Bankstown,Newcastle Jets U23,NSW League One,Australia,6-5,Home,Home,True,38.7,31.0,30.3,40.1,HIGH,62.2,True,True,62.8,True,True
+2026-06-13,Hurstville Zagreb,Western City Rangers,NSW League One,Australia,1-1,Draw,Home,False,53.4,24.4,22.2,50.7,HIGH,55.3,False,False,58.8,True,True
+2026-06-13,Bulls Academy,Rydalmere Lions,NSW League One,Australia,0-1,Away,Home,False,41.0,28.2,30.8,69.8,HIGH,63.4,False,False,58.2,False,False
+2026-06-13,Atletico GO,CRB,Serie B,Brazil,3-3,Draw,Draw,True,37.2,29.9,33.0,70.2,HIGH,38.0,True,False,46.9,True,False
+2026-06-13,Langwarrin,Manningham United Blues,Victoria PL 1,Australia,4-1,Home,Draw,False,38.7,26.7,34.6,70.4,HIGH,70.3,True,True,61.8,True,True
+2026-06-13,North Sunshine Eagles,Melbourne Srbija,Victoria PL 1,Australia,1-2,Away,Away,True,33.2,24.4,42.5,68.9,HIGH,58.8,True,True,56.4,True,True
+2026-06-13,North Geelong,Northcote City,Victoria PL 1,Australia,2-1,Home,Away,False,32.8,21.3,45.9,43.5,HIGH,63.2,True,True,57.1,True,True
+2026-06-13,Bulleen,Melbourne Victory U21,Victoria PL 1,Australia,2-4,Away,Home,False,40.6,30.0,29.5,39.4,HIGH,59.6,True,True,59.6,True,True
+2026-06-13,Western Utd. U21,Port Melbourne Sharks,Victoria PL 1,Australia,0-0,Draw,Home,False,50.4,20.1,29.5,43.2,HIGH,60.2,False,False,50.2,False,False
+2026-06-13,Suduva,Banga,A Lyga,Lithuania,0-0,Draw,Home,False,41.3,30.6,28.1,74.6,HIGH,42.2,False,True,48.4,False,True
+2026-06-13,Midlakes United,West Seattle Junction,USL League Two - Regular season,USA,0-0,Draw,Home,False,41.8,30.2,28.1,39.8,HIGH,64.0,False,False,60.5,False,False
+2026-06-13,CISA,Colorado Storm,USL League Two - Regular season,USA,0-0,Draw,Away,False,11.1,14.4,74.5,64.5,HIGH,68.6,False,False,49.4,False,True
+2026-06-13,FC Olympia,Tacoma Stars,USL League Two - Regular season,USA,0-0,Draw,Draw,True,37.0,24.9,38.1,31.9,MEDIUM,65.3,False,False,51.4,False,False
+2026-06-13,Long Island,Motown 2,USL League Two - Regular season,USA,0-0,Draw,Away,False,23.9,21.3,54.7,41.7,MEDIUM,64.4,False,False,56.1,False,False
+2026-06-13,Adamstown Rosebud,Broadmeadow,Northern NSW NPL,Australia,1-5,Away,Away,True,25.3,25.3,49.4,47.2,HIGH,56.9,True,True,54.6,True,True
+2026-06-13,Weston Bears,Belmont Swansea Utd.,Northern NSW NPL,Australia,2-2,Draw,Draw,True,37.1,27.9,35.1,34.4,HIGH,63.7,True,True,63.0,True,True
+2026-06-13,Edgeworth E.,Cooks Hill United,Northern NSW NPL,Australia,0-1,Away,Home,False,42.8,28.3,28.9,36.7,HIGH,67.6,False,False,60.6,False,False
+2026-06-13,Maitland,Valentine,Northern NSW NPL,Australia,1-0,Home,Home,True,46.0,26.4,27.6,74.8,HIGH,68.0,False,False,59.7,False,False
+2026-06-13,Gold Coast Utd,Brisbane City,Queensland NPL,Australia,0-2,Away,Away,True,29.3,22.1,48.6,54.4,HIGH,63.3,False,False,55.7,False,False
+2026-06-13,Robina City,Holland Park Hawks,Queensland Premier League,Australia,1-0,Home,Draw,False,39.9,24.0,36.1,32.6,HIGH,66.2,False,False,59.0,False,False
+2026-06-13,Broadbeach Utd.,St. George Willawong,Queensland Premier League,Australia,4-1,Home,Home,True,71.9,19.5,8.6,74.7,HIGH,63.4,True,True,55.9,True,True
+2026-06-13,Baranovici,FC Minsk,Premier League,Belarus,2-1,Home,Draw,False,36.0,27.1,36.9,53.9,HIGH,49.3,True,False,51.0,True,True
+2026-06-13,Tekstilshtik,Omsk,Second League A - Division A Gold,Russia,2-0,Home,Home,True,52.7,28.3,18.9,58.9,HIGH,44.1,False,True,49.9,False,True
+2026-06-13,Veles Moscow,Leningradets,Second League A - Division A Gold,Russia,1-1,Draw,Draw,True,36.0,27.0,37.0,57.9,HIGH,44.9,False,True,48.4,True,False
+2026-06-13,Volgar-Astrakhan,Sibir Novosibirsk,Second League A - Division A Gold,Russia,1-1,Draw,Home,False,38.2,29.7,32.1,52.8,HIGH,38.5,False,True,49.1,True,False
+2026-06-13,Kairat Almaty,Atyrau,Premier League,Kazakhstan,1-1,Draw,Home,False,46.7,29.9,23.4,63.8,HIGH,42.0,False,True,47.8,True,False
+2026-06-13,Tobol,Kyzylzhar,Premier League,Kazakhstan,2-0,Home,Home,True,40.0,28.2,31.8,43.8,HIGH,40.9,False,True,49.6,False,True
+2026-06-13,Zhetysu Taldykorgan,Okzhetpes,Premier League,Kazakhstan,2-2,Draw,Away,False,31.9,26.8,41.3,48.1,HIGH,49.4,True,False,52.3,True,True
+2026-06-13,Armadale,Bayswater,Western Australia NPL,Australia,0-5,Away,Away,True,25.0,24.8,50.3,72.7,HIGH,69.7,True,True,57.5,False,False
+2026-06-13,Dianella White Eagle,Western Knights,Western Australia NPL,Australia,1-0,Home,Draw,False,34.4,29.4,36.2,39.3,HIGH,59.8,False,False,59.0,False,False
+2026-06-13,Fremantle City,Balcatta,Western Australia NPL,Australia,5-2,Home,Home,True,44.9,26.6,28.6,62.7,HIGH,64.4,True,True,55.3,True,True
+2026-06-13,Perth Glory U23,Perth Azzurri,Western Australia NPL,Australia,2-4,Away,Away,True,21.3,26.1,52.6,51.9,HIGH,64.3,True,True,65.1,True,True
+2026-06-13,Stirling Macedonia,Sorrento,Western Australia NPL,Australia,0-1,Away,Home,False,47.2,25.7,27.1,75.5,HIGH,61.3,False,False,56.8,False,False
+2026-06-13,Adelaide Cobras,Cumberland Utd.,South Australia State League 1,Australia,0-2,Away,Draw,False,38.3,22.6,39.1,48.8,HIGH,60.1,False,False,55.0,False,False
+2026-06-13,Adelaide Croatia Raiders,South Adelaide,South Australia State League 1,Australia,3-2,Home,Home,True,50.4,23.6,26.0,42.2,HIGH,59.4,True,True,52.3,True,True
+2026-06-13,Blue Eagles,Salisbury Utd.,South Australia State League 1,Australia,3-0,Home,Home,True,60.2,22.4,17.4,63.8,HIGH,50.2,True,True,54.3,False,False
+2026-06-13,Fulham Utd.,Adelaide Atletico,South Australia State League 1,Australia,4-1,Home,Draw,False,36.5,25.4,38.1,36.2,HIGH,64.4,True,True,57.9,True,True
+2026-06-13,Changchun Yatai,Dalian K'un City,China League One,China PR,2-1,Home,Draw,False,33.6,29.6,36.8,74.1,HIGH,52.0,True,True,55.1,True,True
+2026-06-13,Nanjing City,Ningbo Professional,China League One,China PR,1-2,Away,Away,True,31.0,29.2,39.8,38.0,HIGH,46.1,True,False,54.2,True,True
+2026-06-13,Dingnan Ganlian,Guangdong GZ-Power,China League One,China PR,1-3,Away,Away,True,28.2,31.0,40.7,50.0,HIGH,46.0,True,False,57.9,True,True
+2026-06-13,Juventud Antoniana,Sarmiento de La Banda,Torneo Federal A,Argentina,0-1,Away,Draw,False,34.4,27.2,38.5,65.4,HIGH,34.6,False,True,42.5,False,True
+2026-06-13,Dalian Kewei,Changchun Xidu,China League Two,China PR,3-0,Home,Home,True,50.2,31.5,18.3,46.7,HIGH,32.1,True,False,35.9,False,True
+2026-06-13,Shanghai Second,Taian Tiankuang,China League Two,China PR,0-0,Draw,Away,False,31.8,28.2,40.1,39.6,HIGH,45.1,False,True,56.4,False,False
+2026-06-13,Beijing Technology,Dalian Yingbo B,China League Two,China PR,1-1,Draw,Draw,True,32.1,35.6,32.3,32.5,HIGH,38.1,False,True,45.1,True,False
+2026-06-13,Shandong Taishan B,Nantong Haimen,China League Two,China PR,0-0,Draw,Home,False,38.5,31.2,30.4,35.9,HIGH,42.7,False,True,49.2,False,True
+2026-06-13,Guangdong Mingtu,Hangzhou Linping,China League Two,China PR,1-1,Draw,Away,False,28.4,30.6,41.0,45.1,HIGH,36.4,False,True,40.8,True,False
+2026-06-13,Jiangxi Lushan,Chengdu Rongcheng B,China League Two,China PR,1-0,Home,Home,True,44.0,29.0,27.1,40.3,HIGH,40.6,False,True,46.0,False,True
+2026-06-13,Lanzhou Longyuan,Shanxi Chongde Ronghai,China League Two,China PR,0-0,Draw,Draw,True,35.5,30.7,33.8,47.5,HIGH,33.5,False,True,37.5,False,True
+2026-06-13,Wenzhou Professional,Xiamen Feilu,China League Two,China PR,1-0,Home,Away,False,19.8,28.5,51.7,49.7,HIGH,43.8,False,True,54.2,False,False
+2026-06-13,Croydon,Playford Patriots,South Australia NPL,Australia,4-1,Home,Draw,False,36.0,30.2,33.8,37.2,HIGH,61.5,True,True,58.4,True,True
+2026-06-13,Para,FK Beograd,South Australia NPL,Australia,1-5,Away,Away,True,17.3,19.0,63.8,58.4,HIGH,65.7,True,True,48.8,True,False
+2026-06-13,NE Metrostars,Sturt Lions,South Australia NPL,Australia,1-0,Home,Home,True,50.6,23.5,25.9,50.4,HIGH,60.4,False,False,53.6,False,False
+2026-06-13,Adelaide United U23,Adelaide City,South Australia NPL,Australia,0-0,Draw,Draw,True,35.1,29.1,35.8,35.8,HIGH,55.0,False,False,53.4,False,False
+2026-06-13,Gangjin Swans W,Seoul W,WK-League,Korea Republic,1-2,Away,Away,True,34.2,23.0,42.8,35.5,MEDIUM,46.8,True,False,52.9,True,True
+2026-06-13,Mungyeong Sangmu W,Gyeongju W,WK-League,Korea Republic,0-3,Away,Home,False,48.5,24.4,27.1,37.0,MEDIUM,44.7,True,False,49.5,False,True
+2026-06-13,Trnava W,Ruzomberok W,I Liga Women - Group Stage,Slovakia,1-2,Away,Draw,False,38.0,24.1,37.9,44.3,HIGH,63.5,True,True,55.7,True,True
+2026-06-13,BumProm Gomel,Soligorsk,1. Division,Belarus,6-2,Home,Away,False,30.3,26.0,43.7,40.1,HIGH,53.5,True,True,50.1,True,True
+2026-06-13,FC Slonim,Ostrovets,1. Division,Belarus,1-1,Draw,Home,False,41.3,24.4,34.4,45.9,HIGH,58.2,False,False,53.0,True,True
+2026-06-13,Molodechno,SKA-1938,1. Division,Belarus,1-4,Away,Away,True,21.5,20.6,58.0,52.2,HIGH,50.3,True,True,48.7,True,False
+2026-06-13,Orsha,Lida,1. Division,Belarus,1-2,Away,Away,True,33.0,22.6,44.4,77.8,HIGH,68.6,True,True,57.4,True,True
+2026-06-13,Murdoch Melville,Cockburn City,Western Australia State League 1,Australia,2-3,Away,Home,False,39.6,28.3,32.1,33.5,HIGH,64.5,True,True,62.3,True,True
+2026-06-13,Subiaco,Mandurah City,Western Australia State League 1,Australia,3-5,Away,Away,True,30.8,22.2,47.0,76.0,HIGH,65.0,True,True,59.3,True,True
+2026-06-13,Kingsley Westside,Inglewood Utd,Western Australia State League 1,Australia,0-1,Away,Draw,False,36.8,24.8,38.4,50.2,HIGH,59.7,False,False,56.2,False,False
+2026-06-13,Clarence Zebras,South Hobart,Tasmania NPL,Australia,1-3,Away,Away,True,22.2,17.3,60.5,73.3,HIGH,71.7,True,True,53.8,True,True
+2026-06-13,Glenorchy Knights,Riverside Olympic,Tasmania NPL,Australia,1-1,Draw,Draw,True,40.8,23.4,35.8,30.0,HIGH,68.3,False,False,49.5,True,False
+2026-06-13,West Wallsend,Dudley Redhead United,NNSW League 1,Australia,0-0,Draw,Draw,True,36.2,27.1,36.6,41.6,HIGH,59.2,False,False,56.3,False,False
+2026-06-13,Shahter Taganrog,Maykop,Second League B - Division B - Group 1,Russia,0-1,Away,Home,False,56.1,22.6,21.3,45.1,HIGH,41.3,False,True,47.6,False,True
+2026-06-13,Dynamo SPB,Dynamo Vologda,Second League B - Division B - Group 2,Russia,1-0,Home,Home,True,60.7,20.7,18.6,47.0,HIGH,41.4,False,True,45.6,False,True
+2026-06-13,Kursk,Ryazan,Second League B - Division B - Group 3,Russia,0-0,Draw,Home,False,42.2,31.1,26.8,41.8,HIGH,44.1,False,True,50.8,False,False
+2026-06-13,Penza,Lipetsk,Second League B - Division B - Group 3,Russia,2-3,Away,Away,True,26.8,22.5,50.7,56.7,HIGH,47.7,True,False,52.1,True,True
+2026-06-13,SKA Khabarovsk 2,Salyut-Belgorod,Second League B - Division B - Group 3,Russia,0-1,Away,Away,True,31.1,24.0,44.8,52.0,HIGH,63.8,False,False,55.3,False,False
+2026-06-13,Asane W,Fyllingsdalen W,1. Division Women,Norway,1-0,Home,Home,True,72.6,18.8,8.7,55.9,MEDIUM,57.3,False,False,57.3,False,False
+2026-06-13,Odd W,Viking W,1. Division Women,Norway,3-3,Draw,Away,False,23.4,25.4,51.3,44.1,MEDIUM,55.2,True,True,57.1,True,True
+2026-06-13,Brindabella,Belconnen Utd.,Capital Territory NPL,Australia,1-4,Away,Draw,False,40.1,24.1,35.8,42.3,HIGH,66.4,True,True,57.5,True,True
+2026-06-13,O'Connor Knights,Tuggeranong Utd,Capital Territory NPL,Australia,2-3,Away,Away,True,34.4,19.9,45.8,38.6,HIGH,74.0,True,True,62.7,True,True
+2026-06-13,Queanbeyan City,Monaro Panthers,Capital Territory NPL,Australia,2-5,Away,Home,False,40.7,26.6,32.7,52.6,HIGH,60.9,True,True,52.3,True,True
+2026-06-13,FA 2000,Bronshoj,3. Division - Promotion Group,Denmark,2-2,Draw,Home,False,41.6,29.1,29.2,62.0,HIGH,50.7,True,True,54.8,True,True
+2026-06-13,Nykobing,Vanlose,3. Division - Promotion Group,Denmark,5-1,Home,Home,True,67.5,20.5,11.9,77.2,HIGH,55.4,True,True,52.0,True,True
+2026-06-13,BK Frem,Sundby,3. Division - Relegation Group,Denmark,0-0,Draw,Draw,True,34.5,27.3,38.2,58.3,HIGH,55.7,False,False,55.9,False,False
+2026-06-13,Holbaek,Vejgaard,3. Division - Relegation Group,Denmark,1-0,Home,Home,True,57.3,22.1,20.5,73.9,HIGH,64.1,False,False,55.7,False,False
+2026-06-13,Lyseng,Odder,3. Division - Relegation Group,Denmark,3-2,Home,Away,False,32.0,26.7,41.4,77.1,HIGH,54.2,True,True,56.1,True,True
+2026-06-13,HIFK,PEPO,Kakkonen - Group A,Finland,2-1,Home,Away,False,29.0,25.7,45.3,80.4,HIGH,63.8,True,True,58.2,True,True
+2026-06-13,Santa Fe SP,America SP,Paulista Série B,Brazil,1-3,Away,Away,True,10.9,19.3,69.8,57.1,MEDIUM,38.2,True,False,43.9,True,False
+2026-06-13,Ulaangom City,Khovd Western,Premier League,Mongolia,0-0,Draw,Away,False,15.9,15.6,68.5,59.2,HIGH,74.4,False,False,56.4,False,False
+2026-06-13,Hunters,Khovd,Premier League,Mongolia,10-1,Home,Home,True,42.7,27.4,29.8,74.1,HIGH,68.8,True,True,55.7,True,True
+2026-06-13,Magesi,Milford FC,Play-offs 1/2 - Group Stage,South Africa,1-1,Draw,Away,False,28.7,26.1,45.2,80.6,HIGH,38.0,False,True,44.0,True,False
+2026-06-13,Ngoketunjia,Yafoot,Elite Two - Relegation Group,Cameroon,0-0,Draw,Draw,True,36.0,26.4,37.6,40.2,HIGH,51.7,False,False,55.9,False,False
+2026-06-13,Union Douala,Bafmeng United,Elite Two - Relegation Group,Cameroon,0-0,Draw,Away,False,30.0,27.0,43.0,60.9,HIGH,41.0,False,True,42.0,False,True
+2026-06-13,Vila Nova FC U20,Atletico GO U20,Goiano U20 - Semi-finals,Brazil,1-4,Away,Home,False,42.3,27.5,30.1,37.8,HIGH,54.0,True,True,56.6,True,True
+2026-06-13,Saudi Arabia W,Laos W,Friendlies Women - Group Stage,intl,0-0,Draw,Home,False,78.7,12.8,8.5,51.0,MEDIUM,55.6,False,False,17.7,False,True
+2026-06-13,Goulburn Valley Suns,Eastern Lions, Victoria Premier League 2,Australia,2-1,Home,Home,True,47.7,29.1,23.2,43.2,HIGH,53.2,True,True,52.0,True,True
+2026-06-13,Malvern,Essendon Royals SC, Victoria Premier League 2,Australia,0-0,Draw,Away,False,35.9,19.5,44.6,33.4,MEDIUM,54.5,False,False,51.0,False,False
+2026-06-13,UNSW U20,St George Saints U20, Npl Nsw U20,Australia,0-0,Draw,Away,False,19.9,37.1,43.0,36.8,MEDIUM,25.7,False,True,15.0,False,True
+2026-06-13,Wollongong Wolves U20,APIA Leichhardt U20, Npl Nsw U20,Australia,0-0,Draw,Draw,True,27.5,48.3,24.2,21.0,MEDIUM,26.4,False,True,15.0,False,True
+2026-06-13,NWS Spirit U20,Sydney Olympic U20, Npl Nsw U20,Australia,0-0,Draw,Draw,True,37.8,42.5,19.7,30.2,MEDIUM,24.6,False,True,15.0,False,True
+2026-06-13,Sutherland Sharks U20,Blacktown City U20, Npl Nsw U20,Australia,0-0,Draw,Draw,True,27.5,48.3,24.2,21.0,MEDIUM,26.4,False,True,15.0,False,True
+2026-06-13,Huracan FC,Tacuarembo,Segunda División - Regular season,Uruguay,2-1,Home,Draw,False,35.1,34.6,30.3,40.3,HIGH,33.7,True,False,47.8,True,False
+2026-06-13,Aymores,Ipatinga,Mineiro 2,Brazil,4-0,Home,Home,True,41.7,23.8,34.5,23.1,MEDIUM,47.0,True,False,54.5,False,False
+2026-06-13,3K FC,Migori,Super League,Kenya,0-0,Draw,Draw,True,36.4,25.3,38.3,61.3,HIGH,39.1,False,True,49.3,False,True
+2026-06-13,Kisumu All-Stars,Vihiga United,Super League,Kenya,0-0,Draw,Home,False,39.3,28.6,32.1,62.3,HIGH,34.9,False,True,37.3,False,True
+2026-06-13,MCF,Fortune Sacco,Super League,Kenya,0-0,Draw,Draw,True,32.3,29.8,37.9,75.3,HIGH,39.7,False,True,47.1,False,True
+2026-06-13,Nairobi City,Darajani Gogo,Super League,Kenya,0-0,Draw,Draw,True,34.3,29.7,36.0,60.3,HIGH,33.9,False,True,40.2,False,True
+2026-06-13,Naivas FC,Mombasa United,Super League,Kenya,0-0,Draw,Home,False,41.6,26.4,32.1,72.3,HIGH,37.9,False,True,46.1,False,True
+2026-06-13,Sousa U20,Auto Esporte U20,Paraibano U20 - Quarter-finals,Brazil,4-1,Home,Away,False,23.9,29.2,46.9,41.3,MEDIUM,40.2,True,False,43.3,True,False
+2026-06-13,Treze PB U20,Desportiva Guarabira U20,Paraibano U20 - Quarter-finals,Brazil,3-1,Home,Home,True,66.3,24.5,9.2,50.3,MEDIUM,46.2,True,False,57.4,True,True
+2026-06-13,Pirata,U. de Deportes, Copa De La Liga,Peru,2-0,Home,Draw,False,34.4,27.7,37.8,64.1,HIGH,45.2,False,True,53.5,False,False
+2026-06-13,Cambodia U19,Indonesia U19,ASEAN U19 Championship - 3rd place,intl,0-1,Away,Away,True,31.6,23.5,44.9,34.7,MEDIUM,50.2,False,False,43.4,False,True
+2026-06-13,Deportivo Nacional,Caiquetio,Division di Honor - 5th-6th Places,Aruba,2-1,Home,Home,True,49.2,25.4,25.5,48.2,HIGH,63.5,True,True,55.7,True,True
+2026-06-13,Ivory Coast U20,D.R. Congo U20,Tournoi Maurice Revello - 3rd place,intl,3-1,Home,Home,True,47.8,28.0,24.3,38.5,MEDIUM,44.8,True,False,48.8,True,False
+2026-06-13,Spartak Moscow W,CSKA Moscow W, Super Cup Women,Russia,1-0,Home,Draw,False,34.0,27.0,39.0,41.9,HIGH,45.6,False,True,45.6,False,True
+2026-06-12,SC Imst,Kuchl,Regionalliga - West,Austria,3-0,Home,Home,True,45.8,23.1,31.1,52.6,HIGH,66.4,True,True,58.0,False,False
+2026-06-12,Kinondoni MC,TRA United,Ligi kuu Bara,Tanzania,0-1,Away,Away,True,19.2,19.8,61.0,63.5,HIGH,40.4,False,True,35.0,False,True
+2026-06-12,Fountain Gate,Azam,Ligi kuu Bara,Tanzania,0-2,Away,Away,True,23.1,24.3,52.6,86.7,HIGH,45.5,False,True,46.7,False,True
+2026-06-12,Coastal Union,Namungo,Ligi kuu Bara,Tanzania,1-1,Draw,Home,False,40.1,31.7,28.2,74.0,HIGH,33.7,False,True,41.2,True,False
+2026-06-12,Bohunice,Artis Brno B,4. liga - Group D,Czech Republic,0-0,Draw,Away,False,31.4,22.5,46.0,52.3,HIGH,57.4,False,False,53.3,False,False
+2026-06-12,Pelhrimov,Tasovice,4. liga - Group D,Czech Republic,1-2,Away,Home,False,38.6,29.3,32.1,41.9,HIGH,61.9,True,True,58.1,True,True
+2026-06-12,Batov,Slavicin,4. liga - Group E,Czech Republic,4-2,Home,Away,False,30.1,27.7,42.2,48.5,HIGH,48.1,True,False,58.0,True,True
+2026-06-12,Bzenec,Uhersky Brod,4. liga - Group E,Czech Republic,1-1,Draw,Away,False,26.9,21.8,51.2,62.8,HIGH,61.5,False,False,52.7,True,True
+2026-06-12,Strani,Holesov,4. liga - Group E,Czech Republic,3-1,Home,Home,True,47.8,25.8,26.4,50.1,HIGH,56.0,True,True,53.4,True,True
+2026-06-12,Bohumin,Valasske Mezirici,4. liga - Group F,Czech Republic,5-3,Home,Home,True,45.4,26.6,28.0,49.3,HIGH,73.5,True,True,64.5,True,True
+2026-06-12,Stonava,Havirov,4. liga - Group F,Czech Republic,4-2,Home,Draw,False,37.1,25.1,37.8,51.7,HIGH,60.9,True,True,56.5,True,True
+2026-06-12,Brno B,SK Hranice,3. liga - 3. MSFL,Czech Republic,3-1,Home,Home,True,54.3,21.2,24.5,63.4,HIGH,66.6,True,True,56.1,True,True
+2026-06-12,FK Frydek-Mistek,Hlubina,3. liga - 3. MSFL,Czech Republic,2-2,Draw,Home,False,39.4,28.4,32.2,60.2,HIGH,62.0,True,True,55.7,True,True
+2026-06-12,Nove Mesto na Morave,Hlucin,3. liga - 3. MSFL,Czech Republic,1-2,Away,Home,False,53.2,24.2,22.6,64.4,HIGH,64.5,True,True,55.8,True,True
+2026-06-12,Ceske Budejovice U19,Plzen U19,1. Liga U19,Czech Republic,1-2,Away,Draw,False,36.1,26.5,37.4,45.1,HIGH,70.0,True,True,65.8,True,True
+2026-06-12,Rokycany,Sobeslav,4. liga - Group A,Czech Republic,2-3,Away,Away,True,27.3,26.9,45.8,55.7,HIGH,56.2,True,True,56.1,True,True
+2026-06-12,Derry City,Bohemians,Premier Division,Republic of Ireland,4-1,Home,Draw,False,33.9,30.7,35.4,73.2,HIGH,47.7,True,False,55.8,True,True
+2026-06-12,Galway,Dundalk,Premier Division,Republic of Ireland,0-1,Away,Away,True,29.2,30.0,40.8,78.5,HIGH,50.8,False,False,56.4,False,False
+2026-06-12,Shelbourne,Shamrock Rovers,Premier Division,Republic of Ireland,2-1,Home,Draw,False,33.1,28.2,38.7,75.2,HIGH,48.0,True,False,54.4,True,True
+2026-06-12,St. Patricks,Drogheda,Premier Division,Republic of Ireland,2-0,Home,Home,True,42.8,31.5,25.7,76.7,HIGH,45.5,False,True,53.4,False,False
+2026-06-12,Waterford,Sligo Rovers,Premier Division,Republic of Ireland,4-0,Home,Draw,False,35.0,28.9,36.1,73.0,HIGH,53.2,True,True,55.4,False,False
+2026-06-12,Finn Harps,UC Dublin,First Division,Republic of Ireland,0-5,Away,Draw,False,35.5,28.2,36.2,72.7,HIGH,53.3,True,True,50.3,False,False
+2026-06-12,Kerry,Athlone,First Division,Republic of Ireland,1-0,Home,Draw,False,37.0,31.4,31.7,70.4,HIGH,50.4,False,False,50.9,False,False
+2026-06-12,Treaty United,Bray,First Division,Republic of Ireland,2-2,Draw,Draw,True,35.2,27.5,37.3,73.4,HIGH,55.0,True,True,53.1,True,True
+2026-06-12,Wexford,Cork City,First Division,Republic of Ireland,0-2,Away,Away,True,31.5,26.5,41.9,77.6,HIGH,51.7,False,False,55.1,False,False
+2026-06-12,Follo,Kjelsas,2. Division - Group 2,Norway,1-4,Away,Away,True,17.3,15.7,67.0,70.0,HIGH,66.5,True,True,59.5,True,True
+2026-06-12,Vittsjo W,Kristianstad W,Damallsvenskan,Sweden,1-1,Draw,Away,False,35.0,23.4,41.6,44.5,HIGH,57.1,False,False,55.7,True,True
+2026-06-12,Varhaug,Viking 2,3. Division - Group 4,Norway,0-3,Away,Draw,False,36.6,29.1,34.2,31.2,HIGH,57.4,True,True,54.1,False,False
+2026-06-12,Alta,Tromso 2,3. Division - Group 5,Norway,3-3,Draw,Home,False,44.4,29.0,26.5,41.8,HIGH,64.6,True,True,60.8,True,True
+2026-06-12,JaPS,PK-35,Ykkönen - Regular season,Finland,0-5,Away,Draw,False,38.2,28.3,33.5,58.0,HIGH,46.7,True,False,52.6,False,False
+2026-06-12,KTP,Ekenas,Ykkönen - Regular season,Finland,5-1,Home,Home,True,43.7,26.1,30.1,74.3,HIGH,62.4,True,True,57.8,True,True
+2026-06-12,Lunds,AFC Malmo,Ettan - Södra,Sweden,1-4,Away,Draw,False,38.5,27.8,33.7,34.0,HIGH,53.0,True,True,54.2,True,True
+2026-06-12,Umea FC,Pitea,Ettan - Norra,Sweden,2-0,Home,Draw,False,38.9,27.2,33.9,44.1,HIGH,63.1,False,False,57.0,False,False
+2026-06-12,Sandur,Vikingur 2,1. Deild,Faroe Islands,5-0,Home,Home,True,43.1,25.5,31.5,42.3,HIGH,65.4,True,True,59.1,False,False
+2026-06-12,Al Sahel,Safa,Premier League - Regular season,Lebanon,0-1,Away,Away,True,30.3,26.7,43.1,78.8,HIGH,45.7,False,True,51.3,False,False
+2026-06-12,Nejmeh SC,Al Ahed,Premier League - Regular season,Lebanon,1-0,Home,Home,True,41.7,26.6,31.7,50.6,HIGH,54.2,False,False,52.6,False,False
+2026-06-12,Al Riyadi Abbasiyah,Al Hikma,Premier League - Regular season,Lebanon,0-1,Away,Home,False,38.8,29.3,31.9,38.1,HIGH,41.4,False,True,39.0,False,True
+2026-06-12,Dinamo Batumi,Dila Gori,Erovnuli Liga,Georgia,3-2,Home,Draw,False,36.7,26.2,37.2,53.6,HIGH,47.6,True,False,51.2,True,True
+2026-06-12,Iberia 1999,Spaeri,Erovnuli Liga,Georgia,1-1,Draw,Home,False,46.9,28.2,25.0,78.7,HIGH,43.4,False,True,52.1,True,True
+2026-06-12,IFK Skovde,Grebbestad,Division 2 - Norra Götaland,Sweden,0-4,Away,Home,False,45.7,23.6,30.7,51.8,HIGH,61.7,True,True,53.3,False,False
+2026-06-12,Stenungsunds,Ahlafors IF,Division 2 - Norra Götaland,Sweden,0-4,Away,Draw,False,32.5,29.3,38.1,37.3,HIGH,57.9,True,True,57.2,False,False
+2026-06-12,Lilla Torg,Staffanstorp United,Division 2 - Södra Götaland,Sweden,0-0,Draw,Home,False,37.7,32.1,30.1,33.7,HIGH,52.0,False,False,55.0,False,False
+2026-06-12,IFK Karlshamn,Solvesborgs,Division 2 - Södra Götaland,Sweden,0-2,Away,Draw,False,40.9,22.2,37.0,40.6,HIGH,57.7,False,False,54.1,False,False
+2026-06-12,Osterlen,Nosaby,Division 2 - Södra Götaland,Sweden,2-1,Home,Draw,False,33.3,28.3,38.3,44.0,HIGH,60.7,True,True,58.4,True,True
+2026-06-12,Rappe GOIF,Oskarshamn,Division 2 - Södra Götaland,Sweden,1-0,Home,Away,False,26.1,27.1,46.7,51.7,HIGH,46.7,False,True,50.0,False,False
+2026-06-12,Throttur,Kopavogur,1. Deild,Iceland,2-0,Home,Draw,False,40.1,22.5,37.4,43.1,HIGH,72.3,False,False,59.6,False,False
+2026-06-12,Tukums 2000,BFC Daugavpils,Virsliga,Latvia,1-1,Draw,Draw,True,36.5,31.1,32.3,48.2,HIGH,57.2,False,False,58.1,True,True
+2026-06-12,FK Liepaja,Super Nova,Virsliga,Latvia,2-1,Home,Home,True,44.0,28.1,27.9,58.8,HIGH,56.9,True,True,58.4,True,True
+2026-06-12,Inter Turku 2,Jazz Pori,Ykkönen - Regular season,Finland,1-1,Draw,Draw,True,37.6,23.7,38.7,49.9,HIGH,69.2,False,False,61.9,True,True
+2026-06-12,SalPa,KuPS Akatemia,Ykkönen - Regular season,Finland,4-3,Home,Draw,False,38.3,26.3,35.4,71.0,HIGH,64.2,True,True,56.1,True,True
+2026-06-12,Marconi Stallions,Sydney FC U23,New South Wales NPL,Australia,0-0,Draw,Home,False,54.3,23.6,22.1,50.0,HIGH,52.2,False,False,47.5,False,True
+2026-06-12,Manly Utd,Sydney Utd,New South Wales NPL,Australia,1-1,Draw,Away,False,30.8,23.7,45.5,61.4,HIGH,43.8,False,True,45.6,True,False
+2026-06-12,Blacktown Spartans,Bankstown City Lions,NSW League One,Australia,4-1,Home,Home,True,42.8,25.8,31.4,70.2,HIGH,62.6,True,True,57.1,True,True
+2026-06-12,Central Coast Mariners U23,Hakoah Sydney,NSW League One,Australia,2-2,Draw,Home,False,41.8,28.9,29.3,42.1,HIGH,66.0,True,True,63.8,True,True
+2026-06-12,Brunswick City,Eltham Redbacks,Victoria PL 1,Australia,3-1,Home,Draw,False,37.8,29.0,33.2,36.0,HIGH,66.0,True,True,60.2,True,True
+2026-06-12,Melbourne Knights,Brunswick Juventus,Victoria PL 1,Australia,0-1,Away,Draw,False,40.3,21.6,38.1,41.4,HIGH,57.3,False,False,50.8,False,False
+2026-06-12,Dziugas Telsiai,FA Siauliai,A Lyga,Lithuania,4-3,Home,Draw,False,32.9,32.5,34.6,31.3,MEDIUM,47.2,True,False,56.1,True,True
+2026-06-12,Zalgiris,Riteriai,A Lyga,Lithuania,3-2,Home,Home,True,55.0,24.3,20.7,84.2,HIGH,57.5,True,True,52.4,True,True
+2026-06-12,FK Panevezys,Transinvest,A Lyga,Lithuania,1-2,Away,Away,True,33.3,24.9,41.8,60.5,HIGH,59.1,True,True,54.1,True,True
+2026-06-12,Utah United,Flatirons,USL League Two - Regular season,USA,2-1,Home,Home,True,58.9,20.6,20.5,58.3,HIGH,65.1,True,True,55.5,True,True
+2026-06-12,Capo,Tucson,USL League Two - Regular season,USA,1-1,Draw,Draw,True,35.4,28.3,36.4,49.9,HIGH,60.5,False,False,51.7,True,True
+2026-06-12,Lansing City,Kalamazoo FC,USL League Two - Regular season,USA,0-7,Away,Away,True,26.3,18.8,54.9,68.3,HIGH,65.9,True,True,55.2,False,False
+2026-06-12,San Juan,Project 51O,USL League Two - Regular season,USA,1-3,Away,Draw,False,34.4,28.4,37.2,59.8,HIGH,65.5,True,True,61.1,True,True
+2026-06-12,Twin City Toucans,San Antonio FC 2,USL League Two - Regular season,USA,3-0,Home,Away,False,20.7,19.3,60.0,45.2,MEDIUM,64.5,True,True,61.4,False,False
+2026-06-12,Palmeiras U20,Santos U20,Brasileiro U20 A,Brazil,2-2,Draw,Home,False,48.1,24.8,27.2,77.8,HIGH,62.6,True,True,54.8,True,True
+2026-06-12,Belshina,BATE,Premier League,Belarus,1-1,Draw,Draw,True,37.9,28.0,34.1,70.4,HIGH,48.6,False,True,51.1,True,True
+2026-06-12,Isloch,Naftan,Premier League,Belarus,3-1,Home,Home,True,55.9,26.3,17.8,86.5,HIGH,44.0,True,False,47.8,True,False
+2026-06-12,Bishkek City,Asia Talas,Premier League,Kyrgyz Republic,2-3,Away,Away,True,16.8,20.8,62.3,55.4,HIGH,55.9,True,True,58.4,True,True
+2026-06-12,Talant,Alay Osh,Premier League,Kyrgyz Republic,1-2,Away,Away,True,27.3,26.3,46.4,53.9,HIGH,46.5,True,False,52.1,True,True
+2026-06-12,CSKA Pomir Dushanbe,Parvoz-Aeroport Khujand,Vysshaya Liga,Tajikistan,1-2,Away,Home,False,56.0,23.0,21.0,42.2,MEDIUM,41.0,True,False,37.6,True,False
+2026-06-12,Eastern United,Adelaide Olympic,South Australia State League 1,Australia,2-1,Home,Away,False,27.8,24.6,47.6,50.0,HIGH,59.0,True,True,55.4,True,True
+2026-06-12,BE1 NFA,Tauras Taurage,1 Lyga,Lithuania,1-0,Home,Home,True,40.2,26.5,33.3,50.1,HIGH,53.4,False,False,53.1,False,False
+2026-06-12,Hegelmann Litauen 2,Babrungas,1 Lyga,Lithuania,0-1,Away,Away,True,16.9,20.0,63.1,62.5,HIGH,58.6,False,False,52.9,False,False
+2026-06-12,Jonava,Atmosfera,1 Lyga,Lithuania,1-1,Draw,Away,False,31.6,27.2,41.2,77.2,HIGH,44.9,False,True,48.0,True,False
+2026-06-12,Kauno Zalgiris 2,Dainava Alytus,1 Lyga,Lithuania,0-2,Away,Away,True,23.1,19.1,57.8,57.1,HIGH,52.1,False,False,46.6,False,True
+2026-06-12,Bombada,Medina United,GFA League,Gambia,0-1,Away,Draw,False,32.1,31.3,36.6,51.8,HIGH,34.3,False,True,50.2,False,False
+2026-06-12,Campbelltown City,West Torrens,South Australia NPL,Australia,1-2,Away,Away,True,33.9,25.5,40.6,39.7,HIGH,63.7,True,True,55.1,True,True
+2026-06-12,Adelaide Comets,West Adelaide,South Australia NPL,Australia,3-2,Home,Away,False,30.5,27.3,42.2,75.3,HIGH,61.4,True,True,54.4,True,True
+2026-06-12,Suwon FC W,Sejong Sportstoto W,WK-League,Korea Republic,6-0,Home,Home,True,47.8,19.5,32.7,34.5,HIGH,55.6,True,True,57.0,False,False
+2026-06-12,FC Batyr,Arys,1. Division,Kazakhstan,1-1,Draw,Home,False,57.3,22.9,19.9,44.4,MEDIUM,56.1,False,False,40.1,True,False
+2026-06-12,Kairat Almaty 2,Tobol 2,1. Division,Kazakhstan,7-0,Home,Home,True,70.0,20.3,9.7,53.3,MEDIUM,61.7,True,True,55.1,False,False
+2026-06-12,Khan Tengri,Shakhter Karagandy,1. Division,Kazakhstan,0-2,Away,Away,True,33.9,24.1,42.0,67.3,HIGH,58.3,False,False,51.1,False,False
+2026-06-12,Turan,Kaspij Aktau 2,1. Division,Kazakhstan,3-0,Home,Home,True,46.4,26.7,26.8,35.4,MEDIUM,47.2,True,False,50.3,False,False
+2026-06-12,Itabirito U20,Nacional de Muriae U20,Mineiro U20,Brazil,2-2,Draw,Draw,True,33.5,30.8,35.7,31.5,MEDIUM,47.5,True,False,54.1,True,True
+2026-06-12,Atletico-MG U20,Uberabinha U20,Mineiro U20,Brazil,4-0,Home,Home,True,77.5,13.5,9.0,58.0,MEDIUM,54.1,True,True,49.9,False,True
+2026-06-12,HPS,Kiffen,Kakkonen - Group A,Finland,1-2,Away,Home,False,41.4,24.4,34.2,71.1,HIGH,63.2,True,True,52.6,True,True
+2026-06-12,GrIFK,HJS,Kakkonen - Group B,Finland,2-2,Draw,Away,False,30.7,26.5,42.9,78.5,HIGH,61.0,True,True,55.8,True,True
+2026-06-12,EBK,MuSa,Kakkonen - Group B,Finland,0-2,Away,Home,False,41.7,25.4,32.8,50.0,HIGH,75.4,False,False,57.3,False,False
+2026-06-12,JBK,SJK Akatemia 2,Kakkonen - Group C,Finland,3-0,Home,Home,True,45.7,24.6,29.7,34.4,MEDIUM,61.0,True,True,53.0,False,False
+2026-06-12,Leonico,Barreiras,Baiano 2,Brazil,1-2,Away,Away,True,17.6,16.3,66.1,49.6,MEDIUM,57.2,True,True,51.2,True,True
+2026-06-12,South Korea,Czech Republic,World Cup - World Championship,Worldcup,2-1,Home,Home,True,45.2,20.5,34.3,30.6,MEDIUM,46.2,True,False,42.1,True,False
+2026-06-12,Canada,Bosnia & Herzegovina,World Cup - World Championship,Worldcup,1-1,Draw,Draw,True,37.1,37.5,25.4,30.5,MEDIUM,42.6,False,True,56.4,True,True
+2026-06-12,Al Naser,Kazma SC,Premier League,Kuwait,1-2,Away,Draw,False,35.5,29.3,35.2,43.2,HIGH,45.8,True,False,51.4,True,True
+2026-06-12,Al Salmiya,Al Kuwait,Premier League,Kuwait,0-0,Draw,Away,False,30.2,25.6,44.3,48.3,HIGH,47.9,False,True,52.9,False,False
+2026-06-12,Aguai U20,Paulinense U20,Paulista U20,Brazil,1-0,Home,Draw,False,26.7,38.5,34.8,29.3,MEDIUM,47.1,False,True,58.3,False,False
+2026-06-12,CA Juventus U20,Mirassol U20,Paulista U20,Brazil,4-1,Home,Home,True,50.3,27.7,22.0,36.9,MEDIUM,46.5,True,False,43.8,True,False
+2026-06-12,Desportivo U20,Sao Caetano U20,Paulista U20,Brazil,3-2,Home,Home,True,73.9,14.1,12.0,46.0,MEDIUM,43.3,True,False,52.1,True,True
+2026-06-12,Ferroviaria U20,America SP U20,Paulista U20,Brazil,4-0,Home,Home,True,68.9,22.0,9.1,49.7,MEDIUM,40.0,True,False,20.8,False,True
+2026-06-12,Flamengo SP U20,Guarani U20,Paulista U20,Brazil,0-1,Away,Away,True,29.9,21.2,48.9,56.3,HIGH,48.7,False,True,45.9,False,True
+2026-06-12,Gremio Prudente U20,Tanabi U20,Paulista U20,Brazil,3-2,Home,Home,True,48.1,31.2,20.7,37.2,MEDIUM,44.6,True,False,38.5,True,False
+2026-06-12,Ituano U20,Referencia U20,Paulista U20,Brazil,1-1,Draw,Home,False,70.6,17.5,11.9,48.6,MEDIUM,54.8,False,False,58.1,True,True
+2026-06-12,Maua U20,Agua Santa U20,Paulista U20,Brazil,1-1,Draw,Away,False,19.6,27.0,53.4,41.4,MEDIUM,42.8,False,True,27.4,True,False
+2026-06-12,Osasco Sporting U20,Santo Andre U20,Paulista U20,Brazil,4-3,Home,Home,True,56.0,23.3,20.7,40.5,MEDIUM,34.1,True,False,48.7,True,False
+2026-06-12,Piracicaba U20,EC Sao Bernardo U20,Paulista U20,Brazil,0-2,Away,Draw,False,32.7,39.6,27.7,21.6,MEDIUM,53.3,False,False,60.8,False,False
+2026-06-12,Ponte Preta U20,Sao Bento U20,Paulista U20,Brazil,3-2,Home,Home,True,77.3,13.6,9.1,53.3,MEDIUM,51.3,True,True,50.2,True,True
+2026-06-12,Uniao Sao Joao U20,Velo Clube U20,Paulista U20,Brazil,0-0,Draw,Draw,True,30.7,34.5,34.7,26.7,MEDIUM,41.9,False,True,54.1,False,False
+2026-06-12,Uniao Suzano U20,Sertaozinho U20,Paulista U20,Brazil,0-1,Away,Home,False,81.3,11.2,7.5,51.0,MEDIUM,43.8,False,True,15.0,False,True
+2026-06-12,XV de Jau U20,Capivariano U20,Paulista U20,Brazil,0-0,Draw,Home,False,41.4,27.5,31.0,29.8,MEDIUM,46.5,False,True,49.1,False,True
+2026-06-12,Santos U20,Jabaquara U20,Paulista U20,Brazil,1-0,Home,Home,True,58.5,22.6,18.9,53.3,HIGH,57.9,False,False,55.0,False,False
+2026-06-12,APEJES Academy,Avion Academy,Elite Two - Championship Group,Cameroon,0-0,Draw,Home,False,46.3,25.0,28.7,58.2,HIGH,46.1,False,True,49.8,False,True
+2026-06-12,Atlantic,Les Astres,Elite Two - Championship Group,Cameroon,2-1,Home,Home,True,45.5,26.8,27.7,62.5,HIGH,42.2,True,False,49.9,True,False
+2026-06-12,Union SA,Kumba,Elite Two - Championship Group,Cameroon,1-0,Home,Home,True,38.9,29.2,31.9,36.2,HIGH,34.8,False,True,45.1,False,True
+2026-06-12,Cerrado EC U20,Anapolis U20,Goiano U20 - Semi-finals,Brazil,5-2,Home,Home,True,52.5,28.5,19.0,48.8,HIGH,51.8,True,True,53.5,True,True
+2026-06-12,Aegir,Breidablik,Cup - Quarter-finals,Iceland,0-3,Away,Away,True,33.1,25.1,41.8,43.7,HIGH,66.6,True,True,57.2,False,False
+2026-06-12,Akranes,Vikingur Reykjavik,Cup - Quarter-finals,Iceland,1-2,Away,Away,True,25.2,22.2,52.6,60.3,HIGH,62.6,True,True,55.9,True,True
+2026-06-12,Nunawading City,Keilor Park, Victoria Premier League 2,Australia,2-0,Home,Away,False,17.9,20.4,61.6,49.5,MEDIUM,36.2,False,True,30.9,False,True
+2026-06-12,Kingston City,Moreland City, Victoria Premier League 2,Australia,2-1,Home,Draw,False,36.6,25.0,38.4,69.3,HIGH,73.9,True,True,57.3,True,True
+2026-06-12,Springvale,Altona City, Victoria Premier League 2,Australia,2-2,Draw,Draw,True,36.5,31.1,32.4,28.2,MEDIUM,47.6,True,False,48.2,True,False
+2026-06-12,Whittlesea United,Werribee City, Victoria Premier League 2,Australia,4-0,Home,Home,True,56.0,26.4,17.6,44.7,MEDIUM,39.4,True,False,50.1,False,False
+2026-06-12,Manly Utd U20,Sydney Utd U20, Npl Nsw U20,Australia,2-2,Draw,Draw,True,27.5,48.3,24.2,21.0,MEDIUM,26.4,True,False,15.0,True,False
+2026-06-12,Marconi S. U20,Sydney FC U20, Npl Nsw U20,Australia,1-2,Away,Draw,False,27.5,48.3,24.2,21.0,MEDIUM,26.4,True,False,15.0,True,False
+2026-06-12,FBC Melgar W,Alianza Lima W, Liga Women - Apertura,Peru,0-0,Draw,Draw,True,26.6,44.5,28.9,26.9,MEDIUM,26.3,False,True,33.5,False,True
+2026-06-12,Defensores de Glew,Deportivo Metalurgico,Torneo Promocional Amateur,Argentina,1-2,Away,Away,True,26.0,14.2,59.8,38.8,MEDIUM,44.1,True,False,47.1,True,False
+2026-06-12,Buenos Aires City,Uribelarrea,Torneo Promocional Amateur,Argentina,1-0,Home,Draw,False,31.1,37.6,31.3,24.5,MEDIUM,34.0,False,True,43.3,False,True
+2026-06-12,Ezeiza,Las Mandarinas,Torneo Promocional Amateur,Argentina,1-2,Away,Home,False,64.7,19.2,16.1,42.6,MEDIUM,33.9,True,False,27.0,True,False
+2026-06-12,Foutoua,Al Karamah,Premier League,Syria,2-4,Away,Away,True,25.8,23.7,50.5,60.2,HIGH,45.8,True,False,49.2,True,False
+2026-06-12,FUS Rabat,Maghreb Fez,Botola Pro,Morocco,1-1,Draw,Draw,True,34.8,31.3,33.9,48.9,HIGH,35.8,False,True,48.2,True,False
+2026-06-12,Olympique de Safi,Kawkab Marrakech,Botola Pro,Morocco,1-0,Home,Away,False,27.5,31.4,41.1,70.6,HIGH,38.5,False,True,53.1,False,False
+2026-06-12,COD Meknes,Renaissance Zemamra,Botola Pro,Morocco,1-2,Away,Draw,False,37.7,29.1,33.1,52.0,HIGH,34.6,True,False,38.8,True,False
+2026-06-12,Difaa El Jadidi,Dcheira,Botola Pro,Morocco,2-2,Draw,Home,False,54.3,28.5,17.2,62.6,HIGH,38.3,True,False,42.7,True,False
+2026-06-12,Minas,AD Tarma, Copa De La Liga,Peru,0-0,Draw,Draw,True,34.2,32.9,32.9,33.7,HIGH,38.0,False,True,40.0,False,True
+2026-06-12,Tacna Heroica,FBC Melgar, Copa De La Liga,Peru,3-2,Home,Draw,False,32.8,30.9,36.3,55.3,HIGH,52.1,True,True,57.1,True,True
+2026-06-11,AV Alta,Sarasota Paradise,USL League One - Group Stage,USA,3-1,Home,Home,True,39.4,28.1,32.5,40.1,HIGH,57.0,True,True,53.4,True,True
+2026-06-11,Boise,Richmond Kickers,USL League One - Group Stage,USA,2-1,Home,Home,True,40.9,26.9,32.2,34.9,HIGH,55.6,True,True,55.1,True,True
+2026-06-11,Charlotte Independ.,Union Omaha,USL League One - Group Stage,USA,2-0,Home,Home,True,42.2,24.3,33.5,41.8,HIGH,60.8,False,False,57.4,False,False
+2026-06-11,Westchester SC,Fort Wayne,USL League One - Group Stage,USA,1-1,Draw,Away,False,25.4,23.7,50.9,71.7,HIGH,56.8,False,False,55.3,True,True
+2026-06-11,Detroit,El Paso,USL Championship - Usl Championship,USA,1-1,Draw,Home,False,44.1,26.3,29.6,54.8,HIGH,52.9,False,False,55.1,True,True
+2026-06-11,Monterey Bay,Sporting Jax,USL Championship - Usl Championship,USA,2-1,Home,Draw,False,38.1,28.0,33.9,50.3,HIGH,51.2,True,True,51.4,True,True
+2026-06-11,Phoenix Rising,Louisville City,USL Championship - Usl Championship,USA,0-2,Away,Draw,False,34.0,28.0,38.0,74.4,HIGH,52.4,False,False,53.4,False,False
+2026-06-11,Tampa Bay,Charleston,USL Championship - Usl Championship,USA,2-2,Draw,Home,False,45.8,26.2,28.0,66.5,HIGH,52.6,True,True,54.0,True,True
+2026-06-11,Forge,HFX Wanderers,Canadian Premier League - Regular season,Canada,1-0,Home,Home,True,52.9,26.3,20.8,83.6,HIGH,47.6,False,True,50.6,False,False
+2026-06-11,Inter Toronto,Cavalry,Canadian Premier League - Regular season,Canada,1-5,Away,Away,True,27.0,26.5,46.5,42.1,HIGH,48.0,True,False,55.8,True,True
+2026-06-11,Ceara,Avai,Serie B,Brazil,2-1,Home,Draw,False,36.4,29.5,34.1,71.2,HIGH,44.5,True,False,51.8,True,True
+2026-06-11,Goias,Novorizontino,Serie B,Brazil,0-4,Away,Draw,False,35.2,31.1,33.8,71.7,HIGH,38.3,True,False,49.8,False,True
+2026-06-11,Sport Recife,Athletic Club,Serie B,Brazil,1-1,Draw,Home,False,40.7,28.6,30.7,72.7,HIGH,47.6,False,True,51.8,True,True
+2026-06-11,Marin,San Francisco City,USL League Two - Regular season,USA,0-0,Draw,Away,False,25.2,22.5,52.3,58.2,HIGH,72.4,False,False,62.4,False,False
+2026-06-11,Birmingham 2,Dothan United,USL League Two - Regular season,USA,0-0,Draw,Away,False,10.4,24.7,64.9,52.9,MEDIUM,57.5,False,False,54.2,False,False
+2026-06-11,Christos,Bethesda SC,USL League Two - Regular season,USA,0-0,Draw,Home,False,57.4,19.7,23.0,37.3,MEDIUM,71.2,False,False,55.9,False,False
+2026-06-11,Virginia Marauders,Patuxent,USL League Two - Regular season,USA,0-0,Draw,Home,False,52.5,21.8,25.6,56.2,HIGH,66.5,False,False,47.4,False,True
+2026-06-11,Chicago Dutch Lions,St. Croix,USL League Two - Regular season,USA,1-4,Away,Home,False,47.3,19.3,33.4,50.9,HIGH,71.1,True,True,53.8,True,True
+2026-06-11,AC Connecticut,Vermont Green,USL League Two - Regular season,USA,0-0,Draw,Away,False,18.3,16.6,65.1,81.9,HIGH,68.2,False,False,54.7,False,False
+2026-06-11,City SC,Stars FC,USL League Two - Regular season,USA,0-0,Draw,Home,False,42.5,25.3,32.2,40.6,HIGH,60.9,False,False,54.8,False,False
+2026-06-11,Snohomish United,Ballard,USL League Two - Regular season,USA,0-0,Draw,Home,False,46.5,21.9,31.6,34.6,HIGH,53.9,False,False,53.5,False,False
+2026-06-11,Sueno,Rockford Raptors,USL League Two - Group Stage,USA,0-0,Draw,Home,False,55.2,18.3,26.5,35.4,MEDIUM,72.7,False,False,64.5,False,False
+2026-06-11,Academica SC,Almaden,USL League Two - Regular season,USA,0-0,Draw,Away,False,32.0,27.5,40.6,57.7,HIGH,49.2,False,True,54.0,False,False
+2026-06-11,Appalachian,Salem City,USL League Two - Regular season,USA,0-0,Draw,Home,False,44.0,24.2,31.8,43.5,HIGH,61.9,False,False,56.9,False,False
+2026-06-11,Black Rock,Albany Rush,USL League Two - Regular season,USA,0-0,Draw,Home,False,48.5,24.0,27.5,58.7,HIGH,60.4,False,False,50.5,False,False
+2026-06-11,Brevard SC,Lakeland United,USL League Two - Regular season,USA,0-0,Draw,Away,False,34.4,21.9,43.7,32.8,MEDIUM,60.7,False,False,58.0,False,False
+2026-06-11,Cedar,Westchester Flames,USL League Two - Regular season,USA,0-0,Draw,Home,False,57.4,25.3,17.2,41.3,MEDIUM,63.9,False,False,61.4,False,False
+2026-06-11,Connecticut Rush,Boston Bolts,USL League Two - Regular season,USA,0-0,Draw,Away,False,30.9,23.2,45.9,36.6,MEDIUM,49.8,False,True,56.0,False,False
+2026-06-11,Dayton,Kings Hammer Columbus,USL League Two - Regular season,USA,0-0,Draw,Home,False,47.1,22.6,30.4,30.5,MEDIUM,49.8,False,True,53.8,False,False
+2026-06-11,Flint City,Ann Arbor,USL League Two - Regular season,USA,0-0,Draw,Home,False,45.9,22.4,31.7,49.3,HIGH,65.7,False,False,56.0,False,False
+2026-06-11,Hattiesburg,Red River,USL League Two - Regular season,USA,0-0,Draw,Home,False,45.7,31.1,23.2,46.6,HIGH,56.9,False,False,58.1,False,False
+2026-06-11,Hill Country Lobos,AHFC Royals,USL League Two - Regular season,USA,0-0,Draw,Away,False,18.6,22.0,59.4,57.5,HIGH,70.2,False,False,62.8,False,False
+2026-06-11,Houston FC,GFI Woodlands,USL League Two - Regular season,USA,0-0,Draw,Away,False,23.6,35.5,40.9,36.2,MEDIUM,47.6,False,True,55.3,False,False
+2026-06-11,Jackson Boom,Little Rock Rangers,USL League Two - Regular season,USA,0-0,Draw,Away,False,8.9,16.3,74.8,55.0,MEDIUM,50.2,False,False,34.0,False,True
+2026-06-11,Miami City,Weston,USL League Two - Regular season,USA,0-0,Draw,Home,False,40.8,27.2,32.0,34.0,HIGH,62.9,False,False,51.2,False,False
+2026-06-11,NEFC,Seacoast Utd Phantoms,USL League Two - Regular season,USA,0-0,Draw,Home,False,78.7,12.8,8.5,56.0,MEDIUM,61.6,False,False,61.0,False,False
+2026-06-11,North Carolina FC U23,Wake FC,USL League Two - Regular season,USA,0-0,Draw,Home,False,56.7,18.8,24.5,38.1,MEDIUM,70.8,False,False,62.3,False,False
+2026-06-11,Northern Indiana,Toledo Villa,USL League Two - Regular season,USA,0-0,Draw,Home,False,44.0,26.4,29.7,30.7,MEDIUM,57.5,False,False,54.0,False,False
+2026-06-11,PA Classics,Eagle FC,USL League Two - Regular season,USA,0-0,Draw,Draw,True,34.7,27.7,37.7,37.9,HIGH,59.8,False,False,55.0,False,False
+2026-06-11,Reading,Ocean City,USL League Two - Regular season,USA,0-0,Draw,Away,False,16.1,19.4,64.4,50.3,MEDIUM,58.7,False,False,55.4,False,False
+2026-06-11,Real Colorado,CISA,USL League Two - Group Stage,USA,0-0,Draw,Draw,True,40.2,22.6,37.3,25.0,MEDIUM,70.6,False,False,53.4,False,False
+2026-06-11,Santafe Wanderers,Menace,USL League Two - Regular season,USA,0-0,Draw,Home,False,58.8,18.1,23.0,37.6,MEDIUM,48.3,False,True,54.1,False,False
+2026-06-11,SC United Bantams,Tobacco Road,USL League Two - Regular season,USA,0-0,Draw,Home,False,53.7,24.0,22.3,59.7,HIGH,73.2,False,False,63.4,False,False
+2026-06-11,Sporting Jax 2,Shark Coast,USL League Two - Regular season,USA,0-0,Draw,Draw,True,31.9,36.6,31.5,28.2,MEDIUM,36.2,False,True,39.0,False,True
+2026-06-11,St. Louis Ambush,Springfield FC,USL League Two - Regular season,USA,0-0,Draw,Home,False,51.3,22.4,26.3,39.4,HIGH,63.5,False,False,59.8,False,False
+2026-06-11,Ventura,Redlands FC,USL League Two - Regular season,USA,0-0,Draw,Home,False,46.3,25.7,27.9,44.7,HIGH,61.4,False,False,57.0,False,False
+2026-06-11,Virginia Beach,Hill City,USL League Two - Regular season,USA,0-0,Draw,Away,False,34.4,20.3,45.3,32.4,MEDIUM,57.2,False,False,51.8,False,False
+2026-06-11,Loudoun 2,Annapolis Blues,USL League Two - Regular season,USA,0-0,Draw,Away,False,25.2,18.3,56.5,42.4,MEDIUM,66.1,False,False,53.4,False,False
+2026-06-11,Ironbound SC,New Jersey Copa,USL League Two - Regular season,USA,0-0,Draw,Home,False,48.3,25.1,26.6,50.2,HIGH,64.7,False,False,58.2,False,False
+2026-06-11,McKinney Chupacabras,Lubbock Matadors,USL League Two - Regular season,USA,0-0,Draw,Draw,True,38.5,23.6,37.9,29.1,MEDIUM,59.5,False,False,57.1,False,False
+2026-06-11,West Texas,Texoma,USL League Two - Regular season,USA,0-0,Draw,Home,False,50.1,25.5,24.4,43.2,HIGH,66.7,False,False,56.0,False,False
+2026-06-11,Manhattan,Morris Elite,USL League Two - Regular season,USA,0-0,Draw,Home,False,40.1,26.9,33.0,60.2,HIGH,68.5,False,False,56.2,False,False
+2026-06-11,Midwest United,Oakland County,USL League Two - Regular season,USA,0-0,Draw,Away,False,34.1,20.9,45.1,52.5,HIGH,65.7,False,False,55.2,False,False
+2026-06-11,Boston City,Western Mass Pioneers,USL League Two - Regular season,USA,0-0,Draw,Away,False,14.4,18.1,67.5,71.1,HIGH,64.3,False,False,50.7,False,False
+2026-06-11,EL Nacional,Dep. Santo Domingo,Liga Pro Serie B,Ecuador,0-0,Draw,Away,False,27.7,27.5,44.9,46.1,HIGH,42.9,False,True,45.3,False,True
+2026-06-11,Greenville,Loudoun,USL Cup - Group Stage,USA,3-1,Home,Draw,False,35.9,29.6,34.6,52.7,HIGH,52.8,True,True,55.5,True,True
+2026-06-11,Fluminense-SC,Metropolitano,Catarinense 2,Brazil,1-3,Away,Draw,False,34.4,28.3,37.3,37.9,HIGH,36.6,True,False,50.2,True,True
+2026-06-11,Brasil de Pelotas,GA Farroupilha,Copa Gaúcha,Brazil,4-0,Home,Draw,False,34.5,35.6,29.9,29.2,MEDIUM,34.9,True,False,47.7,False,True
+2026-06-11,Bolivia,Algeria,Friendlies - Group Stage,World,0-4,Away,Away,True,14.8,18.8,66.3,79.6,HIGH,57.2,True,True,46.5,False,True
+2026-06-11,La Fama,Dakota,Division di Honor - Final Group,Aruba,1-1,Draw,Away,False,29.2,22.8,48.0,73.3,HIGH,70.5,False,False,59.1,True,True
+2026-06-11,Brazil U17,USA U17,Friendlies - Group Stage,World,1-0,Home,Home,True,52.0,20.5,27.5,40.9,HIGH,57.6,False,False,43.6,False,True
+2026-06-11,Bolivia,Algeria,Friendlies,World,0-4,Away,Away,True,14.8,18.8,66.3,79.6,HIGH,57.2,True,True,46.5,False,True

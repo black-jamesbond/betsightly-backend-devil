@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: betsightly-backend
+    env: python
+    buildCommand: "pip install --upgrade pip setuptools wheel && pip install --no-cache-dir fastapi uvicorn gunicorn pydantic pydantic-settings requests python-dotenv sqlalchemy psycopg2-binary pandas 'numpy==1.24.3' python-jose passlib bcrypt alembic python-multipart httpx aiohttp 'scikit-learn==1.2.2' 'joblib==1.2.0' 'xgboost==1.7.6' 'python-telegram-bot==20.7' && rm -rf /opt/render/project/src/.venv/lib/python*/site-packages/matplotlib"
+    startCommand: "gunicorn main:app --bind 0.0.0.0:$PORT --workers 1 --worker-class uvicorn.workers.UvicornWorker"
+    healthCheckPath: "/api/health"
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: betsightly-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: FOOTBALL_DATA_API_KEY
+        sync: false
+      - key: API_FOOTBALL_API_KEY
+        sync: false
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_GROUP_ID
+        sync: false
+      - key: ALLOWED_ORIGINS
+        value: "*"
+
+databases:
+  - name: betsightly-db
+    databaseName: betsightly
+    user: betsightly
+    plan: free

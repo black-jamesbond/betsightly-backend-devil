@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BetSightly Dashboard</title>
+<style>
+:root {
+  --bg: #0f1117;
+  --card: #1a1d27;
+  --card-border: #2a2d3a;
+  --text: #e4e4e7;
+  --text-dim: #9ca3af;
+  --accent: #3b82f6;
+  --green: #22c55e;
+  --red: #ef4444;
+  --yellow: #eab308;
+  --orange: #f97316;
+  --purple: #a855f7;
+  --cyan: #06b6d4;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border-bottom: 1px solid var(--card-border);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header h1 {
+  font-size: 22px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.header .date-picker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.header input[type="date"] {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  color: var(--text);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+.header button {
+  background: var(--accent);
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+.header button:hover { opacity: 0.9; }
+
+/* Layout */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Stat cards row */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 20px;
+}
+.stat-card .label {
+  font-size: 12px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.stat-card .value {
+  font-size: 28px;
+  font-weight: 700;
+}
+.stat-card .sub {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 0;
+}
+.tab {
+  padding: 10px 20px;
+  cursor: pointer;
+  color: var(--text-dim);
+  border-bottom: 2px solid transparent;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+.tab:hover { color: var(--text); }
+.tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* Tab content */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* Predictions table */
+.pred-section {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.pred-section .league-header {
+  padding: 12px 16px;
+  background: rgba(59, 130, 246, 0.08);
+  border-bottom: 1px solid var(--card-border);
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pred-section .league-header .count {
+  background: var(--accent);
+  color: white;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+.match-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 120px 80px 70px 70px 80px;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 13px;
+  transition: background 0.15s;
+}
+.match-row:hover { background: rgba(255,255,255,0.03); }
+.match-row:last-child { border-bottom: none; }
+.match-row .time { color: var(--text-dim); font-size: 12px; }
+.match-row .teams { font-weight: 500; }
+.match-row .teams .vs { color: var(--text-dim); margin: 0 4px; }
+.match-row .pred-badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 12px;
+  text-align: center;
+}
+.pred-badge.home { background: rgba(34,197,94,0.15); color: var(--green); }
+.pred-badge.away { background: rgba(59,130,246,0.15); color: var(--accent); }
+.pred-badge.draw { background: rgba(234,179,8,0.15); color: var(--yellow); }
+.match-row .conf {
+  text-align: center;
+  font-weight: 600;
+}
+.conf.high { color: var(--green); }
+.conf.med { color: var(--yellow); }
+.conf.low { color: var(--red); }
+.match-row .dq {
+  text-align: center;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.dq.HIGH { background: rgba(34,197,94,0.15); color: var(--green); }
+.dq.MEDIUM { background: rgba(234,179,8,0.15); color: var(--yellow); }
+.dq.LOW { background: rgba(239,68,68,0.15); color: var(--red); }
+
+/* Match header row */
+.match-header {
+  display: grid;
+  grid-template-columns: 60px 1fr 120px 80px 70px 70px 80px;
+  padding: 8px 16px;
+  font-size: 11px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--card-border);
+}
+
+/* Finished match */
+.match-row.finished { opacity: 0.5; }
+.match-row .score {
+  font-weight: 700;
+  color: var(--cyan);
+  text-align: center;
+}
+
+/* Coverage */
+.coverage-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+.league-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 14px;
+}
+.league-card .name {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+.league-card .meta {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.league-card .bar {
+  height: 4px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+.league-card .bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+/* Hourly timeline */
+.hour-block {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+.hour-block .hour-label {
+  padding: 10px 16px;
+  font-weight: 700;
+  font-size: 16px;
+  background: rgba(59,130,246,0.06);
+  border-bottom: 1px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hour-block .hour-label .badge {
+  font-size: 12px;
+  background: var(--accent);
+  color: white;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+.hour-match {
+  padding: 8px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.hour-match:last-child { border-bottom: none; }
+.hour-match .league-tag {
+  font-size: 11px;
+  color: var(--text-dim);
+  background: rgba(255,255,255,0.05);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* Fetch progress */
+.progress-bar {
+  height: 8px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 12px 0;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--cyan));
+  border-radius: 4px;
+  transition: width 0.5s;
+}
+
+/* Pipeline section */
+.pipeline-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+}
+.pipeline-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 20px;
+}
+.pipeline-card h3 {
+  font-size: 15px;
+  margin-bottom: 12px;
+  color: var(--accent);
+}
+.pipeline-card .row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.pipeline-card .row:last-child { border-bottom: none; }
+.pipeline-card .row .k { color: var(--text-dim); }
+
+/* Loading */
+.loading {
+  text-align: center;
+  padding: 60px;
+  color: var(--text-dim);
+}
+.spinner {
+  width: 32px; height: 32px;
+  border: 3px solid var(--card-border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 12px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Bot cards */
+.bot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.bot-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  transition: border-color 0.2s;
+}
+.bot-card:hover { border-color: var(--accent); }
+.bot-card.top-performer { border-color: var(--green); border-width: 2px; }
+.bot-card .bot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.bot-card .bot-num {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.bot-card .bot-name {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.bot-card .bot-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-bottom: 14px;
+}
+.bot-card .bot-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.bot-card .bot-stat .bs-label {
+  font-size: 10px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.bot-card .bot-stat .bs-val {
+  font-size: 18px;
+  font-weight: 700;
+}
+.bot-card .chain-bar {
+  height: 6px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.bot-card .chain-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s;
+}
+.bot-card .chain-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 4px;
+  display: flex;
+  justify-content: space-between;
+}
+.bot-history {
+  display: flex;
+  gap: 2px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.bot-history .bet-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  font-size: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+}
+.bet-dot.win { background: var(--green); }
+.bet-dot.loss { background: var(--red); }
+.bet-dot.pending { background: var(--text-dim); }
+
+/* Bot detail panel */
+.bot-card { cursor: pointer; }
+.bot-card .expand-icon {
+  transition: transform 0.2s;
+  font-size: 14px;
+  color: var(--text-dim);
+}
+.bot-card.expanded .expand-icon { transform: rotate(180deg); }
+.bot-card.expanded { grid-column: 1 / -1; }
+.bot-detail {
+  display: none;
+  margin-top: 14px;
+  border-top: 1px solid var(--card-border);
+  padding-top: 12px;
+}
+.bot-card.expanded .bot-detail { display: block; }
+.bot-detail .day-group {
+  margin-bottom: 14px;
+  overflow-x: auto;
+}
+.bot-detail .day-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bot-detail .day-label .day-wr {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 1px 8px;
+  border-radius: 4px;
+}
+.bot-detail table {
+  width: 100%;
+  min-width: 600px;
+  font-size: 12px;
+  border-collapse: collapse;
+}
+.bot-detail th {
+  text-align: left;
+  font-size: 10px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--card-border);
+}
+.bot-detail td {
+  padding: 5px 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  vertical-align: middle;
+}
+.bot-detail tr:last-child td { border-bottom: none; }
+.bot-detail .status-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.status-badge.win-badge { background: rgba(34,197,94,0.15); color: var(--green); }
+.status-badge.loss-badge { background: rgba(239,68,68,0.15); color: var(--red); }
+.status-badge.pending-badge { background: rgba(156,163,175,0.15); color: var(--text-dim); }
+.bot-detail .chain-tag {
+  font-size: 10px;
+  color: var(--cyan);
+  font-weight: 600;
+}
+.bot-detail .stake-col { color: var(--yellow); font-weight: 600; }
+.bot-detail .payout-col { color: var(--green); font-weight: 600; }
+.bot-detail .match-col { max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Bot summary stats */
+.bot-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.bot-summary .bs-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+}
+.bot-summary .bs-card .bs-big {
+  font-size: 28px;
+  font-weight: 700;
+}
+.bot-summary .bs-card .bs-sub {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .match-row { grid-template-columns: 50px 1fr 90px 60px; }
+  .match-row .dq, .match-row .o25, .match-row .btts-col { display: none; }
+  .match-header { grid-template-columns: 50px 1fr 90px 60px; }
+  .bot-grid { grid-template-columns: 1fr; }
+  .bot-card .bot-stats-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>BetSightly Dashboard</h1>
+  <div class="date-picker">
+    <input type="date" id="datePicker">
+    <button onclick="loadAll()">Load</button>
+    <button onclick="refreshPredictions()" style="background:var(--green)">Refresh Predictions</button>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Stats row -->
+  <div class="stats-row" id="statsRow">
+    <div class="stat-card">
+      <div class="label">Total Matches</div>
+      <div class="value" id="statTotal">--</div>
+      <div class="sub" id="statTotalSub">Loading...</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Upcoming</div>
+      <div class="value" id="statUpcoming">--</div>
+      <div class="sub">To predict</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">High Confidence</div>
+      <div class="value" id="statHighConf" style="color:var(--green)">--</div>
+      <div class="sub">&ge;60% confidence</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Data Coverage</div>
+      <div class="value" id="statCoverage" style="color:var(--cyan)">--</div>
+      <div class="sub" id="statCoverageSub">HIGH/MEDIUM quality</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Training Data</div>
+      <div class="value" id="statTraining" style="color:var(--purple)">--</div>
+      <div class="sub" id="statTrainingSub">Total matches</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Leagues Covered</div>
+      <div class="value" id="statLeagues" style="color:var(--orange)">--</div>
+      <div class="sub">In training data</div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <div class="tab active" data-tab="predictions" onclick="switchTab('predictions')">Predictions</div>
+    <div class="tab" data-tab="hourly" onclick="switchTab('hourly')">Hourly View</div>
+    <div class="tab" data-tab="coverage" onclick="switchTab('coverage')">Model Coverage</div>
+    <div class="tab" data-tab="bots" onclick="switchTab('bots')">Bots</div>
+    <div class="tab" data-tab="pipeline" onclick="switchTab('pipeline')">Data Pipeline</div>
+  </div>
+
+  <!-- Predictions Tab -->
+  <div class="tab-content active" id="tab-predictions">
+    <div id="predictionsContainer">
+      <div class="loading"><div class="spinner"></div>Loading predictions...</div>
+    </div>
+  </div>
+
+  <!-- Hourly Tab -->
+  <div class="tab-content" id="tab-hourly">
+    <div id="hourlyContainer">
+      <div class="loading"><div class="spinner"></div>Loading hourly breakdown...</div>
+    </div>
+  </div>
+
+  <!-- Coverage Tab -->
+  <div class="tab-content" id="tab-coverage">
+    <div id="coverageContainer">
+      <div class="loading"><div class="spinner"></div>Loading coverage data...</div>
+    </div>
+  </div>
+
+  <!-- Bots Tab -->
+  <div class="tab-content" id="tab-bots">
+    <div id="botsContainer">
+      <div class="loading"><div class="spinner"></div>Loading bot results...</div>
+    </div>
+  </div>
+
+  <!-- Pipeline Tab -->
+  <div class="tab-content" id="tab-pipeline">
+    <div id="pipelineContainer">
+      <div class="loading"><div class="spinner"></div>Loading pipeline status...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('datePicker').value = today;
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.tab[data-tab="${name}"]`).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+function escHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s || '';
+  return d.innerHTML;
+}
+
+async function loadPredictions() {
+  const dt = document.getElementById('datePicker').value;
+  const container = document.getElementById('predictionsContainer');
+  container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading predictions...</div>';
+
+  try {
+    const res = await fetch(`/api/predictions?date=${dt}`);
+    const data = await res.json();
+    const preds = data.predictions || [];
+
+    // Update stats
+    const upcoming = preds.filter(p => p.status === 'upcoming');
+    const finished = preds.filter(p => p.status === 'finished');
+    document.getElementById('statTotal').textContent = preds.length;
+    document.getElementById('statTotalSub').textContent = `${upcoming.length} upcoming, ${finished.length} finished`;
+    document.getElementById('statUpcoming').textContent = upcoming.length;
+
+    const highConf = upcoming.filter(p => (p.confidence || 0) >= 60);
+    document.getElementById('statHighConf').textContent = highConf.length;
+
+    const goodData = upcoming.filter(p => p.data_quality === 'HIGH' || p.data_quality === 'MEDIUM');
+    document.getElementById('statCoverage').textContent =
+      upcoming.length > 0 ? Math.round(goodData.length / upcoming.length * 100) + '%' : '--';
+    document.getElementById('statCoverageSub').textContent =
+      `${goodData.length}/${upcoming.length} with data`;
+
+    if (upcoming.length === 0 && finished.length === 0) {
+      container.innerHTML = '<div class="loading">No matches found for this date.</div>';
+      return;
+    }
+
+    // Group by league
+    const byLeague = {};
+    for (const p of preds) {
+      const key = `${p.league} (${p.country})`;
+      if (!byLeague[key]) byLeague[key] = [];
+      byLeague[key].push(p);
+    }
+
+    let html = '';
+    for (const [league, matches] of Object.entries(byLeague).sort((a,b) => b[1].length - a[1].length)) {
+      const upCount = matches.filter(m => m.status === 'upcoming').length;
+      html += `<div class="pred-section">
+        <div class="league-header">
+          ${escHtml(league)}
+          <span class="count">${matches.length} match${matches.length>1?'es':''}</span>
+        </div>
+        <div class="match-header">
+          <div>Time</div><div>Match</div><div>Prediction</div>
+          <div style="text-align:center">Conf</div>
+          <div style="text-align:center">O2.5</div>
+          <div style="text-align:center">BTTS</div>
+          <div style="text-align:center">Data</div>
+        </div>`;
+
+      for (const m of matches.sort((a,b) => (a.kick_off||'').localeCompare(b.kick_off||''))) {
+        if (m.status === 'finished') {
+          html += `<div class="match-row finished">
+            <div class="time">${escHtml(m.kick_off)}</div>
+            <div class="teams">${escHtml(m.home_team)} <span class="vs">vs</span> ${escHtml(m.away_team)}</div>
+            <div class="score">${m.home_score} - ${m.away_score}</div>
+            <div></div><div></div><div></div><div></div>
+          </div>`;
+        } else {
+          const predClass = m.prediction === 'Home Win' ? 'home' : m.prediction === 'Away Win' ? 'away' : 'draw';
+          const predLabel = m.prediction === 'Home Win' ? `1 (${m.home_win}%)` :
+                           m.prediction === 'Away Win' ? `2 (${m.away_win}%)` : `X (${m.draw}%)`;
+          const confClass = (m.confidence||0) >= 60 ? 'high' : (m.confidence||0) >= 40 ? 'med' : 'low';
+
+          html += `<div class="match-row">
+            <div class="time">${escHtml(m.kick_off)}</div>
+            <div class="teams">${escHtml(m.home_team)} <span class="vs">vs</span> ${escHtml(m.away_team)}</div>
+            <div><span class="pred-badge ${predClass}">${predLabel}</span></div>
+            <div class="conf ${confClass}">${m.confidence}%</div>
+            <div class="o25" style="text-align:center;color:${(m['over_2.5']||0)>55?'var(--green)':'var(--text-dim)'}">${m['over_2.5']||'--'}%</div>
+            <div class="btts-col" style="text-align:center;color:${(m.btts||0)>55?'var(--green)':'var(--text-dim)'}">${m.btts||'--'}%</div>
+            <div><span class="dq ${m.data_quality||'LOW'}">${m.data_quality||'LOW'}</span></div>
+          </div>`;
+        }
+      }
+      html += '</div>';
+    }
+    container.innerHTML = html;
+  } catch (e) {
+    container.innerHTML = `<div class="loading">Error loading predictions: ${e.message}</div>`;
+  }
+}
+
+async function loadHourly() {
+  const dt = document.getElementById('datePicker').value;
+  const container = document.getElementById('hourlyContainer');
+  container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+
+  try {
+    const res = await fetch(`/api/hourly-breakdown?date=${dt}`);
+    const data = await res.json();
+    const hours = data.hours || {};
+
+    if (Object.keys(hours).length === 0) {
+      container.innerHTML = '<div class="loading">No matches found.</div>';
+      return;
+    }
+
+    let html = '';
+    for (const [hour, matches] of Object.entries(hours)) {
+      const finished = matches.filter(m => m.status === 'Finished').length;
+      const label = `${hour}:00`;
+      html += `<div class="hour-block">
+        <div class="hour-label">
+          ${label}
+          <span class="badge">${matches.length} games${finished > 0 ? ` (${finished} finished)` : ''}</span>
+        </div>`;
+      for (const m of matches) {
+        const statusColor = m.status === 'Finished' ? 'var(--green)' :
+                           m.status === '' ? 'var(--text-dim)' : 'var(--yellow)';
+        const scoreStr = m.home_score !== '' ? ` ${m.home_score}-${m.away_score}` : '';
+        html += `<div class="hour-match">
+          <div>
+            <span style="color:var(--text-dim);margin-right:8px">${escHtml(m.time)}</span>
+            ${escHtml(m.home)} <span style="color:var(--text-dim)">vs</span> ${escHtml(m.away)}
+            <span style="color:var(--cyan);font-weight:700">${scoreStr}</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <span class="league-tag">${escHtml(m.league)}</span>
+            <span style="color:${statusColor};font-size:11px">${escHtml(m.status || 'Scheduled')}</span>
+          </div>
+        </div>`;
+      }
+      html += '</div>';
+    }
+    container.innerHTML = html;
+  } catch (e) {
+    container.innerHTML = `<div class="loading">Error: ${e.message}</div>`;
+  }
+}
+
+async function loadCoverage() {
+  const container = document.getElementById('coverageContainer');
+  container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading coverage...</div>';
+
+  try {
+    const res = await fetch('/api/coverage');
+    const data = await res.json();
+
+    document.getElementById('statTraining').textContent = (data.total_matches || 0).toLocaleString();
+    document.getElementById('statLeagues').textContent = data.total_leagues || 0;
+
+    const maxMatches = Math.max(...(data.leagues || []).map(l => l.matches), 1);
+
+    let html = '<div style="margin-bottom:16px;color:var(--text-dim);font-size:13px">';
+    if (data.sources) {
+      html += 'Sources: ';
+      html += Object.entries(data.sources).map(([k,v]) => `${k}: ${v.toLocaleString()}`).join(' | ');
+    }
+    html += `</div><div class="coverage-grid">`;
+
+    for (const l of (data.leagues || []).slice(0, 100)) {
+      const pct = Math.round(l.matches / maxMatches * 100);
+      html += `<div class="league-card">
+        <div class="name">${escHtml(l.league)}</div>
+        <div class="meta">
+          <span>${l.matches.toLocaleString()} matches</span>
+          <span>${l.teams} teams</span>
+          <span>${l.first} - ${l.last}</span>
+        </div>
+        <div class="bar"><div class="bar-fill" style="width:${pct}%"></div></div>
+      </div>`;
+    }
+    html += '</div>';
+    if ((data.leagues || []).length > 100) {
+      html += `<div style="text-align:center;color:var(--text-dim);margin-top:16px">
+        ...and ${data.leagues.length - 100} more leagues</div>`;
+    }
+    container.innerHTML = html;
+  } catch (e) {
+    container.innerHTML = `<div class="loading">Error: ${e.message}</div>`;
+  }
+}
+
+async function loadPipeline() {
+  const container = document.getElementById('pipelineContainer');
+  container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+
+  try {
+    const [fetchRes, modelRes] = await Promise.all([
+      fetch('/api/fetch-status'),
+      fetch('/api/model-info'),
+    ]);
+    const fetchData = await fetchRes.json();
+    const modelData = await modelRes.json();
+
+    const pct = fetchData.chunks_total > 0
+      ? Math.round(fetchData.chunks_done / fetchData.chunks_total * 100) : 0;
+
+    let html = '<div class="pipeline-cards">';
+
+    // Fetch status card
+    html += `<div class="pipeline-card">
+      <h3>API Football History Fetch</h3>
+      <div class="row"><span class="k">Status</span>
+        <span style="color:${fetchData.status==='complete'?'var(--green)':'var(--yellow)'}">
+          ${fetchData.status === 'complete' ? 'Complete' : 'In Progress'}
+        </span>
+      </div>
+      <div class="row"><span class="k">Progress</span><span>${fetchData.chunks_done} / ${fetchData.chunks_total} chunks</span></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="row"><span class="k">Rows Written</span><span>${(fetchData.rows_written||0).toLocaleString()}</span></div>
+      <div class="row"><span class="k">History File Rows</span><span>${(fetchData.history_file_rows||0).toLocaleString()}</span></div>
+      <div class="row"><span class="k">Last Chunk</span><span>${fetchData.last_chunk || '--'}</span></div>
+    </div>`;
+
+    // Model info card
+    html += `<div class="pipeline-card">
+      <h3>ML Models</h3>
+      <div class="row"><span class="k">Total Size</span><span>${modelData.total_size_mb} MB</span></div>
+      <div class="row"><span class="k">ELO Teams</span><span>${modelData.elo_teams}</span></div>
+      <div class="row"><span class="k">Features</span><span>${(modelData.feature_columns||[]).length}</span></div>`;
+
+    if (modelData.models && modelData.models.length > 0) {
+      html += '<div style="margin-top:12px;font-size:12px;color:var(--text-dim)">Model Accuracy:</div>';
+      for (const m of modelData.models.sort((a,b) => b.accuracy - a.accuracy)) {
+        const accPct = Math.round(m.accuracy * 100);
+        const color = accPct >= 70 ? 'var(--green)' : accPct >= 50 ? 'var(--yellow)' : 'var(--red)';
+        html += `<div class="row">
+          <span class="k">${escHtml(m.name)}</span>
+          <span style="color:${color}">${accPct}%</span>
+        </div>`;
+      }
+    }
+    html += '</div>';
+
+    // Data sources card
+    html += `<div class="pipeline-card">
+      <h3>Training Data Sources</h3>
+      <div class="row"><span class="k">matches.csv</span>
+        <span>${document.getElementById('statTraining').textContent} matches</span></div>
+      <div class="row"><span class="k">Leagues</span>
+        <span>${document.getElementById('statLeagues').textContent}</span></div>
+      <div class="row"><span class="k">GitHub Dataset</span><span>228K matches</span></div>
+      <div class="row"><span class="k">football-data.co.uk</span><span>27 countries</span></div>
+      <div class="row"><span class="k">apifootball.com</span>
+        <span>${(fetchData.rows_written||0).toLocaleString()} matches</span></div>
+    </div>`;
+
+    html += '</div>';
+    container.innerHTML = html;
+  } catch (e) {
+    container.innerHTML = `<div class="loading">Error: ${e.message}</div>`;
+  }
+}
+
+async function loadBots() {
+  const container = document.getElementById('botsContainer');
+  container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading bot results...</div>';
+
+  try {
+    const res = await fetch('/api/bots');
+    const data = await res.json();
+
+    if (data.error === 'no results') {
+      container.innerHTML = `<div class="loading">
+        <p style="margin-bottom:12px">No bot results yet.</p>
+        <button onclick="runBots(3)" style="background:var(--accent);border:none;color:white;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600">
+          Run 3-day simulation
+        </button>
+      </div>`;
+      return;
+    }
+
+    const bots = data.bots || [];
+    const dates = data.dates || [];
+    window._botsData = bots;
+
+    // Summary stats
+    const totalBets = bots.reduce((s, b) => s + b.total_bets, 0);
+    const totalWins = bots.reduce((s, b) => s + b.wins, 0);
+    const overallWR = totalBets > 0 ? Math.round(totalWins / totalBets * 100 * 10) / 10 : 0;
+    const bestChain = Math.max(...bots.map(b => b.best_chain), 0);
+    const totalChains = bots.reduce((s, b) => s + b.chains_completed, 0);
+    const topBot = bots.length > 0 ? bots[0] : null;
+
+    let html = '';
+
+    // Summary row
+    html += '<div class="bot-summary">';
+    html += `<div class="bs-card"><div class="bs-big">${totalBets}</div><div class="bs-sub">Total bets (${dates.length} days)</div></div>`;
+    html += `<div class="bs-card"><div class="bs-big" style="color:var(--green)">${overallWR}%</div><div class="bs-sub">Overall win rate</div></div>`;
+    html += `<div class="bs-card"><div class="bs-big" style="color:var(--cyan)">${bestChain} <span style="font-size:14px;color:var(--text-dim)">/ 10</span></div><div class="bs-sub">Best chain</div></div>`;
+    html += `<div class="bs-card"><div class="bs-big" style="color:var(--yellow)">${totalChains}</div><div class="bs-sub">Chains completed</div></div>`;
+    if (topBot) {
+      html += `<div class="bs-card"><div class="bs-big" style="color:var(--purple)">#${topBot.emoji}</div><div class="bs-sub">Top: ${escHtml(topBot.bot)}</div></div>`;
+    }
+    html += '</div>';
+
+    // Action buttons
+    html += `<div style="display:flex;gap:8px;margin-bottom:20px;">
+      <button onclick="runBots(1)" style="background:var(--card);border:1px solid var(--card-border);color:var(--text);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px">Run today</button>
+      <button onclick="runBots(3)" style="background:var(--accent);border:none;color:white;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600">Run 3-day sim</button>
+      <span style="font-size:12px;color:var(--text-dim);align-self:center;margin-left:8px">
+        Last run: ${dates.length > 0 ? dates.join(', ') : '--'}
+      </span>
+    </div>`;
+
+    // Bot cards
+    html += '<div class="bot-grid">';
+    for (let bi = 0; bi < bots.length; bi++) {
+      const bot = bots[bi];
+      const isTop = bot === topBot;
+      const wrColor = bot.win_rate >= 40 ? 'var(--green)' : bot.win_rate >= 30 ? 'var(--yellow)' : 'var(--red)';
+      const chainPct = Math.round(bot.best_chain / 10 * 100);
+      const chainColor = bot.best_chain >= 6 ? 'var(--green)' : bot.best_chain >= 3 ? 'var(--yellow)' : 'var(--red)';
+      const cardId = 'bot-card-' + bi;
+
+      html += `<div class="bot-card ${isTop ? 'top-performer' : ''}" id="${cardId}" onclick="toggleBotDetail('${cardId}')">`;
+      html += `<div class="bot-header">
+        <span class="bot-num">${isTop ? '&#9733; ' : ''}Bot ${escHtml(bot.emoji)}</span>
+        <div style="display:flex;align-items:center;gap:6px">
+          ${isTop ? '<span style="font-size:10px;background:var(--green);color:white;padding:2px 8px;border-radius:4px;font-weight:600">TOP</span>' : ''}
+          <span class="expand-icon">&#9660;</span>
+        </div>
+      </div>`;
+      html += `<div class="bot-name">${escHtml(bot.bot)}</div>`;
+      html += `<div class="bot-desc">${escHtml(bot.description)}</div>`;
+
+      html += '<div class="bot-stats-grid">';
+      html += `<div class="bot-stat"><div class="bs-label">Win rate</div><div class="bs-val" style="color:${wrColor}">${bot.win_rate}%</div></div>`;
+      html += `<div class="bot-stat"><div class="bs-label">Bets</div><div class="bs-val">${bot.total_bets}</div></div>`;
+      html += `<div class="bot-stat"><div class="bs-label">W / L</div><div class="bs-val">${bot.wins}/${bot.losses}</div></div>`;
+      html += `<div class="bot-stat"><div class="bs-label">Best chain</div><div class="bs-val" style="color:${chainColor}">${bot.best_chain}</div></div>`;
+      html += '</div>';
+
+      // Chain progress bar
+      html += `<div class="chain-bar"><div class="chain-fill" style="width:${chainPct}%;background:${chainColor}"></div></div>`;
+      html += `<div class="chain-label"><span>Chain progress</span><span>${bot.best_chain} / 10</span></div>`;
+
+      // Bet history dots
+      if (bot.daily && bot.daily.length > 0) {
+        html += '<div class="bot-history">';
+        for (const day of bot.daily) {
+          if (day.history) {
+            for (const h of day.history) {
+              const cls = h.status === 'WIN' ? 'win' : h.status === 'LOSS' ? 'loss' : 'pending';
+              const tip = `${h.selection || '?'} @ ${h.odds || '?'} - ${h.status}`;
+              html += `<div class="bet-dot ${cls}" title="${escHtml(tip)}">${h.status === 'WIN' ? 'W' : h.status === 'LOSS' ? 'L' : '?'}</div>`;
+            }
+          }
+        }
+        html += '</div>';
+      }
+
+      // Expandable detail panel — rendered lazily on first click
+      html += `<div class="bot-detail" id="detail-${bi}"></div>`;
+
+      html += '</div>';
+    }
+    html += '</div>';
+
+    container.innerHTML = html;
+  } catch (e) {
+    container.innerHTML = `<div class="loading">Error loading bots: ${e.message}</div>`;
+  }
+}
+
+async function runBots(days) {
+  const dt = document.getElementById('datePicker').value;
+  try {
+    const res = await fetch('/api/bots/run', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({date: dt, days: days}),
+    });
+    const data = await res.json();
+    if (data.status === 'started') {
+      document.getElementById('botsContainer').innerHTML =
+        '<div class="loading"><div class="spinner"></div>Running bot simulation... This may take a few minutes.<br><br><button onclick="loadBots()" style="background:var(--accent);border:none;color:white;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;margin-top:12px">Check results</button></div>';
+    }
+  } catch (e) {
+    alert('Error starting bots: ' + e.message);
+  }
+}
+
+async function refreshPredictions() {
+  const dt = document.getElementById('datePicker').value;
+  // Delete cache to force fresh predictions
+  try {
+    await fetch(`/api/predictions?date=${dt}&refresh=1`);
+  } catch (e) {}
+  await loadPredictions();
+}
+
+function toggleBotDetail(cardId) {
+  const card = document.getElementById(cardId);
+  if (!card) return;
+  const idx = parseInt(cardId.replace('bot-card-', ''));
+  const detailEl = document.getElementById('detail-' + idx);
+  if (detailEl && !detailEl.dataset.loaded && window._botsData) {
+    const bot = window._botsData[idx];
+    let dh = '';
+    if (bot && bot.daily && bot.daily.length > 0) {
+      for (const day of bot.daily) {
+        if (!day.history || day.history.length === 0) continue;
+        const dayWins = day.history.filter(h => h.status === 'WIN').length;
+        const dayTotal = day.history.filter(h => h.status === 'WIN' || h.status === 'LOSS').length;
+        const dayWR = dayTotal > 0 ? Math.round(dayWins / dayTotal * 100) : 0;
+        const dayWRColor = dayWR >= 50 ? 'rgba(34,197,94,0.15)' : dayWR >= 30 ? 'rgba(234,179,8,0.15)' : 'rgba(239,68,68,0.15)';
+        const dayWRText = dayWR >= 50 ? 'var(--green)' : dayWR >= 30 ? 'var(--yellow)' : 'var(--red)';
+        dh += '<div class="day-group">';
+        dh += `<div class="day-label">${escHtml(day.date)} <span class="day-wr" style="background:${dayWRColor};color:${dayWRText}">${dayWins}W ${dayTotal - dayWins}L (${dayWR}%)</span></div>`;
+        dh += `<table><thead><tr><th>Step</th><th>Time</th><th>Match</th><th>Market</th><th>Selection</th><th>Odds</th><th>Stake</th><th>Payout</th><th>Result</th><th>Chain</th></tr></thead><tbody>`;
+        for (const h of day.history) {
+          const statusCls = h.status === 'WIN' ? 'win-badge' : h.status === 'LOSS' ? 'loss-badge' : 'pending-badge';
+          const matchStr = h.home_team && h.away_team ? `${h.home_team} vs ${h.away_team}` : '--';
+          const payout = h.payout != null ? '$' + h.payout.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) : '--';
+          const stake = h.stake != null ? '$' + h.stake.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) : '--';
+          dh += `<tr>
+            <td>${h.step || '--'}</td>
+            <td style="color:var(--text-dim)">${escHtml(h.kick_off || '--')}</td>
+            <td class="match-col" title="${escHtml(matchStr)}">${escHtml(matchStr)}</td>
+            <td style="color:var(--text-dim)">${escHtml(h.market || '--')}</td>
+            <td style="font-weight:600">${escHtml(h.selection || '--')}</td>
+            <td style="color:var(--cyan)">${h.odds ? h.odds.toFixed(2) : '--'}</td>
+            <td class="stake-col">${stake}</td>
+            <td class="payout-col">${h.status === 'WIN' ? payout : '--'}</td>
+            <td><span class="status-badge ${statusCls}">${h.status || '?'}</span></td>
+            <td class="chain-tag">${h.chain_complete ? '<span style="color:var(--green);font-weight:700">DONE!</span>' : (h.step || '--')}</td>
+          </tr>`;
+        }
+        dh += '</tbody></table></div>';
+      }
+    } else {
+      dh = '<div style="color:var(--text-dim);font-size:12px;text-align:center;padding:12px">No bet history available</div>';
+    }
+    detailEl.innerHTML = dh;
+    detailEl.dataset.loaded = '1';
+  }
+  card.classList.toggle('expanded');
+}
+
+function loadAll() {
+  loadPredictions();
+  loadHourly();
+  loadCoverage();
+  loadPipeline();
+  loadBots();
+}
+
+// Auto-refresh pipeline status every 30s
+setInterval(() => {
+  const activeTab = document.querySelector('.tab.active')?.dataset?.tab;
+  if (activeTab === 'pipeline') loadPipeline();
+}, 30000);
+
+// Initial load
+loadAll();
+</script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+fixture_id,date,league_id,league_name,home_team_id,home_team,away_team_id,away_team,home_odds,draw_odds,away_odds
+498963,2025-05-15T17:00:00Z,2014,Primera Division,79,CA Osasuna,78,Club Atlético de Madrid,0,0,0
+498968,2025-05-15T17:00:00Z,2014,Primera Division,87,Rayo Vallecano de Madrid,90,Real Betis Balompié,0,0,0
+498965,2025-05-15T19:30:00Z,2014,Primera Division,82,Getafe CF,77,Athletic Club,0,0,0
+498972,2025-05-15T19:30:00Z,2014,Primera Division,80,RCD Espanyol de Barcelona,81,FC Barcelona,0,0,0

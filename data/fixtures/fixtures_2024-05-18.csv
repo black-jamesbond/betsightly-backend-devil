@@ -1,0 +1,13 @@
+fixture_id,date,league_id,league_name,home_team_id,home_team,away_team_id,away_team,home_odds,draw_odds,away_odds
+438837,2024-05-18T19:00:00Z,2014,Primera Division,263,Deportivo Alavés,82,Getafe CF,0,0,0
+444617,2024-05-18T16:00:00Z,2019,Serie A,5890,US Lecce,102,Atalanta BC,0,0,0
+444622,2024-05-18T18:45:00Z,2019,Serie A,586,Torino FC,98,AC Milan,0,0,0
+442086,2024-05-18T13:30:00Z,2002,Bundesliga,2,TSG 1899 Hoffenheim,5,FC Bayern München,0,0,0
+442087,2024-05-18T13:30:00Z,2002,Bundesliga,19,Eintracht Frankfurt,721,RB Leipzig,0,0,0
+442088,2024-05-18T13:30:00Z,2002,Bundesliga,28,1. FC Union Berlin,17,SC Freiburg,0,0,0
+442089,2024-05-18T13:30:00Z,2002,Bundesliga,11,VfL Wolfsburg,15,1. FSV Mainz 05,0,0,0
+442090,2024-05-18T13:30:00Z,2002,Bundesliga,10,VfB Stuttgart,18,Borussia Mönchengladbach,0,0,0
+442091,2024-05-18T13:30:00Z,2002,Bundesliga,44,1. FC Heidenheim 1846,1,1. FC Köln,0,0,0
+442092,2024-05-18T13:30:00Z,2002,Bundesliga,12,SV Werder Bremen,36,VfL Bochum 1848,0,0,0
+442093,2024-05-18T13:30:00Z,2002,Bundesliga,3,Bayer 04 Leverkusen,16,FC Augsburg,0,0,0
+442094,2024-05-18T13:30:00Z,2002,Bundesliga,4,Borussia Dortmund,55,SV Darmstadt 98,0,0,0

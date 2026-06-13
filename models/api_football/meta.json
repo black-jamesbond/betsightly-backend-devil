@@ -1,0 +1,72 @@
+{
+  "feature_columns": [
+    "home_win_rate_5",
+    "home_win_rate_10",
+    "home_draw_rate_5",
+    "home_goals_scored_5",
+    "home_goals_conceded_5",
+    "home_home_win_rate_5",
+    "home_home_goals_5",
+    "away_win_rate_5",
+    "away_win_rate_10",
+    "away_draw_rate_5",
+    "away_goals_scored_5",
+    "away_goals_conceded_5",
+    "away_away_win_rate_5",
+    "away_away_goals_5",
+    "h2h_home_win_rate",
+    "h2h_avg_goals",
+    "h2h_btts_rate",
+    "h2h_meetings",
+    "league_tier"
+  ],
+  "form_window": 5,
+  "h2h_window": 10,
+  "trained_at": "2026-06-11T10:49:22.810725",
+  "n_samples": 106825,
+  "models": [
+    "btts_catboost",
+    "btts_et",
+    "btts_lgbm",
+    "btts_nn",
+    "btts_rf",
+    "btts_xgb",
+    "match_result_catboost",
+    "match_result_et",
+    "match_result_lgbm",
+    "match_result_nn",
+    "match_result_rf",
+    "match_result_xgb",
+    "over_1_5_catboost",
+    "over_1_5_et",
+    "over_1_5_lgbm",
+    "over_1_5_nn",
+    "over_1_5_rf",
+    "over_1_5_xgb",
+    "over_2_5_catboost",
+    "over_2_5_et",
+    "over_2_5_lgbm",
+    "over_2_5_nn",
+    "over_2_5_rf",
+    "over_2_5_xgb"
+  ],
+  "model_types": [
+    "xgb",
+    "lgbm",
+    "catboost",
+    "rf",
+    "et",
+    "nn"
+  ],
+  "targets": [
+    "match_result",
+    "over_1_5",
+    "over_2_5",
+    "btts"
+  ],
+  "result_classes": {
+    "0": "Away Win",
+    "1": "Draw",
+    "2": "Home Win"
+  }
+}
