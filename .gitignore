@@ -60,6 +60,9 @@ catboost_info/
 # Data files (optional, depending on your strategy)
 # data/
 
+# Large data files
+data/historical/raw/appearances.csv
+
 # Temporary files
 .DS_Store
 Thumbs.db
