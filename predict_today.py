@@ -26,10 +26,31 @@ import numpy as np
 
 
 # -- Config --------------------------------------------------------------
-API_KEY = "7233da77b5d53606a174f2759f0d947beb18aa17c00bf350d852f35b80aa7455"
+# Read from the environment (put it in .env, which is gitignored) so the key is
+# never committed. Empty means the apifootball calls are skipped and the free
+# LiveScore fixture source is used instead.
+API_KEY = os.environ.get("APIFOOTBALL_API_KEY", "")
 CACHE_DIR = Path("cache/apifootball")
 GITHUB_DATA = Path("data/github-football/Matches.csv")
 API_FOOTBALL_DATA = Path("data/api-football/matches.csv")
+# Same-provider history as the live fixtures — exact team-name matches, 4000+
+# leagues. This is the highest-coverage source (see load_historical).
+APIFOOTBALL_HISTORY = Path("data/apifootball/history.csv")
+
+
+# Kick-off times are stored in UTC — canonical, and what the feeds send — so
+# anything printed for a human is shifted to local time. The dashboard does the
+# same at its own display layer; only the stored values stay UTC.
+try:
+    from fixtures_livescore import to_local_hhmm as _local_hhmm
+except Exception:            # module missing: fall back to showing raw UTC
+    def _local_hhmm(value, *_args, **_kwargs):
+        return value
+
+
+def _local(value):
+    """UTC 'HH:MM' as the reader's local time, for display only."""
+    return _local_hhmm(value)
 
 
 
@@ -46,25 +67,62 @@ def fetch_fixtures(date_str: str) -> List[Dict]:
 
     # Fetch from API
     import urllib.request
+    import time
     url = (
         f"https://apiv3.apifootball.com/?action=get_events"
         f"&from={date_str}&to={date_str}&APIkey={API_KEY}"
     )
     print(f"  Fetching from apifootball.com ...")
-    req = urllib.request.Request(url)
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        raw = resp.read().decode()
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    raw = None
+    for attempt in range(4):
+        try:
+            with urllib.request.urlopen(req, timeout=60) as resp:
+                raw = resp.read().decode()
+            json.loads(raw)  # ensure the payload is complete/parseable
+            break
+        except Exception as e:
+            wait = 2 * (attempt + 1)
+            print(f"  Fetch attempt {attempt + 1} failed ({e}); retrying in {wait}s...")
+            time.sleep(wait)
+            raw = None
+    if raw is None:
+        print("  Fetch failed after retries.")
+        return _livescore_fallback(date_str)
     data = json.loads(raw)
 
     if isinstance(data, dict) and "error" in data:
         print(f"  API Error: {data}")
-        return []
+        print("  Primary feed unavailable - using the free LiveScore source.")
+        return _livescore_fallback(date_str)
 
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     with open(cache_file, "w", encoding="utf-8") as f:
         f.write(raw)
     print(f"  Fetched {len(data)} matches, cached to {cache_file}")
     return data
+
+
+def _livescore_fallback(date_str: str) -> List[Dict]:
+    """Free fallback fixture source (see fixtures_livescore.py).
+
+    Used only when apiv3.apifootball.com returns nothing. Results are written in
+    the apifootball schema, including to the shared events_<date>.json cache that
+    the dashboard reads, so every consumer stays consistent.
+    """
+    try:
+        from fixtures_livescore import fetch_day, write_events_cache
+
+        matches = fetch_day(date_str)
+        if not matches:
+            print("  Fallback source returned no fixtures either.")
+            return []
+        dest = write_events_cache(date_str, matches)
+        print(f"  Fallback: {len(matches)} matches from LiveScore, cached to {dest}")
+        return matches
+    except Exception as exc:
+        print(f"  Fallback source failed: {exc}")
+        return []
 
 
 # -- Load historical data -----------------------------------------------
@@ -102,8 +160,36 @@ def load_historical() -> Optional[pd.DataFrame]:
             df2["away_score"] = pd.to_numeric(df2["away_score"], errors="coerce")
             df2 = df2.dropna(subset=["date", "home_score", "away_score"])
             df2["source"] = "api-football"
+            # Give the Dixon-Coles model a league key from this (fresher) source.
+            # Namespaced by country so same-named leagues don't collide, and
+            # prefixed "af:" so it never clashes with the GitHub division codes.
+            if "league_name" in df2.columns:
+                ctry = df2.get("country", "").astype(str) if "country" in df2.columns else ""
+                df2["league"] = ("af:" + (ctry + ":" if "country" in df2.columns else "")
+                                 + df2["league_name"].astype(str))
             frames.append(df2)
             print(f"  API-Football data: {len(df2):,} matches")
+
+    # apifootball.com history — SAME provider as the live fixtures, so team names
+    # match exactly and coverage spans 4000+ leagues (incl. lower/youth/obscure).
+    if APIFOOTBALL_HISTORY.exists():
+        df3 = pd.read_csv(APIFOOTBALL_HISTORY, low_memory=False)
+        df3 = df3.rename(columns={"home_team": "home_team", "away_team": "away_team"})
+        df3["date"] = pd.to_datetime(df3["date"], errors="coerce")
+        df3["home_score"] = pd.to_numeric(df3["home_score"], errors="coerce")
+        df3["away_score"] = pd.to_numeric(df3["away_score"], errors="coerce")
+        df3 = df3.dropna(subset=["date", "home_score", "away_score", "home_team", "away_team"])
+        df3["home_score"] = df3["home_score"].astype(int)
+        df3["away_score"] = df3["away_score"].astype(int)
+        df3["source"] = "apifootball"
+        # League key matching how live fixtures are keyed (country:league_name),
+        # so the Dixon-Coles model can cover these leagues too.
+        if "league_name" in df3.columns:
+            ctry = df3.get("country", "").astype(str) if "country" in df3.columns else ""
+            df3["league"] = ("apif:" + (ctry + ":" if "country" in df3.columns else "")
+                             + df3["league_name"].astype(str))
+        frames.append(df3)
+        print(f"  apifootball history: {len(df3):,} matches")
 
     if not frames:
         print("  WARNING: No historical data found!")
@@ -112,35 +198,49 @@ def load_historical() -> Optional[pd.DataFrame]:
     combined = pd.concat(frames, ignore_index=True)
     combined = combined.sort_values("date").reset_index(drop=True)
 
-    # Pre-compute normalized team names ONCE (huge speedup)
+    # Pre-compute normalized team names ONCE (huge speedup). Uses the SAME
+    # normalize_name as query time so keys can never drift out of sync.
     print("  Pre-computing normalized team names...")
-    import re
-    def _norm(name):
-        n = str(name).strip().lower()
-        for suffix in [" fc", " sc", " cf", " ac", " fk", " sk", " if", " bk"]:
-            if n.endswith(suffix):
-                n = n[:-len(suffix)].strip()
-        n = re.sub(r"['\-\.]", " ", n)
-        n = re.sub(r"\s+", " ", n).strip()
-        return n
-
-    combined["_home_norm"] = combined["home_team"].apply(_norm)
-    combined["_away_norm"] = combined["away_team"].apply(_norm)
+    combined["_home_norm"] = combined["home_team"].apply(normalize_name)
+    combined["_away_norm"] = combined["away_team"].apply(normalize_name)
     print(f"  Total historical: {len(combined):,} matches")
     return combined
 
 
 # -- Team name fuzzy matching -------------------------------------------
+# Generic club-type tokens carry no identity — drop them so "Cambridge Utd"
+# and "Cambridge United FC" collapse to the same key.
+_DROP_TOKENS = {
+    "fc", "sc", "cf", "ac", "fk", "sk", "if", "bk", "sv", "ss", "us", "rc",
+    "afc", "ca", "ec", "sd", "ad", "nk", "ks", "kf", "cd", "club", "calcio",
+    "futbol", "football", "fussball", "the", "de", "cska",
+}
+# Unambiguous word-abbreviation expansions -> a single canonical spelling.
+_EXPAND = {
+    "utd": "united", "atl": "atletico", "ath": "athletic", "dep": "deportivo",
+    "spt": "sporting", "din": "dinamo", "dyn": "dynamo", "st": "saint",
+    "wdr": "wanderers", "cty": "city", "utdd": "united",
+}
+
+
 def normalize_name(name: str) -> str:
-    """Normalize team name for fuzzy matching."""
-    import re
-    n = name.strip().lower()
-    for suffix in [" fc", " sc", " cf", " ac", " fk", " sk", " if", " bk"]:
-        if n.endswith(suffix):
-            n = n[:-len(suffix)].strip()
-    n = re.sub(r"['\-\.]", " ", n)
-    n = re.sub(r"\s+", " ", n).strip()
-    return n
+    """Normalize a team name for cross-source matching: HTML-unescape, strip
+    accents, expand common abbreviations, and drop generic club words."""
+    import re, html, unicodedata
+    n = html.unescape(str(name))                       # &apos; -> '
+    n = unicodedata.normalize("NFKD", n).encode("ascii", "ignore").decode()  # accents
+    n = n.lower()
+    n = re.sub(r"[^a-z0-9 ]", " ", n)                  # punctuation -> space
+    tokens = n.split()
+    out = []
+    for t in tokens:
+        t = _EXPAND.get(t, t)
+        if t in _DROP_TOKENS:
+            continue
+        out.append(t)
+    if not out:                                         # everything got dropped
+        out = tokens
+    return " ".join(out).strip()
 
 
 def find_team_stats(team_name: str, hist: pd.DataFrame, last_n: int = 30) -> Dict[str, float]:
@@ -306,6 +406,28 @@ BASE_BTTS = 0.47
 HOME_ADVANTAGE = 0.03  # reduced from 0.08 — actual advantage is small in lower leagues
 
 
+# -- Calibration + hybrid layer -----------------------------------------
+# Calibration maps raw probabilities onto honest ones ("70%" wins ~70%); the
+# hybrid predictor additionally swaps in Dixon-Coles for 1X2 where it covers a
+# match (it beat the current engine on match-result prediction in backtest).
+# Loaded once; both degrade gracefully to no-ops if their files are missing.
+try:
+    from calibration import Calibrator as _Calibrator
+    _CALIBRATOR = _Calibrator.load()
+    if not _CALIBRATOR.is_fitted():
+        _CALIBRATOR = None
+except Exception:
+    _CALIBRATOR = None
+
+try:
+    from hybrid import HybridPredictor as _HybridPredictor
+    _HYBRID = _HybridPredictor()
+    if not _HYBRID.ready:
+        _HYBRID = None
+except Exception:
+    _HYBRID = None
+
+
 # -- Prediction engine --------------------------------------------------
 def predict_match(
     home_name: str,
@@ -456,20 +578,17 @@ def predict_match(
         btts_hist = (home_stats["btts_rate"] + away_stats["btts_rate"]) / 2
         # Scoring likelihood: both teams need to score
         score_factor = min(1.0, (home_stats["avg_scored"] * away_stats["avg_scored"]) / (1.2 * 1.2))
-        btts_p = 0.4 * btts_hist + 0.3 * score_factor * 0.6 + 0.3 * BASE_BTTS
+        btts_p = 0.45 * btts_hist + 0.30 * score_factor + 0.25 * BASE_BTTS
     else:
         btts_p = BASE_BTTS
 
     btts_p = max(0.15, min(0.80, btts_p))
 
-    # --- Pick best bet ---
-    # When home and away are close, Draw is more likely than either suggests
-    margin = abs(home_p - away_p)
-    if margin < 0.06 and draw_p > 0.22:
-        best_result = "Draw"
-    elif margin < 0.04:
-        best_result = "Draw"
-    else:
+    # --- Pick best bet (draw-aware; shared with the calibration layer) ---
+    try:
+        from calibration import pick_1x2
+        best_result, _ = pick_1x2(home_p, draw_p, away_p)
+    except Exception:
         result_map = {"Home Win": home_p, "Draw": draw_p, "Away Win": away_p}
         best_result = max(result_map, key=result_map.get)
 
@@ -503,6 +622,8 @@ def main():
     parser.add_argument("--league", default=None, help="Filter by league name (substring)")
     parser.add_argument("--save", default=None, help="Save predictions to JSON file")
     parser.add_argument("--top", type=int, default=None, help="Show only top N most confident")
+    parser.add_argument("--raw", action="store_true",
+                        help="Skip the calibration layer (show raw engine probabilities)")
     args = parser.parse_args()
 
     print(f"\n{'='*70}")
@@ -516,11 +637,23 @@ def main():
         print("No fixtures found!")
         return
 
-    # Filter to upcoming
-    upcoming = [m for m in fixtures if m["match_hometeam_score"] == ""]
-    if not upcoming:
-        print("No upcoming matches - all games already played.")
-        return
+    # Remember SportyBet's own identifiers for today's board while the games are
+    # still listed. Their feed drops a fixture the moment it kicks off, and the
+    # booking code needs that id long afterwards — this is what lets a ticket
+    # that has started still be re-booked. Best-effort: never fatal.
+    try:
+        from sportybet_betting import snapshot_ids
+        ids = snapshot_ids()
+        print(f"  SportyBet ids: {ids['board']} on the board, {ids['live']} live, "
+              f"{ids['ledger']} remembered")
+    except Exception as exc:
+        print(f"  SportyBet ids unavailable ({type(exc).__name__}: {exc})")
+
+    # Predict ALL of the day's matches — including games already in-play or
+    # finished (early kickoffs). The engine only uses pre-match historical
+    # data, so these are the same predictions it would have made before
+    # kickoff, and the dashboard can score them against final results.
+    upcoming = [m for m in fixtures if m.get("match_status") != "Cancelled"]
 
     # Optional league filter
     if args.league:
@@ -529,7 +662,8 @@ def main():
                      or filt in m.get("country_name", "").lower()]
         print(f"  Filtered to {len(upcoming)} matches matching '{args.league}'")
 
-    print(f"  {len(upcoming)} upcoming matches to predict")
+    n_played = sum(1 for m in upcoming if m.get("match_hometeam_score", "") != "")
+    print(f"  {len(upcoming)} matches to predict ({n_played} already started/finished)")
 
     # 2. Load historical data
     print("\n[2/3] Loading historical data...")
@@ -541,6 +675,18 @@ def main():
     print("\n[3/3] Generating predictions...")
     predictions = []
     team_cache = {}
+
+    # Live market odds (odds-api.io) — used as the primary 1X2 signal where
+    # available. No-op unless ODDS_API_IO_KEY is set. Precedence: market > DC > current.
+    odds_map = {}
+    if not args.raw:
+        try:
+            import odds_api_io
+            if odds_api_io.enabled():
+                odds_map = odds_api_io.build_odds_map(args.date)
+                print(f"  Loaded live market odds for {len(odds_map)} matches")
+        except Exception as e:
+            print(f"  Market odds unavailable ({e}) — using model only")
 
     for i, match in enumerate(upcoming):
         home = match["match_hometeam_name"]
@@ -564,6 +710,17 @@ def main():
             h2h = {"meetings": 0}
 
         pred = predict_match(home, away, home_stats, away_stats, h2h)
+        if not args.raw:
+            if _HYBRID is not None:
+                pred = _HYBRID.apply(pred, normalize_name(home), normalize_name(away))
+            elif _CALIBRATOR is not None:
+                pred = _CALIBRATOR.apply(pred)
+            # Market odds override 1X2 when available (best available signal)
+            if odds_map:
+                mkey = (normalize_name(home), normalize_name(away))
+                if mkey in odds_map:
+                    import odds_api_io
+                    pred = odds_api_io.apply_market(pred, odds_map[mkey])
         pred["home_team"] = home
         pred["away_team"] = away
         pred["league"] = league
@@ -618,7 +775,8 @@ def main():
             btts = f"{p['btts']}%"
             conf = f"{p['confidence']}%"
 
-            print(f"  {p['kick_off']:<6} {safe_match:<40} {pred_str:<10} {conf:<6} {o25:<6} {btts:<6}")
+            # Kick-offs are stored in UTC; show them in the reader's local time.
+            print(f"  {_local(p['kick_off']):<6} {safe_match:<40} {pred_str:<10} {conf:<6} {o25:<6} {btts:<6}")
 
     # Summary stats
     high_conf = [p for p in predictions if p["confidence"] >= 60]
@@ -643,7 +801,7 @@ def main():
         for p in best_bets[:15]:
             home_s = p["home_team"][:20].encode("ascii","replace").decode()
             away_s = p["away_team"][:20].encode("ascii","replace").decode()
-            print(f"    {p['kick_off']} {home_s} v {away_s} -> {p['prediction']} "
+            print(f"    {_local(p['kick_off'])} {home_s} v {away_s} -> {p['prediction']} "
                   f"({p['confidence']}% conf, {p['data_quality']} data, H2H:{p['h2h_meetings']})")
 
     # Save

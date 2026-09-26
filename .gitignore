@@ -42,7 +42,12 @@ logs/
 *.log
 
 # Environment variables
+# Real config stays on the machine; only the templates are committed.
 .env
+.env.*
+!.env.example
+!.env.template
+.env.production
 
 # Cache
 __pycache__/
@@ -62,6 +67,20 @@ catboost_info/
 
 # Large data files
 data/historical/raw/appearances.csv
+all_training_data.csv
+# real_football_data.csv stays tracked on purpose: the backend services read it
+# and they deploy from this repository.
+
+# Throwaway run artefacts (reports, backtest dumps, generated PDFs)
+bot_results/
+calibration_report*.json
+dc_ab_*
+cal_test.json
+predictions_jun*.json
+accuracy_*.json
+today_*.json
+BetSightly_Predictions_*.pdf
+*.npz
 
 # Temporary files
 .DS_Store

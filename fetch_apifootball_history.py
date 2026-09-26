@@ -16,13 +16,16 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import sys
 import time
 import urllib.request
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
-API_KEY = "7233da77b5d53606a174f2759f0d947beb18aa17c00bf350d852f35b80aa7455"
+# Read from the environment (.env is gitignored) — never hardcode a key in a
+# file that ships to a public repository.
+API_KEY = os.environ.get("APIFOOTBALL_API_KEY", "")
 BASE = "https://apiv3.apifootball.com/"
 
 OUT_DIR = Path("data/apifootball")

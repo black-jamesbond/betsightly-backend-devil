@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 import re
 import sys
 import argparse
@@ -24,7 +25,9 @@ import numpy as np
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
-API_KEY = "7233da77b5d53606a174f2759f0d947beb18aa17c00bf350d852f35b80aa7455"
+# Read from the environment (.env is gitignored) — never hardcode a key in a
+# file that ships to a public repository.
+API_KEY = os.environ.get("APIFOOTBALL_API_KEY", "")
 CACHE_DIR = ROOT / "cache" / "apifootball"
 GITHUB_DATA = ROOT / "data" / "github-football" / "Matches.csv"
 API_FOOTBALL_DATA = ROOT / "data" / "api-football" / "matches.csv"

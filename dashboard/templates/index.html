@@ -4,20 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BetSightly Dashboard</title>
+<!-- Which build of this page the browser is holding. checkVersion() compares it
+     with the file on disk and reloads once if they differ, so an open tab can
+     never keep showing wording that has since been changed. -->
+<script>window._PAGE_HASH = {{ page_hash | default('') | tojson }};</script>
 <style>
 :root {
-  --bg: #0f1117;
-  --card: #1a1d27;
-  --card-border: #2a2d3a;
-  --text: #e4e4e7;
-  --text-dim: #9ca3af;
-  --accent: #3b82f6;
+  --bg: #070707;
+  --card: #121212;
+  --card-border: #302821;
+  --text: #fff8ef;
+  --text-dim: #b7aaa0;
+  --accent: #ff7a00;
   --green: #22c55e;
   --red: #ef4444;
-  --yellow: #eab308;
-  --orange: #f97316;
-  --purple: #a855f7;
-  --cyan: #06b6d4;
+  --yellow: #ffb000;
+  --orange: #ff7a00;
+  --purple: #ff9d2e;
+  --cyan: #ffb35c;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
@@ -29,7 +33,7 @@ body {
 
 /* Header */
 .header {
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  background: linear-gradient(135deg, #1a1109 0%, #090909 62%, #160c04 100%);
   border-bottom: 1px solid var(--card-border);
   padding: 16px 24px;
   display: flex;
@@ -39,7 +43,7 @@ body {
 .header h1 {
   font-size: 22px;
   font-weight: 700;
-  background: linear-gradient(135deg, var(--accent), var(--cyan));
+  background: linear-gradient(135deg, #ffb000, var(--accent));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -142,7 +146,7 @@ body {
 }
 .pred-section .league-header {
   padding: 12px 16px;
-  background: rgba(59, 130, 246, 0.08);
+  background: rgba(255, 122, 0, 0.10);
   border-bottom: 1px solid var(--card-border);
   font-weight: 600;
   font-size: 14px;
@@ -179,7 +183,7 @@ body {
   text-align: center;
 }
 .pred-badge.home { background: rgba(34,197,94,0.15); color: var(--green); }
-.pred-badge.away { background: rgba(59,130,246,0.15); color: var(--accent); }
+.pred-badge.away { background: rgba(255,122,0,0.15); color: var(--accent); }
 .pred-badge.draw { background: rgba(234,179,8,0.15); color: var(--yellow); }
 .match-row .conf {
   text-align: center;
@@ -211,7 +215,16 @@ body {
 }
 
 /* Finished match */
-.match-row.finished { opacity: 0.5; }
+.match-row.finished { opacity: 0.85; }
+.match-row .score-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--cyan);
+  background: rgba(255,122,0,0.12);
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
+}
 .match-row .score {
   font-weight: 700;
   color: var(--cyan);
@@ -266,7 +279,7 @@ body {
   padding: 10px 16px;
   font-weight: 700;
   font-size: 16px;
-  background: rgba(59,130,246,0.06);
+  background: rgba(255,122,0,0.06);
   border-bottom: 1px solid var(--card-border);
   display: flex;
   align-items: center;
@@ -462,66 +475,113 @@ body {
   margin-top: 14px;
   border-top: 1px solid var(--card-border);
   padding-top: 12px;
+  max-height: 380px;
+  overflow: hidden auto;
+  scrollbar-gutter: stable;
 }
+.bot-detail::-webkit-scrollbar { width: 4px; }
+.bot-detail::-webkit-scrollbar-track { background: transparent; }
+.bot-detail::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
 .bot-card.expanded .bot-detail { display: block; }
-.bot-detail .day-group {
-  margin-bottom: 14px;
-  overflow-x: auto;
-}
+.bot-detail .day-group { margin-bottom: 4px; }
 .bot-detail .day-label {
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 600;
-  color: var(--accent);
-  margin-bottom: 6px;
+  color: var(--text-dim);
+  padding: 6px 10px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 6px;
   display: flex;
   align-items: center;
-  gap: 8px;
-}
-.bot-detail .day-label .day-wr {
-  font-size: 11px;
-  font-weight: 500;
-  padding: 1px 8px;
-  border-radius: 4px;
-}
-.bot-detail table {
-  width: 100%;
-  min-width: 600px;
-  font-size: 12px;
-  border-collapse: collapse;
-}
-.bot-detail th {
-  text-align: left;
-  font-size: 10px;
-  color: var(--text-dim);
+  gap: 6px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  padding: 4px 6px;
-  border-bottom: 1px solid var(--card-border);
+  cursor: pointer;
+  transition: background 0.15s;
+  user-select: none;
 }
-.bot-detail td {
-  padding: 5px 6px;
-  border-bottom: 1px solid rgba(255,255,255,0.03);
-  vertical-align: middle;
+.bot-detail .day-label:hover { background: rgba(255,255,255,0.07); }
+.bot-detail .day-label .day-chevron {
+  font-size: 8px;
+  transition: transform 0.2s;
+  color: var(--text-dim);
+  margin-right: 2px;
 }
-.bot-detail tr:last-child td { border-bottom: none; }
-.bot-detail .status-badge {
-  display: inline-block;
+.bot-detail .day-group.open .day-chevron { transform: rotate(90deg); }
+.bot-detail .day-wr {
   font-size: 10px;
-  font-weight: 700;
-  padding: 2px 8px;
+  font-weight: 600;
+  padding: 1px 6px;
   border-radius: 4px;
+  margin-left: auto;
 }
-.status-badge.win-badge { background: rgba(34,197,94,0.15); color: var(--green); }
-.status-badge.loss-badge { background: rgba(239,68,68,0.15); color: var(--red); }
-.status-badge.pending-badge { background: rgba(156,163,175,0.15); color: var(--text-dim); }
-.bot-detail .chain-tag {
-  font-size: 10px;
+.bot-detail .day-count {
+  font-size: 9px;
+  color: var(--text-dim);
+  opacity: 0.6;
+}
+.bot-detail .bet-rows {
+  display: none;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2px 10px;
+  padding: 4px 0;
+}
+.bot-detail .day-group.open .bet-rows { display: grid; }
+.bot-detail .bet-row {
+  display: grid;
+  grid-template-columns: 18px 1fr auto auto;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  line-height: 1.4;
+  border-left: 3px solid transparent;
+}
+.bet-row.win-row { border-left-color: var(--green); background: rgba(34,197,94,0.04); }
+.bet-row.loss-row { border-left-color: var(--red); background: rgba(239,68,68,0.04); }
+.bet-row.pending-row { border-left-color: rgba(156,163,175,0.3); }
+.bet-row .br-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+}
+.win-row .br-icon { background: rgba(34,197,94,0.25); color: var(--green); }
+.loss-row .br-icon { background: rgba(239,68,68,0.25); color: var(--red); }
+.pending-row .br-icon { background: rgba(156,163,175,0.15); color: var(--text-dim); }
+.bet-row .br-match {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text);
+  font-weight: 500;
+  min-width: 0;
+}
+.bet-row .br-pick {
   color: var(--cyan);
   font-weight: 600;
+  font-size: 10px;
+  white-space: nowrap;
+  padding: 1px 5px;
+  background: rgba(255,122,0,0.1);
+  border-radius: 3px;
 }
-.bot-detail .stake-col { color: var(--yellow); font-weight: 600; }
-.bot-detail .payout-col { color: var(--green); font-weight: 600; }
-.bot-detail .match-col { max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bet-row .br-odds {
+  color: var(--yellow);
+  font-weight: 600;
+  font-size: 10px;
+  text-align: right;
+  white-space: nowrap;
+}
+.bet-row .br-money {
+  display: none;
+}
+.win-row .br-money { color: var(--green); }
 
 /* Bot summary stats */
 .bot-summary {
@@ -547,6 +607,97 @@ body {
   margin-top: 4px;
 }
 
+/* Model Picks tab */
+.picks-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.picks-summary .ps-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 14px;
+  text-align: center;
+}
+.picks-summary .ps-big { font-size: 26px; font-weight: 700; }
+.picks-summary .ps-sub { font-size: 11px; color: var(--text-dim); margin-top: 3px; }
+
+.picks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 14px;
+}
+.pick-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 14px;
+  overflow: hidden;
+}
+.pick-card.has-bets { border-left: 3px solid var(--accent); }
+.pick-card .pc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.pick-card .pc-name {
+  font-weight: 700;
+  font-size: 14px;
+}
+.pick-card .pc-wl {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pick-card .pc-desc {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+.pick-card .pc-bets { display: flex; flex-direction: column; gap: 4px; }
+.pick-card .pc-bet {
+  display: grid;
+  grid-template-columns: 20px 1fr auto auto;
+  gap: 6px;
+  align-items: center;
+  padding: 4px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  background: rgba(255,255,255,0.02);
+  border-left: 3px solid transparent;
+}
+.pick-card .pc-bet.win { border-left-color: var(--green); background: rgba(34,197,94,0.06); }
+.pick-card .pc-bet.loss { border-left-color: var(--red); background: rgba(239,68,68,0.06); }
+.pick-card .pc-bet.pending { border-left-color: var(--yellow); background: rgba(234,179,8,0.06); }
+.pick-card .pc-bet .pb-icon { font-weight: 700; text-align: center; }
+.pick-card .pc-bet.win .pb-icon { color: var(--green); }
+.pick-card .pc-bet.loss .pb-icon { color: var(--red); }
+.pick-card .pc-bet.pending .pb-icon { color: var(--yellow); }
+.pick-card .pc-bet .pb-match {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pick-card .pc-bet .pb-sel {
+  color: var(--cyan);
+  padding: 1px 5px;
+  background: rgba(255,122,0,0.1);
+  border-radius: 3px;
+  white-space: nowrap;
+}
+.pick-card .pc-bet .pb-odds { color: var(--text-dim); white-space: nowrap; }
+.pick-card .pc-empty {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-align: center;
+  padding: 8px;
+  font-style: italic;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .match-row { grid-template-columns: 50px 1fr 90px 60px; }
@@ -556,17 +707,31 @@ body {
   .bot-card .bot-stats-grid { grid-template-columns: 1fr 1fr; }
 }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/static/theme.css?v=6">
 </head>
 <body>
 
 <div class="header">
-  <h1>BetSightly Dashboard</h1>
+  <div class="brand">
+    <h1>BetSightly Dashboard</h1>
+    <span class="brand-sub">Football predictions &middot; accumulator builder</span>
+  </div>
   <div class="date-picker">
     <input type="date" id="datePicker">
-    <button onclick="loadAll()">Load</button>
-    <button onclick="refreshPredictions()" style="background:var(--green)">Refresh Predictions</button>
+    <button class="btn-ghost" onclick="loadAll(true)">Load</button>
+    <button class="btn-ghost" onclick="refreshPredictions()">Refresh Predictions</button>
+<button class="btn-primary" id="genBtn" onclick="generateForDate()"
+  title="Pull the games SportyBet is offering today, predict them with the model, and build the tickets">Fetch &amp; Predict</button>
   </div>
 </div>
+<div id="genBanner" style="display:none;margin:0 24px 12px;padding:10px 16px;border-radius:8px;
+  background:var(--card);border:1px solid var(--card-border);color:var(--text-dim);font-size:14px">
+</div>
+<!-- Shown only when this server is running older code than the files on disk -->
+<div id="staleBanner" style="display:none"></div>
 
 <div class="container">
   <!-- Stats row -->
@@ -607,8 +772,8 @@ body {
   <div class="tabs">
     <div class="tab active" data-tab="predictions" onclick="switchTab('predictions')">Predictions</div>
     <div class="tab" data-tab="hourly" onclick="switchTab('hourly')">Hourly View</div>
-    <div class="tab" data-tab="coverage" onclick="switchTab('coverage')">Model Coverage</div>
-    <div class="tab" data-tab="bots" onclick="switchTab('bots')">Bots</div>
+    <div class="tab" data-tab="build" onclick="switchTab('build')">Build</div>
+    <div class="tab" data-tab="jackpot" onclick="switchTab('jackpot')">Jackpot</div>
     <div class="tab" data-tab="pipeline" onclick="switchTab('pipeline')">Data Pipeline</div>
   </div>
 
@@ -626,17 +791,17 @@ body {
     </div>
   </div>
 
-  <!-- Coverage Tab -->
-  <div class="tab-content" id="tab-coverage">
-    <div id="coverageContainer">
-      <div class="loading"><div class="spinner"></div>Loading coverage data...</div>
+  <!-- Build Tab (accumulator tickets) -->
+  <div class="tab-content" id="tab-build">
+    <div id="buildContainer">
+      <div class="loading"><div class="spinner"></div>Building accumulators...</div>
     </div>
   </div>
 
-  <!-- Bots Tab -->
-  <div class="tab-content" id="tab-bots">
-    <div id="botsContainer">
-      <div class="loading"><div class="spinner"></div>Loading bot results...</div>
+  <!-- Jackpot Tab (SportyBet Sporty 12) -->
+  <div class="tab-content" id="tab-jackpot">
+    <div id="jackpotContainer">
+      <div class="loading"><div class="spinner"></div>Loading jackpot...</div>
     </div>
   </div>
 
@@ -665,15 +830,415 @@ function escHtml(s) {
   return d.innerHTML;
 }
 
+let _preds = [];
+let _predSort = 'league';
+
+function setPredSort(mode) {
+  _predSort = mode;
+  renderPredictions();
+}
+
+const _predHeader = `<div class="match-header">
+  <div>Time</div><div>Match</div><div>Prediction</div>
+  <div style="text-align:center">Conf</div>
+  <div style="text-align:center">O2.5</div>
+  <div style="text-align:center">BTTS</div>
+  <div style="text-align:center">Data</div>
+</div>`;
+
+// One O/U 1.5 badge (with ✓/✗ when settled). `suffix` distinguishes the
+// calibrated variant ("v"). `actualGoals` is null unless the match is finished.
+function ou15Badge(prob, actualGoals, suffix) {
+  if (prob == null) return `<span class="pred-badge draw" style="opacity:.5">--</span>`;
+  const over = prob >= 50;
+  const conf = over ? prob : Math.round((100 - prob) * 10) / 10;
+  const cls = over ? 'home' : 'draw';
+  const label = (over ? 'O1.5' : 'U1.5') + suffix;
+  let icon = '';
+  if (actualGoals != null) {
+    const correct = over === (actualGoals > 1.5);
+    icon = correct
+      ? '<span style="color:var(--green);font-weight:700">&#10003;</span> '
+      : '<span style="color:var(--red);font-weight:700">&#10007;</span> ';
+  }
+  return `${icon}<span class="pred-badge ${cls}">${label} (${conf}%)</span>`;
+}
+
+function matchRowHtml(m, showLeague) {
+  // Predictions tab shows the Over/Under 1.5 market — current (raw) AND
+  // calibrated (over_1.5v), stacked, each scored independently.
+  const o15 = m['over_1.5'];
+  const conf15 = o15 != null ? (o15 >= 50 ? o15 : Math.round((100 - o15) * 10) / 10) : null;
+  const confClass = (conf15||0) >= 60 ? 'high' : (conf15||0) >= 40 ? 'med' : 'low';
+  const finished = m.status === 'finished';
+  const live = m.status === 'live';
+  const goals = finished && m.actual_goals != null ? m.actual_goals : null;
+  const leagueSub = showLeague
+    ? `<div style="font-size:11px;color:var(--text-dim);margin-top:2px">${escHtml(m.league)} (${escHtml(m.country)})</div>` : '';
+  const scoreStr = (finished || live)
+    ? ` <span class="score-badge">${m.home_score ?? '-'}-${m.away_score ?? '-'}</span>` : '';
+  const mid = String(m.match_id || '');
+
+  const predCell = `<div style="display:flex;flex-direction:column;gap:3px;align-items:flex-start">
+      ${ou15Badge(o15, goals, '')}
+      ${ou15Badge(m['over_1.5v'], goals, 'v')}
+    </div>`;
+
+  const o25Cell = finished
+    ? `<div class="o25" style="text-align:center;color:${m.actual_goals>2?'var(--green)':'var(--red)'}">${m['over_2.5']||'--'}%${m.actual_goals!=null?' <small>('+(m.actual_goals>2?'Y':'N')+')</small>':''}</div>`
+    : `<div class="o25" style="text-align:center;color:${(m['over_2.5']||0)>55?'var(--green)':'var(--text-dim)'}">${m['over_2.5']||'--'}%</div>`;
+  const bttsCell = finished
+    ? `<div class="btts-col" style="text-align:center;color:${m.actual_btts?'var(--green)':'var(--red)'}">${m.btts||'--'}%${m.actual_btts!=null?' <small>('+(m.actual_btts?'Y':'N')+')</small>':''}</div>`
+    : `<div class="btts-col" style="text-align:center;color:${(m.btts||0)>55?'var(--green)':'var(--text-dim)'}">${m.btts||'--'}%</div>`;
+
+  return `<div class="match-row${finished ? ' finished' : ''}${live ? ' inplay' : ''}" onclick="toggleDetail('${mid}')" style="cursor:pointer">
+    <div class="time">${escHtml(m.kick_off)}</div>
+    <div class="teams">${escHtml(m.home_team)} <span class="vs">vs</span> ${escHtml(m.away_team)}<span class="live-pill" data-live="${mid}"></span>${scoreStr}${leagueSub}</div>
+    <div>${predCell}</div>
+    <div class="conf ${confClass}">${conf15!=null?conf15+'%':'--'}</div>
+    ${o25Cell}
+    ${bttsCell}
+    <div><span class="dq ${m.data_quality||'LOW'}">${m.data_quality||'LOW'}</span></div>
+  </div>
+  <div class="detail-row" id="detail-${mid}">
+    <div class="detail-grid" id="detailbody-${mid}"></div>
+  </div>`;
+}
+
+/* ---------- live status ----------
+   window._live holds {matchId: {status, minute, score, ht_score}} refreshed from
+   /api/live. Pills are painted from it, and an open detail panel re-fills, so a
+   poll updates the page without re-rendering (and without losing scroll). */
+let _liveTimer = null;
+window._live = {};
+
+function livePillText(d) {
+  if (!d) return '';
+  if (d.status === 'In Play') return '\u25CF ' + (d.minute || 'LIVE');
+  if (d.status === 'Half Time') return '\u25CF HT';
+  // The score already sits in the row's score badge, so the pill is just status.
+  if (d.status === 'Finished') return 'FT';
+  return '';
+}
+
+function livePillClass(d) {
+  if (!d) return '';
+  // A cached snapshot must not look live: no pulse, dimmed instead.
+  if (d.status === 'In Play' || d.status === 'Half Time') return d.stale ? 'live cached' : 'live';
+  if (d.status === 'Finished') return 'done';
+  return '';
+}
+
+function toggleDetail(id) {
+  const el = document.getElementById('detail-' + id);
+  if (!el) return;
+  if (el.classList.toggle('open')) fillDetail(id);
+}
+
+function fillDetail(id) {
+  const body = document.getElementById('detailbody-' + id);
+  const p = (_preds || []).find(x => String(x.match_id) === String(id));
+  if (!body || !p) return;
+  const d = (window._live || {})[String(id)] || {};
+  // Only claim "Not started" when the feed actually says so. A missing record
+  // means we have no information, which is a different thing entirely.
+  const status = d.status
+    ? (d.minute ? `${d.status} — ${d.minute}` : d.status) + (d.stale ? ' (cached)' : '')
+    : (p.status === 'finished' ? 'Finished'
+       : p.status === 'live' ? 'In play'
+       : 'No live data for this match yet');
+  const score = d.score || (p.status === 'finished' ? `${p.home_score}-${p.away_score}` : '—');
+  const rows = [
+    ['Status', status],
+    ['Score', score],
+    ['Half time', d.ht_score || '—'],
+    ['Kick-off', escHtml(p.kick_off || '—')],
+    ['Competition', escHtml(`${p.league || ''} (${p.country || ''})`)],
+    ['Model pick', `${escHtml(p.prediction || '—')}${p.confidence != null ? ` · ${p.confidence}%` : ''}`],
+    ['Over 1.5', `${p['over_1.5'] != null ? p['over_1.5'] + '%' : '—'}${p['over_1.5v'] != null ? ` · calibrated ${p['over_1.5v']}%` : ''}`],
+    ['Over 2.5 / BTTS', `${p['over_2.5'] ?? '—'}% / ${p.btts ?? '—'}%`],
+    ['Data quality', escHtml(p.data_quality || '—')],
+    ['SportyBet', p.sportybet ? 'listed' : 'not listed'],
+  ];
+  body.innerHTML = rows.map(([k, v]) =>
+    `<div class="d-item"><div class="d-k">${k}</div><div class="d-v">${v}</div></div>`).join('');
+}
+
+function paintLive() {
+  for (const p of (_preds || [])) {
+    const mid = String(p.match_id);
+    const d = (window._live || {})[mid];
+    const pill = document.querySelector(`.live-pill[data-live="${mid}"]`);
+    if (pill) {
+      pill.textContent = livePillText(d);
+      pill.className = 'live-pill ' + livePillClass(d);
+    }
+    const det = document.getElementById('detail-' + mid);
+    if (det && det.classList.contains('open')) fillDetail(mid);
+  }
+  const stamp = document.getElementById('liveStamp');
+  if (stamp) {
+    const c = window._liveCounts || {};
+      // "cached" = the feed was unreachable and we're showing the last snapshot,
+      // so a stale status is never mistaken for a live one.
+      stamp.textContent = window._liveUpdated
+        ? ` ${c.live || 0} live${window._liveStale ? ' · cached' : ''} · ${window._liveUpdated}` : '';
+  }
+  const chip = document.getElementById('liveChip');
+  if (chip) chip.className = 'chip' + ((window._liveCounts || {}).live ? ' on' : '');
+}
+
+async function loadLiveStatus(force) {
+  const dt = document.getElementById('datePicker').value;
+  try {
+    const d = await (await fetch(api(`/api/live?date=${dt}${force ? '&force=1' : ''}`))).json();
+    window._live = d.matches || {};
+    window._liveUpdated = d.updated || null;
+    window._liveCounts = { live: d.live, finished: d.finished, count: d.count };
+    window._liveStale = Object.values(window._live).some(m => m && m.stale);
+    paintLive();
+  } catch (e) { /* keep the last snapshot rather than blanking the column */ }
+}
+
+function startLivePolling() {
+  if (_liveTimer) clearInterval(_liveTimer);
+  _liveTimer = setInterval(() => { if (!document.hidden) loadLiveStatus(false); }, 60000);
+}
+
+/* ---------- stale-code guard ----------
+   A Flask process loads its Python once, at startup. This asks the server
+   whether the code on disk has moved on, and if so says so loudly instead of
+   quietly serving old behaviour (the "my changes didn't apply" trap). */
+async function checkVersion() {
+  const el = document.getElementById('staleBanner');
+  if (!el) return;
+  let res;
+  try {
+    res = await fetch(api('/api/version'));
+  } catch (e) {
+    return;   // server unreachable: other errors handle that
+  }
+  if (res.status === 404) {
+    // No version endpoint at all -> definitely an older build.
+    el.style.display = 'block';
+    el.innerHTML = '<b>This dashboard is running an older build</b> — it predates the '
+      + 'version check, so it is missing recent changes. Restart the server to load them.';
+    return;
+  }
+  try {
+    const v = await res.json();
+    if (v.network && v.network.ok === false) {
+      // No outbound access: booking codes, live scores and SportyBet prices all
+      // fail in this state, so say so before the user hits one of them.
+      el.style.display = 'block';
+      el.innerHTML = '<b>This dashboard has no internet access.</b> Live scores, SportyBet '
+        + 'prices and booking codes will fail until it runs from a normal terminal rather than a '
+        + `restricted shell. Restart it:<code>${escHtml(v.restart_cmd || '')}</code>`;
+    } else if (v.page && window._PAGE_HASH && v.page !== window._PAGE_HASH) {
+      // The page itself has been edited since this tab loaded it. A reload is all
+      // that is needed, and doing it automatically is what stops "not bookable on
+      // SportyBet" style wording from lingering after it has been changed.
+      el.style.display = 'block';
+      // One attempt per target build, so a cached document can never loop.
+      if (sessionStorage.getItem('pageHash') !== v.page) {
+        sessionStorage.setItem('pageHash', v.page);
+        el.innerHTML = '<b>The page has changed — refreshing…</b>';
+        setTimeout(() => location.reload(), 250);
+      } else {
+        el.innerHTML = '<b>This tab is showing an old copy of the page.</b> '
+          + 'The auto-refresh was already tried, so please reload it by hand '
+          + '(Ctrl+Shift+R).';
+      }
+    } else if (v.stale) {
+      el.style.display = 'block';
+      el.innerHTML = '<b>This dashboard is running older code than the files on disk.</b> '
+        + `Started ${escHtml(v.started)}, files changed since. Restart it to load the changes: `
+        + `<code>${escHtml(v.restart_cmd || '')}</code>`;
+    } else {
+      el.style.display = 'none';
+    }
+  } catch (e) { /* non-JSON body: leave the banner as it was */ }
+}
+
+function predToggleHtml() {
+  const btn = (mode, label) =>
+    `<button class="chip${_predSort === mode ? ' on' : ''}" onclick="setPredSort('${mode}')">${label}</button>`;
+  const sbOn = window._sportybetOnly;
+  const sbInfo = window._sportybetInfo || {};
+  const sbStatus = sbInfo.status || 'ok';
+  const sbCount = _preds.filter(p => p.sportybet).length;
+  // escHtml() leaves quotes alone, which is fine for text but not for an
+  // attribute holding a raw error message.
+  const attrEsc = s => String(s || '').replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;').replace(/</g, '&lt;');
+
+  // "0 games on SportyBet" and "couldn't read SportyBet's list" used to render
+  // identically. Now the button says which one it is.
+  let sbLabel, sbTitle;
+  if (sbStatus === 'unavailable') {
+    sbLabel = 'SportyBet list unavailable — showing all games';
+    sbTitle = sbInfo.reason
+      ? `SportyBet's game list could not be read (${sbInfo.reason}), so every match is shown.`
+      : "SportyBet's game list could not be read, so every match is shown.";
+  } else {
+    const age = sbInfo.age_min || 0;
+    const ageTxt = sbStatus === 'stale'
+      ? ` · list ${age >= 120 ? Math.round(age / 60) + 'h' : Math.round(age) + 'm'} old`
+      : '';
+    sbLabel = `${sbOn ? '✓ ' : ''}SportyBet only (${sbCount})${ageTxt}`;
+    sbTitle = sbStatus === 'stale'
+      ? 'SportyBet was unreachable, so this count comes from a recent cached list.' : '';
+    if (sbInfo.name_fuzzy) {
+      sbTitle += ` ${sbInfo.name_fuzzy} matched on a slightly different team spelling.`;
+    }
+  }
+
+  const sbBtn = `<button class="chip${sbStatus !== 'unavailable' && sbOn ? ' on' : ''}"
+    style="margin-left:auto"
+    onclick="window._sportybetOnly=!window._sportybetOnly;renderPredictions()"
+    title="${attrEsc(sbTitle)}">${escHtml(sbLabel)}</button>`;
+  const liveChip = `<button class="chip" id="liveChip" title="Live scores and status — click to refresh now"
+    onclick="loadLiveStatus(true)">&#9679; Live<span id="liveStamp" style="font-weight:500;opacity:.75"></span></button>`;
+  return `<div style="display:flex;gap:8px;margin-bottom:16px;align-items:center;flex-wrap:wrap">
+    <span style="color:var(--text-dim);font-size:13px">Sort</span>
+    ${btn('league','By league')}${btn('time','By time')}
+    ${liveChip}
+    ${sbBtn}
+  </div>`;
+}
+
+function renderPredictions() {
+  const container = document.getElementById('predictionsContainer');
+  const preds = window._sportybetOnly ? _preds.filter(p => p.sportybet) : _preds;
+  if (!_preds.length) {
+    container.innerHTML = `<div class="loading">No predictions for this date yet — press
+      <b style="color:var(--orange)">Fetch &amp; Predict</b> to generate them.</div>`;
+    return;
+  }
+
+  let html = predToggleHtml();
+  if (!preds.length) {
+    const sbUnavailable = (window._sportybetInfo || {}).status === 'unavailable';
+    html += sbUnavailable
+      ? `<div class="loading">SportyBet's game list could not be read — every match is shown instead.</div>`
+      : '<div class="loading">No SportyBet games for this date.</div>';
+    container.innerHTML = html;
+    return;
+  }
+
+  if (_predSort === 'time') {
+    const sorted = [...preds].sort((a,b) => (a.kick_off||'').localeCompare(b.kick_off||''));
+    html += `<div class="pred-section">
+      <div class="league-header">All matches by kick-off<span class="count">${sorted.length} match${sorted.length>1?'es':''}</span></div>
+      ${_predHeader}`;
+    for (const m of sorted) html += matchRowHtml(m, true);
+    html += '</div>';
+  } else {
+    const byLeague = {};
+    for (const p of preds) {
+      const key = `${p.league} (${p.country})`;
+      if (!byLeague[key]) byLeague[key] = [];
+      byLeague[key].push(p);
+    }
+    for (const [league, matches] of Object.entries(byLeague).sort((a,b) => b[1].length - a[1].length)) {
+      // One booking code for the whole competition, from the picks in this group.
+      const ordered = matches.sort((a,b) => (a.kick_off||'').localeCompare(b.kick_off||''));
+      html += `<div class="pred-section">
+        <div class="league-header">
+          ${escHtml(league)}
+          <span class="count">${matches.length} match${matches.length>1?'es':''}</span>
+          ${groupCanBeBooked(matches) ? groupCodeHtml(ordered.map(m => m.match_id)) : ''}
+        </div>
+        ${_predHeader}`;
+      for (const m of ordered) {
+        html += matchRowHtml(m, false);
+      }
+      html += '</div>';
+    }
+  }
+  container.innerHTML = html;
+  paintLive();
+}
+
+/* ---------- booking code for a whole group ----------
+   One slip per competition (predictions panel) or per hour (hourly view): the
+   same Over/Under 1.5 pick the rows show, over every match in the group that
+   SportyBet prices. The server reports games it had to leave out. */
+let _groupSeq = 0;
+
+async function getGroupCode(ids, outId, btn) {
+  const dt = document.getElementById('datePicker').value;
+  const out = document.getElementById(outId);
+  if (!ids || !ids.length) {
+    out.innerHTML = '<span style="color:var(--red)">nothing to add to a slip</span>';
+    return;
+  }
+  const original = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Getting code…';
+  out.innerHTML = '';
+  try {
+    const res = await fetch(api(`/api/group-code?date=${dt}&ids=${ids.join(',')}`));
+    const d = await res.json();
+    if (!res.ok) {
+      const why = (d.skipped || []).slice(0, 4)
+        .map(s => `${s.match} — ${s.reason}`).join('; ');
+      out.innerHTML = `<span style="color:var(--red)">${escHtml(d.error || 'failed')}</span>`
+        + (why ? `<span style="color:var(--text-dim);margin-left:8px">${escHtml(why)}</span>` : '');
+      btn.disabled = false;
+      btn.textContent = original;
+      return;
+    }
+    const skip = (d.skipped || []);
+    const skipNote = skip.length
+      ? `<span style="color:var(--text-dim);margin-left:8px"
+           title="${escHtml(skip.map(s => `${s.match}: ${s.reason}`).join(' · '))}"
+         >${skip.length} game${skip.length > 1 ? 's' : ''} left out</span>` : '';
+    out.innerHTML = `<span style="color:var(--green);font-weight:700">${escHtml(d.share_code)}</span>`
+      + `<a href="${escHtml(d.share_url)}" target="_blank" rel="noopener"
+            style="color:var(--accent);margin-left:8px">open slip</a>`
+      + `<span style="color:var(--text-dim);margin-left:8px">${d.n_legs} legs @ ${d.odds}</span>`
+      + skipNote;
+    btn.textContent = 'Code ready';
+    btn.style.opacity = '0.55';
+  } catch (e) {
+    out.innerHTML = '<span style="color:var(--red)">request failed</span>';
+    btn.disabled = false;
+    btn.textContent = original;
+  }
+}
+
+// The button + its inline result, ready to drop into a group header.
+// Only offered where a slip can actually be built: being on SportyBet's game
+// list is not enough, the group needs a game SportyBet prices for the 1.5 line
+// and that has not kicked off yet.
+function groupCanBeBooked(rows) {
+  // Older servers don't send sb_price; fall back to "listed by SportyBet".
+  const pricable = m => (m.sb_price === undefined ? !!m.sportybet : !!m.sb_price);
+  const notStarted = m => !['finished', 'Finished', 'live', 'In Play'].includes(m.status);
+  return (rows || []).some(m => m && notStarted(m) && pricable(m));
+}
+
+function groupCodeHtml(ids) {
+  const id = 'gcode-' + (++_groupSeq);
+  const list = ids.map(i => `'${String(i).replace(/'/g, '')}'`).join(',');
+  return `<button class="chip" style="padding:3px 10px;font-size:11px;margin-left:auto"
+      title="Booking code for every game in this group that SportyBet prices, using the Over/Under 1.5 pick shown"
+      onclick="event.stopPropagation();getGroupCode([${list}], '${id}', this)"
+    >Booking code</button><span id="${id}" style="font-size:11px"></span>`;
+}
+
 async function loadPredictions() {
   const dt = document.getElementById('datePicker').value;
   const container = document.getElementById('predictionsContainer');
   container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading predictions...</div>';
 
   try {
-    const res = await fetch(`/api/predictions?date=${dt}`);
+    const res = await fetch(api(`/api/predictions?date=${dt}`));
     const data = await res.json();
     const preds = data.predictions || [];
+    _preds = preds;
+    window._sportybetInfo = data.sportybet || null;
 
     // Update stats
     const upcoming = preds.filter(p => p.status === 'upcoming');
@@ -691,63 +1256,7 @@ async function loadPredictions() {
     document.getElementById('statCoverageSub').textContent =
       `${goodData.length}/${upcoming.length} with data`;
 
-    if (upcoming.length === 0 && finished.length === 0) {
-      container.innerHTML = '<div class="loading">No matches found for this date.</div>';
-      return;
-    }
-
-    // Group by league
-    const byLeague = {};
-    for (const p of preds) {
-      const key = `${p.league} (${p.country})`;
-      if (!byLeague[key]) byLeague[key] = [];
-      byLeague[key].push(p);
-    }
-
-    let html = '';
-    for (const [league, matches] of Object.entries(byLeague).sort((a,b) => b[1].length - a[1].length)) {
-      const upCount = matches.filter(m => m.status === 'upcoming').length;
-      html += `<div class="pred-section">
-        <div class="league-header">
-          ${escHtml(league)}
-          <span class="count">${matches.length} match${matches.length>1?'es':''}</span>
-        </div>
-        <div class="match-header">
-          <div>Time</div><div>Match</div><div>Prediction</div>
-          <div style="text-align:center">Conf</div>
-          <div style="text-align:center">O2.5</div>
-          <div style="text-align:center">BTTS</div>
-          <div style="text-align:center">Data</div>
-        </div>`;
-
-      for (const m of matches.sort((a,b) => (a.kick_off||'').localeCompare(b.kick_off||''))) {
-        if (m.status === 'finished') {
-          html += `<div class="match-row finished">
-            <div class="time">${escHtml(m.kick_off)}</div>
-            <div class="teams">${escHtml(m.home_team)} <span class="vs">vs</span> ${escHtml(m.away_team)}</div>
-            <div class="score">${m.home_score} - ${m.away_score}</div>
-            <div></div><div></div><div></div><div></div>
-          </div>`;
-        } else {
-          const predClass = m.prediction === 'Home Win' ? 'home' : m.prediction === 'Away Win' ? 'away' : 'draw';
-          const predLabel = m.prediction === 'Home Win' ? `1 (${m.home_win}%)` :
-                           m.prediction === 'Away Win' ? `2 (${m.away_win}%)` : `X (${m.draw}%)`;
-          const confClass = (m.confidence||0) >= 60 ? 'high' : (m.confidence||0) >= 40 ? 'med' : 'low';
-
-          html += `<div class="match-row">
-            <div class="time">${escHtml(m.kick_off)}</div>
-            <div class="teams">${escHtml(m.home_team)} <span class="vs">vs</span> ${escHtml(m.away_team)}</div>
-            <div><span class="pred-badge ${predClass}">${predLabel}</span></div>
-            <div class="conf ${confClass}">${m.confidence}%</div>
-            <div class="o25" style="text-align:center;color:${(m['over_2.5']||0)>55?'var(--green)':'var(--text-dim)'}">${m['over_2.5']||'--'}%</div>
-            <div class="btts-col" style="text-align:center;color:${(m.btts||0)>55?'var(--green)':'var(--text-dim)'}">${m.btts||'--'}%</div>
-            <div><span class="dq ${m.data_quality||'LOW'}">${m.data_quality||'LOW'}</span></div>
-          </div>`;
-        }
-      }
-      html += '</div>';
-    }
-    container.innerHTML = html;
+    renderPredictions();
   } catch (e) {
     container.innerHTML = `<div class="loading">Error loading predictions: ${e.message}</div>`;
   }
@@ -759,7 +1268,7 @@ async function loadHourly() {
   container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
 
   try {
-    const res = await fetch(`/api/hourly-breakdown?date=${dt}`);
+    const res = await fetch(api(`/api/hourly-breakdown?date=${dt}`));
     const data = await res.json();
     const hours = data.hours || {};
 
@@ -768,28 +1277,63 @@ async function loadHourly() {
       return;
     }
 
+    // One O/U 1.5 hourly badge (with ✓/✗). `suffix` marks the calibrated variant.
+    const ouBadge = (pred, conf, correct, suffix) => {
+      if (!pred) return '';
+      const cls = pred === 'Over 1.5' ? 'home' : 'draw';
+      const label = (pred === 'Over 1.5' ? 'O1.5' : 'U1.5') + suffix;
+      const c = conf != null ? ` ${conf}%` : '';
+      let icon = '';
+      if (correct != null) {
+        icon = correct
+          ? '<span style="color:var(--green);font-weight:700;margin-right:4px">&#10003;</span>'
+          : '<span style="color:var(--red);font-weight:700;margin-right:4px">&#10007;</span>';
+      }
+      return `${icon}<span class="pred-badge ${cls}">${label}${c}</span>`;
+    };
+
     let html = '';
     for (const [hour, matches] of Object.entries(hours)) {
       const finished = matches.filter(m => m.status === 'Finished').length;
+      const s1 = matches.filter(m => m.result_correct != null);
+      const c1 = s1.filter(m => m.result_correct).length;
+      const sv = matches.filter(m => m.result_correct_v != null);
+      const cv = sv.filter(m => m.result_correct_v).length;
+      const accTag = s1.length ? ` · current ${c1}/${s1.length}${sv.length ? ` · v ${cv}/${sv.length}` : ''}` : '';
       const label = `${hour}:00`;
       html += `<div class="hour-block">
         <div class="hour-label">
-          ${label}
-          <span class="badge">${matches.length} games${finished > 0 ? ` (${finished} finished)` : ''}</span>
+          <span>${label}</span>
+          <span style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <span class="badge">${matches.length} games${finished > 0 ? ` (${finished} finished${accTag})` : ''}</span>
+            ${groupCanBeBooked(matches) ? groupCodeHtml(matches.map(m => m.match_id)) : ''}
+          </span>
         </div>`;
       for (const m of matches) {
-        const statusColor = m.status === 'Finished' ? 'var(--green)' :
-                           m.status === '' ? 'var(--text-dim)' : 'var(--yellow)';
-        const scoreStr = m.home_score !== '' ? ` ${m.home_score}-${m.away_score}` : '';
+        const inPlay = m.status === 'In Play';
+        const done = m.status === 'Finished';
+        const statusText = inPlay ? `In play${m.minute ? ' — ' + m.minute : ''}`
+                         : done ? 'Finished' : (m.status || 'Scheduled');
+        const statusColor = done ? 'var(--green)' : inPlay ? 'var(--brand)' : 'var(--text-dim)';
+        const pillCls = done ? 'done' : inPlay ? 'live' : '';
+        const pillTxt = done ? 'FT' : inPlay ? '\u25CF ' + (m.minute || 'LIVE') : '';
+        const scoreStr = m.home_score !== ''
+          ? ` <span class="score-badge">${m.home_score}-${m.away_score}</span>` : '';
+
+        const predHtml = ouBadge(m.prediction, m.confidence, m.result_correct, '')
+          + ' ' + ouBadge(m.prediction_v, m.confidence_v, m.result_correct_v, 'v');
+
         html += `<div class="hour-match">
-          <div>
-            <span style="color:var(--text-dim);margin-right:8px">${escHtml(m.time)}</span>
-            ${escHtml(m.home)} <span style="color:var(--text-dim)">vs</span> ${escHtml(m.away)}
-            <span style="color:var(--cyan);font-weight:700">${scoreStr}</span>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <span style="color:var(--text-dim)">${escHtml(m.time)}</span>
+            <span>${escHtml(m.home)} <span style="color:var(--text-dim)">vs</span> ${escHtml(m.away)}</span>
+            ${pillTxt ? `<span class="live-pill ${pillCls}">${pillTxt}</span>` : ''}
+            ${scoreStr}
+            ${predHtml}
           </div>
           <div style="display:flex;gap:8px;align-items:center">
             <span class="league-tag">${escHtml(m.league)}</span>
-            <span style="color:${statusColor};font-size:11px">${escHtml(m.status || 'Scheduled')}</span>
+            <span style="color:${statusColor};font-size:11px">${escHtml(statusText)}</span>
           </div>
         </div>`;
       }
@@ -800,50 +1344,6 @@ async function loadHourly() {
     container.innerHTML = `<div class="loading">Error: ${e.message}</div>`;
   }
 }
-
-async function loadCoverage() {
-  const container = document.getElementById('coverageContainer');
-  container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading coverage...</div>';
-
-  try {
-    const res = await fetch('/api/coverage');
-    const data = await res.json();
-
-    document.getElementById('statTraining').textContent = (data.total_matches || 0).toLocaleString();
-    document.getElementById('statLeagues').textContent = data.total_leagues || 0;
-
-    const maxMatches = Math.max(...(data.leagues || []).map(l => l.matches), 1);
-
-    let html = '<div style="margin-bottom:16px;color:var(--text-dim);font-size:13px">';
-    if (data.sources) {
-      html += 'Sources: ';
-      html += Object.entries(data.sources).map(([k,v]) => `${k}: ${v.toLocaleString()}`).join(' | ');
-    }
-    html += `</div><div class="coverage-grid">`;
-
-    for (const l of (data.leagues || []).slice(0, 100)) {
-      const pct = Math.round(l.matches / maxMatches * 100);
-      html += `<div class="league-card">
-        <div class="name">${escHtml(l.league)}</div>
-        <div class="meta">
-          <span>${l.matches.toLocaleString()} matches</span>
-          <span>${l.teams} teams</span>
-          <span>${l.first} - ${l.last}</span>
-        </div>
-        <div class="bar"><div class="bar-fill" style="width:${pct}%"></div></div>
-      </div>`;
-    }
-    html += '</div>';
-    if ((data.leagues || []).length > 100) {
-      html += `<div style="text-align:center;color:var(--text-dim);margin-top:16px">
-        ...and ${data.leagues.length - 100} more leagues</div>`;
-    }
-    container.innerHTML = html;
-  } catch (e) {
-    container.innerHTML = `<div class="loading">Error: ${e.message}</div>`;
-  }
-}
-
 async function loadPipeline() {
   const container = document.getElementById('pipelineContainer');
   container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
@@ -915,200 +1415,446 @@ async function loadPipeline() {
     container.innerHTML = `<div class="loading">Error: ${e.message}</div>`;
   }
 }
-
-async function loadBots() {
-  const container = document.getElementById('botsContainer');
-  container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading bot results...</div>';
-
-  try {
-    const res = await fetch('/api/bots');
-    const data = await res.json();
-
-    if (data.error === 'no results') {
-      container.innerHTML = `<div class="loading">
-        <p style="margin-bottom:12px">No bot results yet.</p>
-        <button onclick="runBots(3)" style="background:var(--accent);border:none;color:white;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600">
-          Run 3-day simulation
-        </button>
-      </div>`;
-      return;
-    }
-
-    const bots = data.bots || [];
-    const dates = data.dates || [];
-    window._botsData = bots;
-
-    // Summary stats
-    const totalBets = bots.reduce((s, b) => s + b.total_bets, 0);
-    const totalWins = bots.reduce((s, b) => s + b.wins, 0);
-    const overallWR = totalBets > 0 ? Math.round(totalWins / totalBets * 100 * 10) / 10 : 0;
-    const bestChain = Math.max(...bots.map(b => b.best_chain), 0);
-    const totalChains = bots.reduce((s, b) => s + b.chains_completed, 0);
-    const topBot = bots.length > 0 ? bots[0] : null;
-
-    let html = '';
-
-    // Summary row
-    html += '<div class="bot-summary">';
-    html += `<div class="bs-card"><div class="bs-big">${totalBets}</div><div class="bs-sub">Total bets (${dates.length} days)</div></div>`;
-    html += `<div class="bs-card"><div class="bs-big" style="color:var(--green)">${overallWR}%</div><div class="bs-sub">Overall win rate</div></div>`;
-    html += `<div class="bs-card"><div class="bs-big" style="color:var(--cyan)">${bestChain} <span style="font-size:14px;color:var(--text-dim)">/ 10</span></div><div class="bs-sub">Best chain</div></div>`;
-    html += `<div class="bs-card"><div class="bs-big" style="color:var(--yellow)">${totalChains}</div><div class="bs-sub">Chains completed</div></div>`;
-    if (topBot) {
-      html += `<div class="bs-card"><div class="bs-big" style="color:var(--purple)">#${topBot.emoji}</div><div class="bs-sub">Top: ${escHtml(topBot.bot)}</div></div>`;
-    }
-    html += '</div>';
-
-    // Action buttons
-    html += `<div style="display:flex;gap:8px;margin-bottom:20px;">
-      <button onclick="runBots(1)" style="background:var(--card);border:1px solid var(--card-border);color:var(--text);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px">Run today</button>
-      <button onclick="runBots(3)" style="background:var(--accent);border:none;color:white;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600">Run 3-day sim</button>
-      <span style="font-size:12px;color:var(--text-dim);align-self:center;margin-left:8px">
-        Last run: ${dates.length > 0 ? dates.join(', ') : '--'}
-      </span>
-    </div>`;
-
-    // Bot cards
-    html += '<div class="bot-grid">';
-    for (let bi = 0; bi < bots.length; bi++) {
-      const bot = bots[bi];
-      const isTop = bot === topBot;
-      const wrColor = bot.win_rate >= 40 ? 'var(--green)' : bot.win_rate >= 30 ? 'var(--yellow)' : 'var(--red)';
-      const chainPct = Math.round(bot.best_chain / 10 * 100);
-      const chainColor = bot.best_chain >= 6 ? 'var(--green)' : bot.best_chain >= 3 ? 'var(--yellow)' : 'var(--red)';
-      const cardId = 'bot-card-' + bi;
-
-      html += `<div class="bot-card ${isTop ? 'top-performer' : ''}" id="${cardId}" onclick="toggleBotDetail('${cardId}')">`;
-      html += `<div class="bot-header">
-        <span class="bot-num">${isTop ? '&#9733; ' : ''}Bot ${escHtml(bot.emoji)}</span>
-        <div style="display:flex;align-items:center;gap:6px">
-          ${isTop ? '<span style="font-size:10px;background:var(--green);color:white;padding:2px 8px;border-radius:4px;font-weight:600">TOP</span>' : ''}
-          <span class="expand-icon">&#9660;</span>
-        </div>
-      </div>`;
-      html += `<div class="bot-name">${escHtml(bot.bot)}</div>`;
-      html += `<div class="bot-desc">${escHtml(bot.description)}</div>`;
-
-      html += '<div class="bot-stats-grid">';
-      html += `<div class="bot-stat"><div class="bs-label">Win rate</div><div class="bs-val" style="color:${wrColor}">${bot.win_rate}%</div></div>`;
-      html += `<div class="bot-stat"><div class="bs-label">Bets</div><div class="bs-val">${bot.total_bets}</div></div>`;
-      html += `<div class="bot-stat"><div class="bs-label">W / L</div><div class="bs-val">${bot.wins}/${bot.losses}</div></div>`;
-      html += `<div class="bot-stat"><div class="bs-label">Best chain</div><div class="bs-val" style="color:${chainColor}">${bot.best_chain}</div></div>`;
-      html += '</div>';
-
-      // Chain progress bar
-      html += `<div class="chain-bar"><div class="chain-fill" style="width:${chainPct}%;background:${chainColor}"></div></div>`;
-      html += `<div class="chain-label"><span>Chain progress</span><span>${bot.best_chain} / 10</span></div>`;
-
-      // Bet history dots
-      if (bot.daily && bot.daily.length > 0) {
-        html += '<div class="bot-history">';
-        for (const day of bot.daily) {
-          if (day.history) {
-            for (const h of day.history) {
-              const cls = h.status === 'WIN' ? 'win' : h.status === 'LOSS' ? 'loss' : 'pending';
-              const tip = `${h.selection || '?'} @ ${h.odds || '?'} - ${h.status}`;
-              html += `<div class="bet-dot ${cls}" title="${escHtml(tip)}">${h.status === 'WIN' ? 'W' : h.status === 'LOSS' ? 'L' : '?'}</div>`;
-            }
-          }
-        }
-        html += '</div>';
-      }
-
-      // Expandable detail panel — rendered lazily on first click
-      html += `<div class="bot-detail" id="detail-${bi}"></div>`;
-
-      html += '</div>';
-    }
-    html += '</div>';
-
-    container.innerHTML = html;
-  } catch (e) {
-    container.innerHTML = `<div class="loading">Error loading bots: ${e.message}</div>`;
-  }
-}
-
-async function runBots(days) {
-  const dt = document.getElementById('datePicker').value;
-  try {
-    const res = await fetch('/api/bots/run', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({date: dt, days: days}),
-    });
-    const data = await res.json();
-    if (data.status === 'started') {
-      document.getElementById('botsContainer').innerHTML =
-        '<div class="loading"><div class="spinner"></div>Running bot simulation... This may take a few minutes.<br><br><button onclick="loadBots()" style="background:var(--accent);border:none;color:white;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;margin-top:12px">Check results</button></div>';
-    }
-  } catch (e) {
-    alert('Error starting bots: ' + e.message);
-  }
-}
-
+// Force a fresh predictions pull for the selected date.
 async function refreshPredictions() {
   const dt = document.getElementById('datePicker').value;
   // Delete cache to force fresh predictions
   try {
-    await fetch(`/api/predictions?date=${dt}&refresh=1`);
+    await fetch(api(`/api/predictions?date=${dt}&refresh=1`));
   } catch (e) {}
   await loadPredictions();
 }
 
-function toggleBotDetail(cardId) {
-  const card = document.getElementById(cardId);
-  if (!card) return;
-  const idx = parseInt(cardId.replace('bot-card-', ''));
-  const detailEl = document.getElementById('detail-' + idx);
-  if (detailEl && !detailEl.dataset.loaded && window._botsData) {
-    const bot = window._botsData[idx];
-    let dh = '';
-    if (bot && bot.daily && bot.daily.length > 0) {
-      for (const day of bot.daily) {
-        if (!day.history || day.history.length === 0) continue;
-        const dayWins = day.history.filter(h => h.status === 'WIN').length;
-        const dayTotal = day.history.filter(h => h.status === 'WIN' || h.status === 'LOSS').length;
-        const dayWR = dayTotal > 0 ? Math.round(dayWins / dayTotal * 100) : 0;
-        const dayWRColor = dayWR >= 50 ? 'rgba(34,197,94,0.15)' : dayWR >= 30 ? 'rgba(234,179,8,0.15)' : 'rgba(239,68,68,0.15)';
-        const dayWRText = dayWR >= 50 ? 'var(--green)' : dayWR >= 30 ? 'var(--yellow)' : 'var(--red)';
-        dh += '<div class="day-group">';
-        dh += `<div class="day-label">${escHtml(day.date)} <span class="day-wr" style="background:${dayWRColor};color:${dayWRText}">${dayWins}W ${dayTotal - dayWins}L (${dayWR}%)</span></div>`;
-        dh += `<table><thead><tr><th>Step</th><th>Time</th><th>Match</th><th>Market</th><th>Selection</th><th>Odds</th><th>Stake</th><th>Payout</th><th>Result</th><th>Chain</th></tr></thead><tbody>`;
-        for (const h of day.history) {
-          const statusCls = h.status === 'WIN' ? 'win-badge' : h.status === 'LOSS' ? 'loss-badge' : 'pending-badge';
-          const matchStr = h.home_team && h.away_team ? `${h.home_team} vs ${h.away_team}` : '--';
-          const payout = h.payout != null ? '$' + h.payout.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) : '--';
-          const stake = h.stake != null ? '$' + h.stake.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) : '--';
-          dh += `<tr>
-            <td>${h.step || '--'}</td>
-            <td style="color:var(--text-dim)">${escHtml(h.kick_off || '--')}</td>
-            <td class="match-col" title="${escHtml(matchStr)}">${escHtml(matchStr)}</td>
-            <td style="color:var(--text-dim)">${escHtml(h.market || '--')}</td>
-            <td style="font-weight:600">${escHtml(h.selection || '--')}</td>
-            <td style="color:var(--cyan)">${h.odds ? h.odds.toFixed(2) : '--'}</td>
-            <td class="stake-col">${stake}</td>
-            <td class="payout-col">${h.status === 'WIN' ? payout : '--'}</td>
-            <td><span class="status-badge ${statusCls}">${h.status || '?'}</span></td>
-            <td class="chain-tag">${h.chain_complete ? '<span style="color:var(--green);font-weight:700">DONE!</span>' : (h.step || '--')}</td>
-          </tr>`;
-        }
-        dh += '</tbody></table></div>';
-      }
-    } else {
-      dh = '<div style="color:var(--text-dim);font-size:12px;text-align:center;padding:12px">No bet history available</div>';
+// Booking code for one Build ticket — the server reads the same frozen ticket
+// back (so it still works once the games have kicked off) and checks its
+// fingerprint before creating the code.
+async function getBuildCode(section, target, index, expect, outId, btn) {
+  const dt = document.getElementById('datePicker').value;
+  const out = document.getElementById(outId);
+  const original = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Getting code...';
+  out.innerHTML = '';
+  try {
+    const url = `/api/build/code?date=${dt}&section=${section}&target=${target}`
+              + `&index=${index}&market=${buildMarket()}`
+              + `&all=${window._buildAllGames ? 1 : 0}`
+              + `&expect=${encodeURIComponent(expect)}`;
+    const res = await fetch(api(url));
+    const d = await res.json();
+    if (!res.ok) {
+      out.innerHTML = `<span style="color:var(--red)">${escHtml(d.error || 'failed')}</span>`;
+      btn.disabled = false;
+      btn.textContent = original;
+      return;
     }
-    detailEl.innerHTML = dh;
-    detailEl.dataset.loaded = '1';
+    out.innerHTML = `<span style="color:var(--green);font-weight:700">${escHtml(d.share_code)}</span>`
+      + `<a href="${escHtml(d.share_url)}" target="_blank" rel="noopener"
+            style="color:var(--accent);margin-left:8px">open slip</a>`
+      + `<span style="color:var(--text-dim);margin-left:8px">${d.n_legs} legs @ ${d.odds}</span>`;
+    btn.textContent = 'Code ready';
+    btn.style.opacity = '0.55';
+  } catch (e) {
+    out.innerHTML = `<span style="color:var(--red)">request failed</span>`;
+    btn.disabled = false;
+    btn.textContent = original;
   }
-  card.classList.toggle('expanded');
 }
 
-function loadAll() {
+// The Build tab shows accumulator tickets. `_buildMarket` narrows them to one
+// line: 'over_1.5' keeps every leg on the Over/Under 1.5 market, '' uses the
+// default Over 1.5 + Over 2.5 mix.
+function buildMarket() {
+  return window._buildOnly15 ? 'over_1.5' : '';
+}
+
+async function loadBuild() {
+  const dt = document.getElementById('datePicker').value;
+  const container = document.getElementById('buildContainer');
+  container.innerHTML = '<div class="loading"><div class="spinner"></div>Building accumulators...</div>';
+
+  try {
+    const allGames = window._buildAllGames ? '&all=1' : '';
+    const market = buildMarket() ? `&market=${buildMarket()}` : '';
+    // One-shot: rebuild discards today's frozen set and builds a fresh one.
+    const rebuild = window._buildRebuild ? '&rebuild=1' : '';
+    window._buildRebuild = false;
+    const res = await fetch(api(`/api/build?date=${dt}${allGames}${market}${rebuild}`));
+    const data = await res.json();
+    const allTickets = data.tickets || [];
+    // When the legs carry SportyBet's real prices, the ticket odds are already
+    // what a punter would get — no fair-odds margin adjustment needed.
+    const realOdds = !!data.real_odds;
+
+    if (!allTickets.length) {
+      container.innerHTML = `<div class="loading">${escHtml(data.error || 'No selections available.')}</div>`;
+      return;
+    }
+
+    // --- P&L calculator: stake `stake` on EVERY ticket ---
+    const stake = window._buildStake || 100;
+    let nTickets = 0, staked = 0, fairRet = 0, realRet = 0, decided = 0, landedN = 0;
+    for (const a of allTickets) {
+      if (!a.reachable) continue;
+      nTickets++; staked += stake;
+      if (a.status === 'landed') {
+        landedN++; decided++;
+        fairRet += stake * a.odds;
+        realRet += stake * (realOdds ? a.odds : a.odds / Math.pow(1.06, a.n_legs));
+      } else if (a.status === 'busted') {
+        decided++;
+      }
+    }
+    const fairNet = fairRet - staked, realNet = realRet - staked;
+    const money = n => (n < 0 ? '-' : '') + Math.abs(Math.round(n)).toLocaleString();
+    const col = n => n >= 0 ? 'var(--green)' : 'var(--red)';
+
+    let html = `<style>.build-legs{display:none}.build-legs.open{display:block}
+      .build-head:hover{background:var(--card)}</style>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px">
+        <span style="color:var(--text-dim);font-size:13px">Stake per ticket</span>
+        <input type="number" id="buildStake" value="${stake}" min="1" style="width:90px"
+          onchange="window._buildStake=Math.max(1,+this.value||100);loadBuild()">
+        <span style="color:var(--text-dim);font-size:13px">on all ${nTickets} tickets = <b>${money(staked)}</b> staked · ${landedN}/${decided} decided landed</span>
+        <button class="chip${window._buildAllGames ? '' : ' on'}" style="margin-left:auto"
+          onclick="window._buildAllGames=!window._buildAllGames;loadBuild()">
+          ${window._buildAllGames?'Showing all games':'✓ SportyBet only'}</button>
+        <button class="chip${window._buildOnly15 ? ' on' : ''}"
+          title="Use only the Over/Under 1.5 market for every leg"
+          onclick="window._buildOnly15=!window._buildOnly15;loadBuild()">
+          ${window._buildOnly15?'✓ ':''}O/U 1.5 only</button>
+        <button class="chip" title="Discard today's tickets and build a fresh set"
+          onclick="window._buildRebuild=true;loadBuild()">Rebuild</button>
+        <span style="color:var(--text-dim);font-size:12px">${data.sportybet_only?`built from SportyBet games only (${data.pool} in pool)`:`all games (${data.total_matches} matches)`}${data.markets&&data.markets.length?` · legs: ${data.markets.join(' / ')}`:''}${data.built?` · set from ${escHtml(data.built)}${data.frozen?'':' (just rebuilt)'}`:''}</span>
+        ${data.sportybet_odds && data.sportybet_odds.status === 'stale'
+          ? `<span style="color:var(--yellow);font-size:12px">SportyBet odds are
+             ${Math.round((data.sportybet_odds.age_min || 0) / 60) || 1}h old</span>` : ''}
+        ${data.sportybet_odds && data.sportybet_odds.status === 'unavailable'
+          ? `<span style="color:var(--red);font-size:12px">SportyBet odds unavailable — showing fair odds</span>` : ''}
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px">
+        <div style="background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:12px 16px">
+          <div style="font-size:12px;color:var(--text-dim)">${realOdds ? 'At SportyBet odds (real prices)' : 'At dashboard (fair) odds'}</div>
+          <div style="font-size:22px;font-weight:700;color:${col(fairNet)}">${fairNet>=0?'+':''}${money(fairNet)}</div>
+          <div style="font-size:11px;color:var(--text-dim)">returned ${money(fairRet)}</div>
+        </div>
+        ${realOdds ? '' : `
+        <div style="background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:12px 16px">
+          <div style="font-size:12px;color:var(--text-dim)">At real bookmaker odds (~6%/leg)</div>
+          <div style="font-size:22px;font-weight:700;color:${col(realNet)}">${realNet>=0?'+':''}${money(realNet)}</div>
+          <div style="font-size:11px;color:var(--text-dim)">returned ${money(realRet)} — what you'd actually get</div>
+        </div>`}
+      </div>
+      <div style="margin-bottom:16px;color:var(--text-dim);font-size:13px">
+        ${window._buildOnly15 ? `Every leg is on the <b>Over/Under 1.5</b> line. ` : ''}${realOdds
+          ? `Up to 10 tickets per odds tier. <b>Within a tier, no option is repeated</b> —
+             a match may appear on two tickets, but never with the same selection. Tiers are
+             alternatives, so they can share options. Prices are <b>SportyBet's
+             real Over/Under odds</b>, so each ticket's odds are what you would actually get.
+             Expand a ticket and press <b>Booking code</b> to load it on SportyBet.`
+          : `Up to 10 tickets per odds tier. <b>Within a tier, no option is repeated</b> —
+             a match may appear on two tickets, but never with the same selection. Tiers are
+             alternatives, so they can share options. Odds are <b>fair odds</b>
+             (1 ÷ model probability) — a real book takes ~6% per leg. Click a ticket to expand.`}
+      </div>`;
+
+    const sections = [
+      { key: 'all',   title: 'All games',
+        note: `Built from ${data.pool} matches (all kick-off times).`, accent: 'var(--accent)' },
+      { key: 'early', title: 'Early momo odds',
+        note: `Only games kicking off 00:00–12:00 — built from ${data.early_pool || 0} early matches.`,
+        accent: 'var(--orange)' },
+      // Games that have already kicked off. They are why the page can show won
+      // and busted slips instead of only pending ones, and they keep a working
+      // booking code wherever SportyBet still knows the fixture.
+      { key: 'played', title: 'Played today',
+        note: `Built from ${data.played_pool || 0} matches that have already kicked off — these carry their results, and a booking code wherever SportyBet still lists the game.`,
+        accent: 'var(--blue)' },
+    ];
+
+    let uid = 0;
+    for (const sec of sections) {
+      const secTickets = allTickets.filter(a => (a.section || 'all') === sec.key);
+      html += `<div style="margin:26px 0 8px;padding:10px 14px;border-radius:8px;
+        background:${sec.accent==='var(--orange)'?'rgba(255,122,0,0.13)':'var(--card)'};
+        border:1px solid ${sec.accent}">
+        <span style="font-size:20px;font-weight:700;color:${sec.accent}">${sec.title}</span>
+        <span style="color:var(--text-dim);font-size:13px;margin-left:10px">${sec.note}</span>
+      </div>`;
+
+      // group this section's tickets by odds tier
+      const order = []; const byTier = {};
+      for (const a of secTickets) {
+        if (!(a.target in byTier)) { byTier[a.target] = []; order.push(a.target); }
+        byTier[a.target].push(a);
+      }
+      if (!secTickets.some(a => a.reachable)) {
+        html += `<div style="color:var(--text-dim);font-size:13px;margin-bottom:8px">No qualifying games in this window today.</div>`;
+        continue;
+      }
+
+      for (const t of order) {
+        const tickets = byTier[t].filter(x => x.reachable);
+        const landed = tickets.filter(x => x.status === 'landed').length;
+        const busted = tickets.filter(x => x.status === 'busted').length;
+        const live = tickets.filter(x => x.status === 'live').length;
+        html += `<div style="font-size:16px;font-weight:700;margin:16px 0 8px;color:var(--accent)">
+          ~${t} odds
+          <span style="color:var(--text-dim);font-weight:400;font-size:13px;margin-left:8px">
+            ${tickets.length} tickets${tickets.length ? ` &middot; ${landed} landed, ${busted} busted, ${live} live` : ''}
+          </span></div>`;
+        if (!tickets.length) {
+          html += `<div style="color:var(--text-dim);font-size:13px;margin-bottom:8px">None reachable.</div>`;
+          continue;
+        }
+        for (let ti = 0; ti < tickets.length; ti++) {
+          const a = tickets[ti];
+          uid++;
+          const id = `build-${uid}`;
+          const probClass = a.probability >= 40 ? 'high' : a.probability >= 15 ? 'med' : 'low';
+          const [stLabel, stColor] = ({
+            landed: ['LANDED', 'var(--green)'], busted: ['BUSTED', 'var(--red)'],
+            live: ['LIVE', 'var(--yellow)'],
+          })[a.status] || ['', 'var(--text-dim)'];
+
+          html += `<div class="pred-section" style="margin-bottom:6px">
+            <div class="league-header build-head" style="cursor:pointer"
+                 onclick="document.getElementById('${id}').classList.toggle('open')">
+              ${escHtml(a.label)} &middot; ${a.odds} odds
+              <span class="count">${a.n_legs} legs &middot; ${a.probability}%</span>
+              <span style="background:${stColor};color:#0b0e16;font-weight:700;padding:2px 10px;border-radius:6px;font-size:12px;margin-left:8px">${stLabel}</span>
+              <span style="color:var(--text-dim);font-size:12px;margin-left:8px">${a.won}/${a.n_legs} won${a.pending ? `, ${a.pending} pending` : ''}</span>
+            </div>
+            <div class="build-legs" id="${id}">`;
+          for (const l of a.legs) {
+            const icon = l.result === 'win'
+                ? '<span style="color:var(--green);font-weight:700">&#10003;</span>'
+              : l.result === 'loss'
+                ? '<span style="color:var(--red);font-weight:700">&#10007;</span>'
+                : '<span style="color:var(--text-dim)">&#9679;</span>';
+            const scoreStr = l.final_score ? ` <span class="score-badge">${escHtml(l.final_score)}</span>` : '';
+            // Live legs carry their own clock + running score so a leg in play
+            // is never indistinguishable from one that has not kicked off.
+            const livePill = l.live_status === 'In Play'
+                ? `<span class="live-pill live">&#9679; ${escHtml(l.minute || 'LIVE')}</span>`
+              : l.live_status === 'Half Time'
+                ? '<span class="live-pill live">&#9679; HT</span>'
+              : l.live_status === 'Finished'
+                ? '<span class="live-pill done">FT</span>'
+              : '';
+            const scoreCell = l.final_score ? scoreStr
+              : (l.live_score ? ` <span class="score-badge">${escHtml(l.live_score)}</span>` : '');
+            // Grid template lives in the stylesheet (not inline) so the mobile
+            // layout can rearrange it instead of overflowing.
+            const rowCls = l.result === 'loss' ? ' row-dim' : '';
+            html += `<div class="match-row leg-row${rowCls}">
+              <div style="text-align:center">${icon}</div>
+              <div class="time">${escHtml(l.kick_off)}</div>
+              <div class="teams">${escHtml(l.match)}${livePill}${scoreCell}
+                <div style="font-size:11px;color:var(--text-dim);margin-top:2px">${escHtml(l.league)}</div>
+              </div>
+              <div><span class="pred-badge home">${escHtml(l.selection)}</span></div>
+              <div style="text-align:center">
+                <span class="conf ${probClass}">${l.odds}</span>
+                <div style="font-size:11px;color:var(--text-dim)">${Math.round(l.prob*100)}%${
+                  l.fair_odds && Math.abs(l.fair_odds - l.odds) >= 0.02
+                    ? ` · fair ${l.fair_odds}` : ''}</div>
+              </div>
+            </div>`;
+          }
+          const returnColor = a.status === 'busted' ? 'var(--red)' : 'var(--green)';
+          const returnNote = a.status === 'landed' ? `paid out $${(a.odds*10).toFixed(2)}`
+            : a.status === 'busted' ? 'lost — a leg failed'
+            : `returns $${(a.odds*10).toFixed(2)} if the rest land`;
+          // Tickets whose games have kicked off still get a code: SportyBet
+          // keeps the same event ids on its live board and we remember the ones
+          // we priced, so only a game it never listed stays out.
+          const missing = a.missing_sb || [];
+          const codeBtn = a.bookable
+            ? `<button class="btn-primary" style="padding:7px 14px;font-size:12px"
+                 onclick="getBuildCode('${sec.key}', ${a.target}, ${ti}, '${a.fingerprint}', 'code-${id}', this)">Booking code</button>`
+            : `<span style="font-size:12px;color:var(--text-dim)"
+                 title="${escHtml(missing.join(', '))}">no code — SportyBet doesn't list ${missing.length === 1 ? 'this game' : `these ${missing.length} games`}</span>`;
+          html += `<div style="padding:10px 16px;color:var(--text-dim);font-size:13px;border-top:1px solid var(--card-border);
+              display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <span>$10 stake — <b style="color:${returnColor}">${returnNote}</b></span>
+            <span style="margin-left:auto;display:flex;gap:10px;align-items:center">
+              <span id="code-${id}" style="font-size:12px"></span>
+              ${codeBtn}
+            </span>
+          </div></div></div>`;
+        }
+      }
+    }
+    container.innerHTML = html;
+  } catch (e) {
+    container.innerHTML = `<div class="loading">Error building tickets: ${e.message}</div>`;
+  }
+}
+
+/* ---------- Jackpot tab (SportyBet Sporty 12) ----------
+   Fixtures come from the cached snapshot of SportyBet's jackpot round; the pick,
+   the probability and the "edge" are the calibrated engine's, computed
+   server-side against the local history. `pick_conf` is the picked outcome's own
+   probability, and the header shows the parlay maths: a 12-leg ticket's chance is
+   the product of its legs, so it is small however good the model is. */
+/* The parlay maths for the jackpot, stated plainly. A 12-leg ticket's chance is
+   the product of its legs, so it is tiny even when every leg is a sound pick —
+   hiding that would be the dishonest part, not showing it. */
+function jackpotComboHtml(combo) {
+  if (!combo || combo.all == null) return '';
+  const pct = v => (v == null ? '--' : v >= 1 ? v.toFixed(2) + '%' : v.toFixed(4) + '%');
+  const cell = (label, value, sub, colour) => `
+    <div style="background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:10px 14px">
+      <div style="font-size:12px;color:var(--text-dim)">${label}</div>
+      <div style="font-size:19px;font-weight:700;color:${colour || 'var(--text)'}">${value}</div>
+      <div style="font-size:11px;color:var(--text-dim)">${sub}</div>
+    </div>`;
+  return `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+      gap:12px;padding:14px 18px 6px">
+    ${cell('All 12 correct', pct(combo.all),
+           combo.one_in ? `about 1 in ${combo.one_in.toLocaleString()}` : '',
+           'var(--accent)')}
+    ${cell('11 of 12', pct(combo.at_least_11), 'any one game wrong', 'var(--yellow)')}
+    ${cell('10 of 12', pct(combo.at_least_10), 'any two games wrong', 'var(--yellow)')}
+    ${cell('Market favourites', pct(combo.market_favourites),
+           'taking the favourite in every game', 'var(--text-dim)')}
+    ${cell('Market on our picks', pct(combo.market_on_our_picks),
+           'the same 12 picks, priced by SportyBet', 'var(--text-dim)')}
+  </div>
+  <div style="padding:0 18px 14px;color:var(--text-dim);font-size:11px;line-height:1.6">
+    Our ${combo.legs} legs average ${combo.mean_pick_prob}% each.
+    Read the two right-hand numbers as a sanity check: if the market prices our exact
+    picks far lower than we do, the model is being overconfident rather than clever.
+    Legs are treated as independent, which flatters the total slightly.
+  </div>`;
+}
+
+async function loadJackpot() {
+  const container = document.getElementById('jackpotContainer');
+  container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading jackpot...</div>';
+  try {
+    const data = await (await fetch(api('/api/jackpot'))).json();
+    const games = data.games || [];
+    if (!games.length) {
+      container.innerHTML = '<div class="loading">No jackpot snapshot cached yet.</div>';
+      return;
+    }
+    const PICK_IDX = { 'Home Win': 0, 'Draw': 1, 'Away Win': 2 };
+    let rows = '';
+    for (const g of games) {
+      const pi = PICK_IDX[g.pick];
+      const oddsCells = ['1', 'X', '2'].map((lab, i) => {
+        const price = (g.odds && g.odds[i] != null) ? Number(g.odds[i]).toFixed(2) : '--';
+        const implied = (g.implied && g.implied[i] != null) ? `<span class="jk-imp">${g.implied[i]}%</span>` : '';
+        return `<div class="jk-odds${i === pi ? ' on' : ''}"><b>${lab}</b> ${price}${implied}</div>`;
+      }).join('');
+      const edge = (g.edge == null) ? ''
+        : `<span class="jk-edge${g.edge >= 2 ? ' plus' : ''}">${g.edge > 0 ? '+' : ''}${g.edge}%</span>`;
+      rows += `<div class="match-row jk-row">
+        <div class="time">${escHtml(String(g.n || ''))}</div>
+        <div class="time">${escHtml(g.time || '')}</div>
+        <div class="teams">${escHtml(g.home || '')} <span class="vs">vs</span> ${escHtml(g.away || '')}
+          <div style="font-size:11px;color:var(--text-dim);margin-top:2px">${escHtml(g.date || '')}</div>
+        </div>
+        <div class="jk-prices">${oddsCells}</div>
+        <div style="text-align:center">
+          <span class="pred-badge home"
+            title="Our model's probability for this outcome: ${g.pick_conf != null ? g.pick_conf + '%' : 'n/a'}${g.history ? ` (from ${g.history.home} recent ${escHtml(g.home || '')} and ${g.history.away} ${escHtml(g.away || '')} matches)` : ''}"
+          >${escHtml(g.pick || '--')}</span>
+          <div style="font-size:11px;color:var(--text-dim);margin-top:2px">
+            ${g.pick_conf != null ? g.pick_conf + '%' : '--'}${g.data_quality ? ' · ' + g.data_quality : ''}
+          </div>
+        </div>
+        <div style="text-align:center">${edge}</div>
+      </div>`;
+    }
+    container.innerHTML = `<div class="pred-section">
+      <div class="league-header">
+        Sporty 12 &middot; Round ${escHtml(data.round || '?')}
+        <span class="count">${games.length} games</span>
+        <span style="margin-left:auto;color:var(--brand);font-weight:700">${escHtml(data.prize || '')}</span>
+      </div>
+      <div style="padding:12px 18px;color:var(--text-dim);font-size:12px;line-height:1.7">
+        Predict all ${data.games_to_predict || 12} correctly to win${data.prizes_note ? ' — ' + escHtml(data.prizes_note) : ''}.
+        Kick-offs and odds as published by SportyBet (GMT+1) · snapshot ${escHtml(data.fetched || '')}.
+        <b>Pick</b>, the percentage and <b>edge</b> are our own model's, not SportyBet's.
+        <br>Picks run through the same calibrated engine as the Predictions tab
+        (${escHtml(data.engine || 'hybrid-dc')}). The percentage under a pick is that
+        outcome's own probability; <b>edge</b> is model probability minus SportyBet's
+        de-vigged price, so a positive number means we rate it higher than the market does.
+      </div>
+      ${jackpotComboHtml(data.combo)}
+      <div class="match-header jk-head">
+        <div>#</div><div>TIME</div><div>MATCH</div>
+        <div>1 / X / 2 &amp; market %</div><div>MODEL PICK</div><div>EDGE</div>
+      </div>
+      ${rows}
+    </div>`;
+  } catch (e) {
+    container.innerHTML = `<div class="loading">Error loading jackpot: ${e.message}</div>`;
+  }
+}
+
+// Cache-busts every API call (so the browser never serves a stale response) and
+// adds refresh=1 when the user explicitly pressed Load, which makes the server
+// re-pull the latest fixtures + scores from the API.
+let _forceRefresh = false;
+function api(path) {
+  const sep = path.includes('?') ? '&' : '?';
+  return path + sep + '_=' + Date.now() + (_forceRefresh ? '&refresh=1' : '');
+}
+
+// "Fetch & Predict" — pulls the games SportyBet is offering for the selected
+// date, predicts them with the model, then fills every tab when done. Runs in
+// the background; this polls the job until it finishes.
+function _genBanner(msg, kind) {
+  const b = document.getElementById('genBanner');
+  b.style.display = 'block';
+  b.textContent = msg;
+  b.style.borderColor = kind === 'error' ? 'var(--red)'
+    : kind === 'done' ? 'var(--green)' : 'var(--card-border)';
+  b.style.color = kind === 'error' ? 'var(--red)'
+    : kind === 'done' ? 'var(--green)' : 'var(--text-dim)';
+}
+
+async function generateForDate() {
+  const dt = document.getElementById('datePicker').value;
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true; btn.style.opacity = 0.6;
+  _genBanner(`Fetching games and predicting for ${dt}… this can take a minute.`);
+
+  try { await fetch(api(`/api/generate?date=${dt}`)); } catch (e) {}
+
+  const poll = async () => {
+    let st;
+    try { st = await (await fetch(api(`/api/generate-status?date=${dt}`))).json(); }
+    catch (e) { st = { status: 'running', step: 'working' }; }
+
+    if (st.status === 'running') {
+      _genBanner(`Working: ${st.step || 'predicting'}…  (loading history + predicting + bots)`);
+      setTimeout(poll, 3000);
+    } else if (st.status === 'done') {
+      _genBanner(`Done — ${st.count || 0} matches predicted for ${dt}. Filling tabs…`, 'done');
+      loadAll(true);
+      setTimeout(() => { document.getElementById('genBanner').style.display = 'none'; }, 4000);
+      btn.disabled = false; btn.style.opacity = 1;
+    } else {
+      _genBanner(`Generation failed: ${st.error || 'unknown error'}`, 'error');
+      btn.disabled = false; btn.style.opacity = 1;
+    }
+  };
+  setTimeout(poll, 2500);
+}
+
+function loadAll(refresh) {
+  _forceRefresh = !!refresh;
   loadPredictions();
   loadHourly();
-  loadCoverage();
   loadPipeline();
-  loadBots();
+  loadBuild();
+  loadJackpot();
+  _forceRefresh = false;  // each loader read the flag synchronously at its fetch
 }
 
 // Auto-refresh pipeline status every 30s
@@ -1117,8 +1863,27 @@ setInterval(() => {
   if (activeTab === 'pipeline') loadPipeline();
 }, 30000);
 
-// Initial load
+// Live refresh: every 2 minutes re-pull the date-sensitive views so finished
+// games settle on screen without a manual reload.
+function refreshLive() {
+  loadPredictions();
+  loadHourly();
+}
+setInterval(refreshLive, 120000);
+
+// Refresh immediately whenever the browser tab is re-opened / becomes visible
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) refreshLive();
+});
+
+// Initial load, then keep live status polling in the background. Polling patches
+// the pills and any open detail panel in place, so the table never re-renders
+// under the user (which would collapse what they had expanded).
 loadAll();
+loadLiveStatus();
+startLivePolling();
+checkVersion();
+setInterval(checkVersion, 60000);
 </script>
 </body>
 </html>

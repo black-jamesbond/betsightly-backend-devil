@@ -24,7 +24,8 @@ from pathlib import Path
 import requests
 
 # ---------------------------------------------------------------------------
-API_KEY  = os.getenv("API_FOOTBALL_API_KEY", "bbfc08f4961fb2ef3476a129b8cb1cd9")
+# No default: a key baked in here would ship with the repository. Put it in .env.
+API_KEY  = os.getenv("API_FOOTBALL_API_KEY", "")
 BASE_URL = "https://v3.football.api-sports.io"
 HEADERS  = {"x-apisports-key": API_KEY}
 

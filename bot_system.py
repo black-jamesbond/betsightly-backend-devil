@@ -35,6 +35,8 @@ from predict_today import (
     get_h2h,
     predict_match,
     normalize_name,
+    _CALIBRATOR,
+    _HYBRID,
     BASE_HOME, BASE_DRAW, BASE_AWAY, BASE_O25, BASE_BTTS, HOME_ADVANTAGE,
 )
 
@@ -85,6 +87,7 @@ def enrich_match(match: Dict, pred: Dict, home_stats: Dict, away_stats: Dict, h2
         "match_date": match.get("match_date", ""),
         "home_score": match.get("match_hometeam_score", ""),
         "away_score": match.get("match_awayteam_score", ""),
+        "match_status": match.get("match_status", ""),
         # Prediction data
         "home_win_p": pred["home_win"] / 100,
         "draw_p": pred["draw"] / 100,
@@ -112,8 +115,23 @@ def enrich_match(match: Dict, pred: Dict, home_stats: Dict, away_stats: Dict, h2
     }
 
 
+_FINISHED_STATUSES = {
+    "Finished", "After Pen.", "After ET", "AET", "FT", "Pen.",
+    "After Penalties", "After Extra Time", "Awarded",
+}
+
+
+def _is_finished(match: Dict) -> bool:
+    """Only settle bets on matches that have actually ended — including cup ties
+    decided in extra time or penalties. Live in-play matches also carry scores,
+    and settling on those is premature."""
+    return match.get("match_status", "") in _FINISHED_STATUSES
+
+
 def get_actual_result(match: Dict) -> Optional[str]:
     """Determine the actual result from a finished match."""
+    if not _is_finished(match):
+        return None
     hs = match.get("home_score", "")
     as_ = match.get("away_score", "")
     if hs == "" or as_ == "":
@@ -133,6 +151,8 @@ def get_actual_result(match: Dict) -> Optional[str]:
 
 def get_actual_goals(match: Dict) -> Optional[int]:
     """Get total goals from a finished match."""
+    if not _is_finished(match):
+        return None
     hs = match.get("home_score", "")
     as_ = match.get("away_score", "")
     if hs == "" or as_ == "":
@@ -145,6 +165,8 @@ def get_actual_goals(match: Dict) -> Optional[int]:
 
 def get_actual_btts(match: Dict) -> Optional[bool]:
     """Check if both teams scored."""
+    if not _is_finished(match):
+        return None
     hs = match.get("home_score", "")
     as_ = match.get("away_score", "")
     if hs == "" or as_ == "":
@@ -209,6 +231,14 @@ class Bet:
             if btts is None:
                 self.result = "pending"
             elif btts:
+                self.result = "win"
+            else:
+                self.result = "loss"
+        elif self.market == "btts_no":
+            btts = get_actual_btts(match_data)
+            if btts is None:
+                self.result = "pending"
+            elif not btts:
                 self.result = "win"
             else:
                 self.result = "loss"
@@ -318,10 +348,14 @@ class PredictionBot:
                 if ODDS_RANGE[0] <= odds <= ODDS_RANGE[1]:
                     bets.append((m, "Over 1.5", odds, p))
             elif market == "btts":
-                p = m["btts_p"]
-                odds = prob_to_odds(p)
-                if ODDS_RANGE[0] <= odds <= ODDS_RANGE[1]:
-                    bets.append((m, "BTTS Yes", odds, p))
+                p_yes = m["btts_p"]
+                p_no = 1 - p_yes
+                odds_yes = prob_to_odds(p_yes)
+                odds_no = prob_to_odds(p_no)
+                if ODDS_RANGE[0] <= odds_yes <= ODDS_RANGE[1]:
+                    bets.append((m, "BTTS Yes", odds_yes, p_yes))
+                if ODDS_RANGE[0] <= odds_no <= ODDS_RANGE[1]:
+                    bets.append((m, "BTTS No", odds_no, p_no))
         return bets
 
     def summary(self) -> Dict:
@@ -429,19 +463,27 @@ class BTTSSpecialist(PredictionBot):
         best = None
         best_score = -1
         for m in matches:
-            p = m["btts_p"]
-            odds = prob_to_odds(p)
-            if not (ODDS_RANGE[0] <= odds <= ODDS_RANGE[1]):
-                continue
+            p_yes = m["btts_p"]
+            p_no = 1 - p_yes
             hs = m["home_stats"]
             as_ = m["away_stats"]
-            attack_score = 0.5
-            if hs.get("found") and as_.get("found"):
-                attack_score = min(1.0, (hs["avg_scored"] + as_["avg_scored"]) / 3.0)
-            score = p * 0.4 + attack_score * 0.4 + m["confidence"] * 0.2
-            if score > best_score:
-                best_score = score
-                best = Bet(m, "btts", "BTTS Yes", odds, p)
+            if not hs.get("found") or not as_.get("found"):
+                continue
+            attack_score = min(1.0, (hs["avg_scored"] + as_["avg_scored"]) / 3.0)
+
+            for p, market, sel in [(p_yes, "btts", "BTTS Yes"), (p_no, "btts_no", "BTTS No")]:
+                odds = prob_to_odds(p)
+                if not (ODDS_RANGE[0] <= odds <= ODDS_RANGE[1]):
+                    continue
+                if sel == "BTTS Yes":
+                    directional = attack_score
+                else:
+                    directional = 1 - attack_score
+                signal = abs(p_yes - 0.50)
+                score = directional * 0.4 + m["confidence"] * 0.3 + signal * 0.3
+                if score > best_score:
+                    best_score = score
+                    best = Bet(m, market, sel, odds, p)
         return best
 
 
@@ -476,6 +518,7 @@ class FormChaser(PredictionBot):
             if best_form > 0.5:
                 candidates.append(("over25", "Over 2.5", m["over25_p"]))
                 candidates.append(("btts", "BTTS Yes", m["btts_p"]))
+                candidates.append(("btts_no", "BTTS No", 1 - m["btts_p"]))
                 candidates.append(("over15", "Over 1.5", m["over15_p"]))
 
             for market, sel, p in candidates:
@@ -510,6 +553,7 @@ class UnderdogSpotter(PredictionBot):
                 ("result", "Away Win", m["away_win_p"]),
                 ("over25", "Over 2.5", m["over25_p"]),
                 ("btts", "BTTS Yes", m["btts_p"]),
+                ("btts_no", "BTTS No", 1 - m["btts_p"]),
             ]
             for market, sel, p in candidates:
                 odds = prob_to_odds(p)
@@ -628,6 +672,7 @@ class StatEdge(PredictionBot):
                 ("result", "Away Win", m["away_win_p"]),
                 ("over25", "Over 2.5", m["over25_p"]),
                 ("btts", "BTTS Yes", m["btts_p"]),
+                ("btts_no", "BTTS No", 1 - m["btts_p"]),
             ]
             for market, sel, p in candidates:
                 odds = prob_to_odds(p)
@@ -687,6 +732,7 @@ class ComboKing(PredictionBot):
                 ("result", "Away Win", m["away_win_p"]),
                 ("over25", "Over 2.5", m["over25_p"]),
                 ("btts", "BTTS Yes", m["btts_p"]),
+                ("btts_no", "BTTS No", 1 - m["btts_p"]),
                 ("over15", "Over 1.5", m["over15_p"]),
             ]
 
@@ -753,6 +799,30 @@ def run_day(date_str: str, stake: float = DEFAULT_STAKE, verbose: bool = True) -
         print("  No fixtures found!")
         return {"date": date_str, "error": "no fixtures"}
 
+    # Refresh each match's status and score from the live feed. fetch_fixtures can
+    # serve a cached list captured earlier in the day, and bets are only settled
+    # from `match_status` + score, so a stale list leaves every leg pending.
+    # In-play scores are harmless here: _is_finished() still refuses to settle
+    # anything that has not ended.
+    try:
+        import fixtures_livescore as _fxl
+        _live = _fxl.fetch_live(date_str)
+        _upd = 0
+        for _m in fixtures:
+            _rec = _live.get(str(_m.get("match_id", "")))
+            if not _rec:
+                continue
+            if _rec.get("status"):
+                _m["match_status"] = _rec["status"]
+            if _rec.get("score"):
+                _m["match_hometeam_score"] = _rec.get("home_score", "")
+                _m["match_awayteam_score"] = _rec.get("away_score", "")
+            _upd += 1
+        if verbose:
+            print(f"  Live status applied to {_upd} matches")
+    except Exception as _exc:
+        print(f"  Live status unavailable ({_exc}); using cached statuses")
+
     if verbose:
         print(f"  {len(fixtures)} total matches")
 
@@ -785,6 +855,10 @@ def run_day(date_str: str, stake: float = DEFAULT_STAKE, verbose: bool = True) -
             h2h = {"meetings": 0}
 
         pred = predict_match(home, away, home_stats, away_stats, h2h)
+        if _HYBRID is not None:
+            pred = _HYBRID.apply(pred, normalize_name(home), normalize_name(away))
+        elif _CALIBRATOR is not None:
+            pred = _CALIBRATOR.apply(pred)
         em = enrich_match(match, pred, home_stats, away_stats, h2h)
         enriched.append(em)
 
