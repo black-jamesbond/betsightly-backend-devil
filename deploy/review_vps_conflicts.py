@@ -57,8 +57,7 @@ def functions(source: str) -> list[str]:
 
 def routes(source: str) -> list[str]:
     # The Flask routes are literal decorators: report paths, not code.
-    return re.findall(r'@app\.route\(["\\']([^"\\']+)', source)
-
+    return re.findall(r"""@app\.route\(["']([^"']+)""", source)
 
 def hunks(source: str) -> list[dict]:
     """Parse standard diff3/zdiff3 Git conflict markers in exact on-disk order."""
@@ -140,7 +139,7 @@ def report(root: Path, path: str, summary: bool) -> None:
                     # Redact common inline assignments. Still review the output.
                     masked = re.sub(
                         r"(?i)(api[_-]?key|password|client_secret|access_token|"
-                        r"authorization|secret_key)\s*[:=]\s*(['\\"])[^'\\"]+\2",
+                        r"authorization|secret_key)\s*[:=].*",
                         r"\1=<REDACTED>", row,
                     )
                     print(masked)
