@@ -6,28 +6,39 @@ on:
   pull_request:
     branches: [main, dev]
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 35
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.9"
-          cache: "pip"
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
 
-      - name: Install dependencies
+      - name: Install runtime and test dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          python -m pip install -r requirements-dev.txt
+          python -m pip install flake8==7.1.1
 
-      - name: Run tests
-        run: pytest tests/unit/ml/ tests/unit/services/test_api_client.py tests/unit/utils/test_config.py -v
+      - name: Run repository tests
+        env:
+          ENVIRONMENT: test
+          DATABASE_URL: "sqlite:///:memory:"
+        run: python -m pytest tests/ -v
 
-      - name: Check code style
+      - name: Check for syntax and critical lint errors
         run: |
-          pip install flake8
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          python -m compileall -q main.py api services dashboard tests
+          python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics

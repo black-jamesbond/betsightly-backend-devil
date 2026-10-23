@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 from database import get_db
 from services import prediction_engine
-from utils.error_handling import handle_database_error
+from utils.error_handling import handle_database_error, ValidationError, BetSightlyError
 from utils.database_optimization import query_performance_monitor
 from utils.security import check_rate_limit
 from api.endpoints.prediction_types import (
