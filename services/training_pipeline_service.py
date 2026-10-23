@@ -9,6 +9,7 @@ import logging
 import json
 import os
 import subprocess
+import sys
 from datetime import datetime, timedelta
 from typing import Dict, List, Any, Optional
 from sqlalchemy.orm import Session
@@ -35,11 +36,13 @@ class TrainingPipelineService:
     
     def __init__(self):
         """Initialize the training pipeline service."""
+        # Only use entry points which actually exist in this repository.
         self.training_scripts = {
-            'streamlined': 'ml_pipeline_streamlined.py',
-            'hybrid': 'train_models_hybrid.py',
-            'quick': 'train_models_quick.py'
+            'streamlined': 'scripts/retrain_models.py',
+            'quick': 'scripts/retrain_models_fast.py',
         }
+        self.root = Path(__file__).resolve().parents[1]
+        self._last_candidate_dir = None
         
         self.accuracy_threshold = 0.05  # Trigger retraining if accuracy drops by 5%
         self.min_new_matches = 50       # Minimum new matches before retraining (weekly)
@@ -144,8 +147,8 @@ class TrainingPipelineService:
                     training_run.deployment_reason = 'Performance improved' if deployment_result else 'Deployment failed'
                     training_run.deployed_at = datetime.now() if deployment_result else None
                 else:
-                    training_run.deployment_status = 'rejected'
-                    training_run.deployment_reason = 'No significant improvement'
+                    training_run.deployment_status = 'awaiting_review'
+                    training_run.deployment_reason = 'Staged candidate; requires independent temporal backtest and approval'
                 
                 training_run.status = 'completed'
                 
@@ -233,73 +236,43 @@ class TrainingPipelineService:
             return True  # Default to training if we can't determine
     
     def _execute_training(self, training_run_id: int, force_retrain: bool = False) -> Dict[str, Any]:
-        """Execute the actual training process using GitHub data for football and basketball."""
+        """Train into a per-run staging directory; never alter live model files."""
+        script = self.root / self.training_scripts['streamlined']
+        if not script.is_file():
+            return {'status': 'error', 'error': 'training entry point missing'}
+        candidate = self.root / 'models' / 'staging' / ('run_' + str(training_run_id))
+        candidate.mkdir(parents=True, exist_ok=True)
+        env = os.environ.copy()
+        env['BETSIGHTLY_MODELS_OUTPUT_DIR'] = str(candidate)
+        self._last_candidate_dir = candidate
         try:
-            logger.info("🚀 Starting weekly training with GitHub datasets")
-
-            # Use the streamlined pipeline for training
-            script_path = self.training_scripts['streamlined']
-
-            if not os.path.exists(script_path):
-                raise FileNotFoundError(f"Training script not found: {script_path}")
-
-            # Build command for weekly training with GitHub data
-            cmd = [
-                'python', script_path,
-                '--train-only',
-                '--data-source', 'github',  # Use GitHub datasets
-                '--sports', 'football,basketball',  # Train both sports
-                '--weekly-mode'  # Weekly training mode
-            ]
-
-            if force_retrain:
-                cmd.append('--retrain')
-
-            logger.info(f"🔧 Executing weekly training command: {' '.join(cmd)}")
-            logger.info("📊 Training data sources:")
-            logger.info("  - Football: GitHub dataset + recent match results")
-            logger.info("  - Basketball: GitHub dataset + recent game results")
-
-            # Execute training script
             result = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                timeout=self.max_training_time
+                [sys.executable, str(script)], cwd=str(self.root), env=env,
+                capture_output=True, text=True, timeout=self.max_training_time,
             )
-            
-            if result.returncode == 0:
-                logger.info("✅ Training script executed successfully")
-                
-                # Parse training results from output
-                training_results = self._parse_training_output(result.stdout)
-                training_results['status'] = 'success'
-                
-                return training_results
-            else:
-                logger.error(f"❌ Training script failed with return code {result.returncode}")
-                logger.error(f"Error output: {result.stderr}")
-                
-                return {
-                    'status': 'error',
-                    'error': f"Training script failed: {result.stderr}",
-                    'return_code': result.returncode
-                }
-                
         except subprocess.TimeoutExpired:
-            logger.error(f"❌ Training timed out after {self.max_training_time} seconds")
-            return {
-                'status': 'error',
-                'error': f"Training timed out after {self.max_training_time} seconds"
-            }
-            
-        except Exception as e:
-            logger.error(f"❌ Error executing training: {str(e)}")
-            return {
-                'status': 'error',
-                'error': str(e)
-            }
-    
+            return {'status': 'error', 'error': 'training timed out'}
+        except OSError as exc:
+            return {'status': 'error', 'error': str(exc)}
+        if result.returncode != 0:
+            return {'status': 'error', 'error': (result.stderr or result.stdout)[-800:]}
+        try:
+            meta = json.loads((candidate / 'meta.json').read_text(encoding='utf-8'))
+            weights = json.loads((candidate / 'model_weights.json').read_text(encoding='utf-8'))
+            if not meta.get('models') or not weights:
+                raise ValueError('missing trained models or measured test scores')
+        except (OSError, ValueError, TypeError) as exc:
+            return {'status': 'error', 'error': 'training outputs invalid: ' + str(exc)}
+        return {
+            'status': 'success', 'models_trained': meta['models'],
+            'algorithms_used': sorted(set(str(x).rsplit('_', 1)[-1]
+                                          for x in meta['models'])),
+            'training_data_size': int(meta.get('n_samples') or 0),
+            'new_matches_added': 0,
+            'data_source': 'api-football-history',
+            'staged_path': str(candidate),
+        }
+
     def _parse_training_output(self, output: str) -> Dict[str, Any]:
         """Parse training script output to extract results."""
         results = {
@@ -415,30 +388,45 @@ class TrainingPipelineService:
             return None
     
     def _count_new_matches(self, db: Session) -> int:
-        """Count new matches available for training."""
-        try:
-            # This would typically count new match results since last training
-            # For now, return a placeholder value
-            return 50
-        except Exception as e:
-            logger.error(f"Error counting new matches: {str(e)}")
+        """Count labeled rows newer than the active model's recorded train date."""
+        path = self.root / 'data' / 'api-football' / 'matches.csv'
+        meta_path = self.root / 'models' / 'api_football' / 'meta.json'
+        if not path.is_file():
             return 0
-    
-    def _evaluate_new_models(self) -> Dict[str, float]:
-        """Evaluate newly trained models."""
         try:
-            # This would typically run evaluation on a test set
-            # For now, return placeholder improved values
-            return {
-                'match_result': 0.67,
-                'over_under': 0.64,
-                'btts': 0.60,
-                'overall': 0.64
-            }
-        except Exception as e:
-            logger.error(f"Error evaluating new models: {str(e)}")
+            import pandas as pd
+            dates = pd.to_datetime(pd.read_csv(path, usecols=['date'])['date'],
+                                   errors='coerce', utc=True)
+            if not meta_path.is_file():
+                return int(dates.notna().sum())
+            meta = json.loads(meta_path.read_text(encoding='utf-8'))
+            cutoff = pd.Timestamp(meta['trained_at'])
+            if cutoff.tzinfo is None:
+                cutoff = cutoff.tz_localize('UTC')
+            return int((dates > cutoff).sum())
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            logger.warning('Training data freshness unknown: %s', exc)
+            return 0
+
+    def _evaluate_new_models(self) -> Dict[str, float]:
+        """Read measured holdout accuracies; never fabricate model metrics."""
+        if self._last_candidate_dir is None:
             return {}
-    
+        try:
+            weights = json.loads((self._last_candidate_dir / 'model_weights.json').read_text())
+            targets = ('match_result', 'over_1_5', 'over_2_5', 'btts')
+            scores = {}
+            for target in targets:
+                values = [float(v) for k, v in weights.items() if k.startswith(target + '_')]
+                if not values or any(v < 0 or v > 1 for v in values):
+                    return {}
+                scores[target] = max(values)
+            scores['overall'] = sum(scores.values()) / len(scores)
+            return scores
+        except (OSError, ValueError, TypeError, AttributeError) as exc:
+            logger.warning('Unable to evaluate staged model weights: %s', exc)
+            return {}
+
     def _calculate_performance_improvement(self, previous: Dict[str, float], 
                                          new: Dict[str, float]) -> Dict[str, float]:
         """Calculate performance improvement metrics."""
@@ -451,25 +439,13 @@ class TrainingPipelineService:
         return improvement
     
     def _should_deploy_models(self, performance_improvement: Dict[str, float]) -> bool:
-        """Decide whether to deploy new models based on performance."""
-        try:
-            # Deploy if overall improvement is positive
-            overall_improvement = performance_improvement.get('overall', 0)
-            return overall_improvement > 0.01  # At least 1% improvement
-        except Exception as e:
-            logger.error(f"Error deciding deployment: {str(e)}")
-            return False
-    
+        """No automatic promotion from a random holdout; temporal test required."""
+        return False
+
     def _deploy_new_models(self) -> bool:
-        """Deploy newly trained models to production."""
-        try:
-            # This would typically move models from training to production directory
-            # For now, just log the deployment
-            logger.info("🚀 Deploying new models to production")
-            return True
-        except Exception as e:
-            logger.error(f"Error deploying models: {str(e)}")
-            return False
+        """Production promotion must be an explicit, independently evaluated step."""
+        logger.warning('Automatic promotion disabled: staged model needs temporal backtest')
+        return False
 
 # Create singleton instance
 training_pipeline_service = TrainingPipelineService()
