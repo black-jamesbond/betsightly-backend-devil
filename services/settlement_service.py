@@ -266,6 +266,11 @@ def sync_date(db: sqlite3.Connection, day: str, fixture_rows: list[dict],
               predictions: list[dict], bot_data: dict | None = None,
               build_snapshot: dict | None = None) -> dict:
     """Reconcile public predictions/bots without changing their source files."""
+    # CLI/config callers use ISO strings, but date-scoped integration jobs
+    # may pass datetime.date. Persist exactly one canonical YYYY-MM-DD value.
+    from datetime import date as _date
+    day = day.isoformat() if isinstance(day, _date) else str(day)
+    _date.fromisoformat(day)
     init(db)
     started = utc_now()
     settled = pending = void = errors = 0
