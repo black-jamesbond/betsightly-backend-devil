@@ -1773,7 +1773,7 @@ def api_booking_status():
     import hashlib
     import re
     import sportybet_betting as sbb
-    from services.bookmaker_verification import ensure_not_expired
+    from services.bookmaker_verification import ensure_not_expired, quote_is_recent
     ticket_id = (request.args.get("ticket_id") or "").strip().lower()
     if not re.fullmatch(r"[0-9a-f]{24}", ticket_id):
         return jsonify({"error": "invalid booking tracking ID"}), 400
@@ -1794,11 +1794,19 @@ def api_booking_status():
                 watch = json.load(f)
             record = (watch.get("tickets") or {}).get(identity)
             if record:
-                recent_check = record.get("quote_checked_at_ms")
-                if record.get("status") in ("unavailable", "error"):
-                    status = record["status"]
+                # An older monitor report must not invalidate a code that was
+                # issued later in a separate operator request.
+                monitor_at = int(record.get("quote_checked_at_ms") or 0)
+                issued_at = int(saved.get("issued_at_ms") or 0)
+                if monitor_at >= issued_at:
+                    recent_check = monitor_at
+                    if record.get("status") in ("unavailable", "error"):
+                        status = record["status"]
         except (ValueError, OSError, TypeError):
             pass
+    if status in ("readback_verified", "issued_unverified") and not quote_is_recent(
+            saved, recent_check):
+        status = "stale_quote"
     return jsonify({
         "ticket_id": ticket_id, "status": status,
         "share_code": saved.get("share_code") if status in ("readback_verified", "issued_unverified") else None,
