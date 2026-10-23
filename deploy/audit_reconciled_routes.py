@@ -84,16 +84,21 @@ def main() -> int:
         print(f"BLOCKED: reconciled Flask file has Python syntax error at {exc.lineno}")
         return 1
 
+    # Resolve from immutable commit refs, not temporary :2/:3 index stages.
+    # The index's conflict stages disappear after git add, which previously
+    # could cause an incorrectly green route audit.
+    stamp = root.parent.name
+    sources = (
+        ("c44e00939976b54d7b9d3e457d85d296c0fe41c8", "tested release"),
+        ("vps/source-" + stamp, "live VPS source snapshot"),
+    )
     wanted = set()
-    for stage, label in ((2, "tested release"), (3, "live VPS")):
+    for ref, label in sources:
         try:
-            source = git(root, "show", f":{stage}:{PATH}")
+            source = git(root, "show", f"{ref}:{PATH}")
         except subprocess.CalledProcessError:
-            # Git discards conflict stages after the file was staged. The full
-            # version inventory must be captured BEFORE git add.
-            print(f"NOTICE: {label} index stage is gone; "
-                  "route-union check requires pre-resolution report")
-            continue
+            print(f"BLOCKED: {label} ref missing: {ref}")
+            return 1
         try:
             routes, _ = ast_routes(source)
         except SyntaxError:
