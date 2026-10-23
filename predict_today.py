@@ -740,6 +740,7 @@ def main():
         pred["country"] = country
         pred["kick_off"] = kick_off
         pred["match_id"] = match.get("match_id", "")
+        pred["match_date"] = match.get("match_date", args.date)
         predictions.append(pred)
 
         if (i + 1) % 50 == 0:
