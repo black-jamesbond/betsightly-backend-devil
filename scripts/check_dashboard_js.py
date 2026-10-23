@@ -13,7 +13,10 @@ if not blocks:
 with tempfile.TemporaryDirectory(prefix="betsightly-js-") as scratch:
     for index, source in enumerate(blocks):
         path = Path(scratch) / f"dashboard-{index}.js"
-        path.write_text(source, encoding="utf-8")
+        # Flask/Jinja injects values before the browser parses this script.
+        # Replace only those template expressions with a JS string for syntax checks.
+        sanitized = re.sub(r"\{\{[\s\S]*?\}\}", '""', source)
+        path.write_text(sanitized, encoding="utf-8")
         result = subprocess.run(["node", "--check", str(path)], check=False)
         if result.returncode:
             raise SystemExit(result.returncode)
