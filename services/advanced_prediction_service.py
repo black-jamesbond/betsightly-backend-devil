@@ -354,6 +354,7 @@ class AdvancedPredictionService:
                 else:
                     # Fallback to direct SHAP setup
                     try:
+                        import shap  # optional; loaded only if explanation support is enabled
                         explainer = shap.TreeExplainer(model_info["model"])
                         self.explainers[model_name] = {
                             "type": "shap",
