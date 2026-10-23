@@ -2,7 +2,7 @@ name: Backend CI
 
 on:
   push:
-    branches: [main, dev, 'repair/**', 'feature/**', 'release/**']
+    branches: [main, dev, 'repair/**', 'feature/**', 'release/**', 'audit/**']
   pull_request:
     branches: [main, dev]
 
