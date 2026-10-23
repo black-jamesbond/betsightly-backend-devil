@@ -984,7 +984,8 @@ def tag_pricable(preds, field="over_1.5"):
     except Exception as exc:
         app.logger.warning("SportyBet prices unavailable for tagging: %s", exc)
         for p in preds:
-            p["sb_price"] = bool(p.get("sportybet"))
+            # An offered fixture is NOT proof its actual market can be priced.
+            p["sb_price"] = False
         return
     for p in preds:
         event, _kind = sbb.find_event(index, p.get("home_team", ""),
@@ -1039,7 +1040,7 @@ def _acca_inputs(date_str, sportybet_only=True, market=None):
             def odds_lookup(home, away, _index=index, _sbb=sbb):
                 return _sbb.find_event(_index, home, away)
         except Exception as exc:
-            app.logger.warning("SportyBet odds unavailable (%s); using fair odds", exc)
+            app.logger.warning("SportyBet odds unavailable (%s); ticket booking disabled", exc)
             odds_status = {"status": "unavailable", "reason": str(exc)}
         # Booking-code ids for games the board has dropped: the live board still
         # lists in-play fixtures under the same event id, and anything we priced
@@ -1059,8 +1060,12 @@ def _acca_inputs(date_str, sportybet_only=True, market=None):
     # Build from ALL usable matches (not just upcoming) so a ticket can be tracked
     # to a result as its games finish. In SportyBet mode the feed only lists
     # upcoming games, so the pool is naturally limited to what can still be backed.
-    pool = ba.build_pool(preds, None, odds_lookup=odds_lookup, markets=markets,
-                         started_ids=started_ids, id_lookup=id_lookup)
+    # Never turn fair model odds into purportedly placeable bookmaker legs.
+    if sportybet_only and odds_lookup is None:
+        pool = []
+    else:
+        pool = ba.build_pool(preds, None, odds_lookup=odds_lookup, markets=markets,
+                             started_ids=started_ids, id_lookup=id_lookup)
     # Already-played games are priced at fair odds (their board prices are gone),
     # but they still carry SportyBet ids when we know them, so their tickets keep
     # a working booking code.
@@ -1612,6 +1617,8 @@ def api_group_code():
     ids = [i for i in (request.args.get("ids") or "").replace(" ", "").split(",") if i]
     if not ids:
         return jsonify({"error": "no matches given"}), 400
+    if len(ids) > _GROUP_MAX_LEGS or len(set(ids)) != len(ids):
+        return jsonify({"error": "Too many games or repeated fixture IDs"}), 400
 
     try:
         import build_accas as ba
@@ -1651,6 +1658,8 @@ def api_group_code():
 
         side = "over" if prob >= 50 else "under"
         leg = {"match_id": mid, "match": name,
+               "home": p.get("home_team", ""), "away": p.get("away_team", ""),
+               "match_date": p.get("match_date", ""),
                "league": p.get("league", ""), "country": p.get("country", ""),
                "kick_off": to_local_hhmm(p.get("kick_off"), date_str),
                "kick_off_utc": p.get("kick_off", ""),
@@ -1679,23 +1688,33 @@ def api_group_code():
         selections.append(ids_sb)
         legs.append(leg)
 
-    if not selections:
+    # Never silently truncate a group and call its code the requested ticket.
+    if skipped or len(selections) != len(ids):
         return jsonify({
-            "error": "no bookable games in this group" + (
-                " — " + "; ".join(sorted({s["reason"] for s in skipped})) if skipped else ""),
-            "skipped": skipped}), 409
+            "error": "Exact group unavailable: some games are missing, started or unpriced",
+            "skipped": skipped, "requested": len(ids), "resolved": len(selections),
+        }), 409
 
-    combined = round(math.prod(l["odds"] for l in legs), 2)
     try:
-        code = sbb.booking_code_for(selections)
+        from services.bookmaker_verification import verify_and_reprice
+        board = sbb.fetch_odds_table(save=True)  # fresh bookmaker board; fail closed
+        quote = verify_and_reprice(selections, board, expected_legs=legs)
+        for leg, q in zip(legs, quote["selections"]):
+            leg["odds"] = q["odds"]
+        code = sbb.booking_code_for(
+            quote["selections"], quote_signature=quote["quote_signature"],
+            deadline_ms=quote["deadline_ms"],
+        )
     except Exception as exc:
-        return jsonify({"error": str(exc), "legs": legs, "skipped": skipped}), 502
+        return jsonify({"error": str(exc), "legs": legs}), 409
 
     return jsonify({
-        "date": date_str, "n_legs": len(legs), "odds": combined,
+        "date": date_str, "n_legs": len(legs), "odds": quote["odds"],
         "share_code": code["share_code"], "share_url": code["share_url"],
         "cached": code.get("cached", False), "variant": variant,
-        "legs": legs, "skipped": skipped,
+        "verification": "issued_not_readback_verified",
+        "quote_checked_at_ms": quote["checked_at_ms"],
+        "legs": legs, "skipped": [],
     })
 
 
@@ -1775,14 +1794,30 @@ def api_build_code():
                                  "(the odds moved) — reload and try again"}), 409
 
     try:
-        code = sbb.booking_code_for(selections)
+        from services.bookmaker_verification import verify_and_reprice
+        # A frozen display ticket is not proof that its odds remain available.
+        # Require a fresh upcoming board and exact event/market/fixture match.
+        board = sbb.fetch_odds_table(save=True)
+        for leg in legs:
+            leg.setdefault("home", ba.leg_teams(leg)[0])
+            leg.setdefault("away", ba.leg_teams(leg)[1])
+        quote = verify_and_reprice(selections, board, expected_legs=legs)
+        for leg, q in zip(legs, quote["selections"]):
+            leg["odds"] = q["odds"]
+        code = sbb.booking_code_for(
+            quote["selections"], quote_signature=quote["quote_signature"],
+            deadline_ms=quote["deadline_ms"],
+        )
     except Exception as exc:
-        return jsonify({"error": str(exc)}), 502
+        return jsonify({"error": str(exc),
+                        "message": "Ticket must be repriced on the active bookmaker board"}), 409
 
     return jsonify({
         "date": date_str, "section": section, "target": target, "index": index,
-        "n_legs": len(legs), "odds": tickets[index].get("odds", ""),
+        "n_legs": len(legs), "odds": quote["odds"],
         "fingerprint": fingerprint, "cached": code.get("cached", False),
+        "verification": "issued_not_readback_verified",
+        "quote_checked_at_ms": quote["checked_at_ms"],
         "share_code": code["share_code"], "share_url": code["share_url"],
         "legs": [{"match": leg["match"], "selection": leg["selection"],
                   "odds": leg["odds"], "kick_off": leg["kick_off"]}
