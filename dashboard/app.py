@@ -502,15 +502,16 @@ def _do_fetch_scores(date_str):
         except Exception:
             pass
 
+    from services.settlement_service import normalize_final
     for m in data:
-        mid = str(m.get("match_id", ""))
-        if m.get("match_status") not in _FINISHED_STATUSES:
+        mid = str(m.get("match_id") or "")
+        if not mid:
             continue
-        # Settle on the 90-minute full-time score (not extra time / penalties).
-        hs = m.get("match_hometeam_ft_score") or m.get("match_hometeam_score", "")
-        aws = m.get("match_awayteam_ft_score") or m.get("match_awayteam_score", "")
-        if hs != "":
-            scores[mid] = {"hs": hs, "as": aws}  # add/update, never remove
+        final = normalize_final(m)
+        # Extra time, in-play, awarded and malformed scores cannot settle 90m.
+        if final["status"] == "finished":
+            scores[mid] = {"hs": final["home_score"],
+                           "as": final["away_score"]}
 
     try:
         CACHE_DIR.mkdir(parents=True, exist_ok=True)
