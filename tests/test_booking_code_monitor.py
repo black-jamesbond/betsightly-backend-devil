@@ -134,6 +134,29 @@ class BookingCodeMonitorTests(unittest.TestCase):
         self.assertEqual(result["unavailable"], 1)
         self.assertEqual(result["renewed"], 0)
 
+    def test_concurrent_requests_share_one_code_and_preserve_cache(self):
+        from concurrent.futures import ThreadPoolExecutor
+        from services.bookmaker_verification import verify_and_reprice
+        quote = verify_and_reprice([selection()], [event()], now_ms=NOW)
+        with patch.object(sbb, "create_booking_code",
+                          side_effect=self._issue), patch.object(
+                              sbb, "read_booking_code",
+                              side_effect=lambda code: readback_payload(code)
+                          ), patch.object(sbb.time, "time", return_value=NOW / 1000):
+            def request_code(_):
+                return sbb.booking_code_for(
+                    quote["selections"],
+                    quote_signature=quote["quote_signature"],
+                    deadline_ms=quote["deadline_ms"],
+                )
+            with ThreadPoolExecutor(max_workers=6) as pool:
+                results = list(pool.map(request_code, range(10)))
+        self.assertEqual(len(self.calls), 1)
+        self.assertEqual({r["share_code"] for r in results}, {"ABC1"})
+        import json
+        saved = json.loads(self.path.read_text(encoding="utf-8"))
+        self.assertEqual(len(saved), 1)
+
     def test_find_event_reversed_is_not_accepted(self):
         idx = sbb.build_index([event()])
         actual, kind = sbb.find_event(idx, "Away FC", "Home FC")
