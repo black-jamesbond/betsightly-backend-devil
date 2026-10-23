@@ -166,3 +166,19 @@ def ensure_not_expired(saved: dict, now_ms: int | None = None) -> bool:
     """A cached code cannot be represented as current after first kickoff."""
     now_ms = int(time.time() * 1000) if now_ms is None else now_ms
     return isinstance(saved, dict) and int(saved.get("deadline_ms") or 0) > now_ms
+
+
+def quote_is_recent(saved: dict, quote_checked_at_ms: int | None = None,
+                    now_ms: int | None = None, max_age_minutes: int = 15) -> bool:
+    """A share code does not establish continuing bookmaker availability.
+
+    Mark its status stale if neither the initial quote nor monitoring has
+    checked the bookmaker within the acceptable freshness window.
+    """
+    now_ms = int(time.time() * 1000) if now_ms is None else int(now_ms)
+    try:
+        checked = max(int(saved.get("issued_at_ms") or 0),
+                      int(quote_checked_at_ms or 0))
+    except (TypeError, ValueError):
+        return False
+    return checked > 0 and 0 <= now_ms - checked < max_age_minutes * 60000
