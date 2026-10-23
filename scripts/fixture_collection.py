@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from services.weekly_fixture_collector import (
-    collect_day, collect_week, connect, lagos_today, next_sunday,
+    collect_day, collect_week, connect, current_sunday, lagos_today,
     status_summary,
 )
 
@@ -53,7 +53,7 @@ def main(argv=None) -> int:
                                 cache_dir=args.cache_dir,
                                 publish_cache=args.publish_cache)]
         elif args.mode == "weekly":
-            start = args.start or next_sunday(lagos_today())
+            start = args.start or current_sunday(lagos_today())
             rows = collect_week(db, start, cache_dir=args.cache_dir,
                                 publish_cache=args.publish_cache)
         else:
