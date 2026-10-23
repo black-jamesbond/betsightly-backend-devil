@@ -788,6 +788,11 @@ def api_jackpot():
     import sportybet_jackpot as jp
 
     data = jp.load_jackpot()
+    freshness = jp.snapshot_freshness(data)
+    if not freshness["fresh"]:
+        return jsonify({"status": "stale", "error": freshness["reason"],
+                        "round": data.get("round", ""), "games": [],
+                        "source": data.get("source", "")}), 503
     games = data.get("games", [])
     round_id = str(data.get("round") or "current")
     hit = _jackpot_cache.get(round_id)
