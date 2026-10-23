@@ -1878,6 +1878,38 @@ def api_build_code():
     })
 
 
+@app.route("/api/settlement-report")
+def api_settlement_report():
+    """Read persisted final settlement totals without network calls or side effects."""
+    import sqlite3
+    from datetime import date as _date
+    from services.settlement_service import init, settlement_report
+    date_str = request.args.get("date") or datetime.now().strftime("%Y-%m-%d")
+    try:
+        _date.fromisoformat(date_str)
+    except ValueError:
+        return jsonify({"error": "date must be YYYY-MM-DD"}), 400
+    db_path = ROOT / "data" / "fixtures" / "fixture_store.sqlite3"
+    if not db_path.exists():
+        return jsonify({"date": date_str, "status": "not_configured",
+                        "message": "settlement database has not been initialized"}), 503
+    try:
+        with sqlite3.connect(db_path, timeout=5) as db:
+            db.row_factory = sqlite3.Row
+            init(db)
+            result = settlement_report(db, date_str)
+            latest = db.execute(
+                "SELECT status,completed_utc,error FROM settlement_runs "
+                "WHERE match_date=? ORDER BY id DESC LIMIT 1",
+                (date_str,),
+            ).fetchone()
+            result["job"] = dict(latest) if latest else None
+        return jsonify(result)
+    except Exception as exc:
+        app.logger.exception("Settlement report failed: %s", exc)
+        return jsonify({"error": "settlement reporting unavailable"}), 503
+
+
 @app.route("/api/bots")
 def api_bots():
     """Return bot simulation results."""
