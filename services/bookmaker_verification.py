@@ -134,6 +134,8 @@ def verify_and_reprice(
                         ).replace(tzinfo=timezone.utc).timestamp() * 1000)
                         if abs(expected_ms - int(event["start_ms"])) > MAX_KICKOFF_MISMATCH_SECONDS * 1000:
                             raise BookingValidationError("Kickoff date mismatch for " + event_id)
+                except BookingValidationError:
+                    raise
                 except (ValueError, IndexError):
                     raise BookingValidationError("Invalid fixture kickoff timestamp")
         odds, _market = _selected_market(event, selection)
