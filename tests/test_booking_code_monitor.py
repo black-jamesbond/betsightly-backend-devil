@@ -9,6 +9,15 @@ from services.booking_code_monitor import refresh_tracked_codes
 from tests.test_bookmaker_verification import NOW, event, selection
 
 
+def readback_payload(code):
+    return {"bizCode": 10000, "data": {"shareCode": code,
+        "unavailableOutcomes": [], "outcomes": [{
+            "eventId": "sr:match:1",
+            "markets": [{"id": "18", "specifier": "total=1.5",
+                         "outcomes": [{"id": "12"}]}],
+        }]}}
+
+
 class BookingCodeMonitorTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -36,7 +45,10 @@ class BookingCodeMonitorTests(unittest.TestCase):
                             [selection()], [event(odds=1.44)], now_ms=NOW + 30_000
                         )
         with patch.object(sbb, "create_booking_code",
-                          side_effect=self._issue):
+                          side_effect=self._issue), patch.object(
+                              sbb, "read_booking_code",
+                              side_effect=lambda code: readback_payload(code)
+                          ):
             with patch.object(sbb.time, "time", return_value=NOW / 1000):
                 old = sbb.booking_code_for(
                     q1["selections"], quote_signature=q1["quote_signature"],
@@ -61,6 +73,9 @@ class BookingCodeMonitorTests(unittest.TestCase):
         q = verify_and_reprice([selection()], [event()], now_ms=NOW)
         with patch.object(sbb, "create_booking_code",
                           side_effect=self._issue), patch.object(
+                              sbb, "read_booking_code",
+                              side_effect=lambda code: readback_payload(code)
+                          ), patch.object(
                               sbb.time, "time", return_value=NOW / 1000
                           ):
             new = sbb.booking_code_for(
