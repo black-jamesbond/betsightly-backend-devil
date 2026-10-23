@@ -157,7 +157,7 @@ def record_selection(
         "SELECT * FROM settled_fixtures WHERE source='livescore' AND source_id=?",
         (str(match_id),)
     ).fetchone()
-    if result is None:
+    if result is None or result["match_date"] != match_date:
         outcome = "PENDING"
         h = a = None
     else:
@@ -280,13 +280,34 @@ def sync_date(db: sqlite3.Connection, day: str, fixture_rows: list[dict],
                 pending += 1
         except ValueError:
             errors += 1
+    # Legacy cards without a trustworthy publication timestamp may have been
+    # generated after kickoff. Preserve them as unverified history rather than
+    # counting their correct guesses toward audited pre-match model accuracy.
+    kickoff_by_id = {}
+    for fixture in fixture_rows:
+        try:
+            daystamp = str(fixture["match_date"]) + " " + str(fixture["match_time"])
+            kickoff_by_id[str(fixture["match_id"])] = datetime.strptime(
+                daystamp, "%Y-%m-%d %H:%M"
+            ).replace(tzinfo=timezone.utc)
+        except (KeyError, TypeError, ValueError):
+            continue
     for p in predictions:
         if not isinstance(p, dict) or not p.get("match_id"):
             continue
         selection = p.get("prediction")
+        verified_pre_match = False
+        if p.get("published_at_utc"):
+            try:
+                issued = datetime.fromisoformat(str(p["published_at_utc"]).replace("Z", "+00:00"))
+                kickoff = kickoff_by_id.get(str(p["match_id"]))
+                verified_pre_match = (issued.tzinfo is not None and kickoff is not None
+                                      and issued.astimezone(timezone.utc) < kickoff)
+            except (TypeError, ValueError):
+                pass
         if selection in RULES:
             record_selection(
-                db, ticket_kind="prediction",
+                db, ticket_kind="prediction" if verified_pre_match else "prediction_unverified",
                 ticket_id=day + ":" + str(p["match_id"]),
                 leg_id=str(p["match_id"]),
                 match_date=day, match_id=str(p["match_id"]),
