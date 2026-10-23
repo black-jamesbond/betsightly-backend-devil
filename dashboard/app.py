@@ -36,6 +36,37 @@ except Exception:            # keep the dashboard usable if that module is missi
 
 app = Flask(__name__)
 
+# Browser-visible endpoints that create expensive jobs or SportyBet share
+# codes require a long operator key (never put it in a URL or HTML template).
+# Read-only predictions/results/dashboard remain public.
+from services.dashboard_security import (WindowLimiter, needs_operator_auth,
+                                         valid_operator_token)
+_operator_limiter = WindowLimiter(max_events=8, window_sec=60)
+
+
+@app.before_request
+def protect_operator_actions():
+    if not needs_operator_auth(request.path, request.method, request.args):
+        return None
+    token = os.environ.get("BETSIGHTLY_DASHBOARD_ADMIN_TOKEN", "")
+    if len(token) < 32:
+        return jsonify({"error": "Admin operations disabled: configure a strong operator token"}), 503
+    provided = request.headers.get("X-Betsightly-Admin-Token", "")
+    if not valid_operator_token(provided, token):
+        return jsonify({"error": "Operator authorization required"}), 401
+    client = request.remote_addr or "unknown"
+    if not _operator_limiter.allowed(client + ":" + request.path):
+        return jsonify({"error": "Too many operator requests"}), 429
+    return None
+
+
+@app.after_request
+def add_security_headers(response):
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "same-origin"
+    return response
+
 # Reload templates from disk on every render. Without this a running server
 # keeps the template it read at startup, so UI edits look like they "didn't
 # apply" until the process is restarted. Static files (theme.css) are always
