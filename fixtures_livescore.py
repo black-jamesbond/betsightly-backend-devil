@@ -174,8 +174,9 @@ def to_apifootball(payload: dict) -> list:
                 "match_awayteam_name": away,
                 "match_hometeam_score": h_score,
                 "match_awayteam_score": a_score,
-                "match_hometeam_ft_score": h_score if status == "Finished" else "",
-                "match_awayteam_ft_score": a_score if status == "Finished" else "",
+                # Extra time/penalties scores are not 90-minute FT scores.
+                "match_hometeam_ft_score": h_score if raw_phase == "FT" else "",
+                "match_awayteam_ft_score": a_score if raw_phase == "FT" else "",
                 "match_hometeam_ht_score": h_ht,
                 "match_awayteam_ht_score": a_ht,
                 "league_name": league,
