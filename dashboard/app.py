@@ -1913,6 +1913,17 @@ def api_build_code():
     })
 
 
+@app.route("/api/operations/health")
+def api_operations_health():
+    """Read-only independent process/job status; no secrets or external calls."""
+    from services.operational_health import inspect
+    payload = inspect(ROOT)
+    response = jsonify(payload)
+    response.status_code = 200 if payload["status"] == "healthy" else 503
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
+
 @app.route("/api/settlement-report")
 def api_settlement_report():
     """Read persisted final settlement totals without network calls or side effects."""
