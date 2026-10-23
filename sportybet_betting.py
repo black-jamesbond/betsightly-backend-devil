@@ -529,7 +529,9 @@ def booking_code_for(selections: list, use_cache: bool = True,
     bookmaker ticket-readback endpoint verified its final contents.
     """
     from services.bookmaker_verification import ensure_not_expired
+    import hashlib
     key = fingerprint(selections)
+    tracking_id = hashlib.sha256(key.encode("utf-8")).hexdigest()[:24]
     cache = codes_cache()
     now_ms = int(time.time() * 1000)
     cached = cache.get(key)
@@ -541,7 +543,8 @@ def booking_code_for(selections: list, use_cache: bool = True,
             < max(0, max_cache_seconds) * 1000
     )
     if fresh:
-        return {**cached, "cached": True, "verification": "issued_not_readback_verified"}
+        return {**cached, "cached": True, "tracking_id": tracking_id,
+                "verification": "issued_not_readback_verified"}
 
     result = create_booking_code(selections)
     saved = {
@@ -558,7 +561,7 @@ def booking_code_for(selections: list, use_cache: bool = True,
         temp.replace(CODE_CACHE)
     except OSError as exc:
         log.warning("could not persist booking code: %s", exc)
-    return {**saved, "cached": False}
+    return {**saved, "cached": False, "tracking_id": tracking_id}
 
 
 if __name__ == "__main__":
