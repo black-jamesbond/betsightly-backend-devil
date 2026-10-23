@@ -15,7 +15,7 @@ DAY = "2026-10-23"
 
 def fixture(match_id="abc", status="Finished", home="2", away="1"):
     return {
-        "match_id": match_id, "match_date": DAY,
+        "match_id": match_id, "match_date": DAY, "match_time": "18:30",
         "match_status": status, "match_hometeam_score": home,
         "match_awayteam_score": away,
         "match_hometeam_ft_score": home if status == "Finished" else "",
@@ -115,7 +115,8 @@ class SettlementTests(unittest.TestCase):
         self.assertEqual(outcome, "PENDING")
 
     def test_full_sync_predictions_and_bots(self):
-        pred = [{"match_id": "abc", "prediction": "Home Win"}]
+        pred = [{"match_id": "abc", "prediction": "Home Win",
+                 "published_at_utc": "2026-10-23T09:00:00+00:00"}]
         bot = {"bots": [{"bot": "Over bot", "history": [
             {"match_id": "abc", "selection": "Over 1.5", "status": "PENDING"}
         ]}]}
@@ -147,6 +148,19 @@ class SettlementTests(unittest.TestCase):
         ]}]}}
         settle_snapshot_tickets(self.db, DAY, frozen)
         self.assertEqual(settlement_report(self.db, DAY)["tickets"]["sportybet"]["VOID"], 1)
+
+    def test_unverifiable_legacy_predictions_do_not_count_as_audited(self):
+        legacy = [{"match_id": "abc", "prediction": "Home Win"}]
+        result = sync_date(self.db, DAY, [fixture()], legacy)
+        self.assertNotIn("prediction", result["selections"])
+        self.assertEqual(result["selections"]["prediction_unverified"]["WIN"], 1)
+
+    def test_post_kickoff_prediction_does_not_count_as_audited(self):
+        late = [{"match_id": "abc", "prediction": "Home Win",
+                 "published_at_utc": "2026-10-23T21:00:00+00:00"}]
+        result = sync_date(self.db, DAY, [fixture()], late)
+        self.assertNotIn("prediction", result["selections"])
+        self.assertEqual(result["selections"]["prediction_unverified"]["WIN"], 1)
 
     def test_wrong_score_is_not_zero(self):
         row = fixture(home="oops", away="1")
