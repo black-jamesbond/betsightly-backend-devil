@@ -31,6 +31,13 @@ DDL = [
         outcome TEXT NOT NULL, home_score INTEGER, away_score INTEGER,
         updated_utc TEXT NOT NULL,
         PRIMARY KEY(ticket_kind,ticket_id,leg_id))""",
+    """CREATE TABLE IF NOT EXISTS settled_tickets (
+        snapshot_mode TEXT NOT NULL, ticket_id TEXT NOT NULL,
+        match_date TEXT NOT NULL, outcome TEXT NOT NULL,
+        win_legs INTEGER NOT NULL, loss_legs INTEGER NOT NULL,
+        void_legs INTEGER NOT NULL, pending_legs INTEGER NOT NULL,
+        updated_utc TEXT NOT NULL,
+        PRIMARY KEY(snapshot_mode,ticket_id))""",
     """CREATE TABLE IF NOT EXISTS settlement_runs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         match_date TEXT NOT NULL, started_utc TEXT NOT NULL,
@@ -171,6 +178,62 @@ def record_selection(
     return outcome
 
 
+def settle_snapshot_tickets(db: sqlite3.Connection, match_date: str,
+                            snapshot: dict | None) -> int:
+    """Settle frozen accumulator leg IDs; never invent missing bookmaker odds.
+
+    A slip with a void and otherwise winning legs is VOID (stake return depends
+    on verified bookmaker terms), not counted as a clean winning accumulator.
+    """
+    import hashlib
+    total = 0
+    for mode, tickets in (snapshot or {}).get("modes", {}).items():
+        if not isinstance(tickets, list):
+            continue
+        for ticket in tickets:
+            legs = ticket.get("legs") or []
+            if not legs:
+                continue
+            identity = [(str(l.get("match_id") or ""), str(l.get("selection") or ""))
+                        for l in legs]
+            if any(not mid or market not in RULES for mid, market in identity):
+                continue
+            key = hashlib.sha256(json.dumps(
+                [str(mode), identity], separators=(",", ":")
+            ).encode("utf-8")).hexdigest()[:32]
+            counts = {"WIN": 0, "LOSS": 0, "VOID": 0, "PENDING": 0}
+            for index, (match_id, market) in enumerate(identity):
+                verdict = record_selection(
+                    db, ticket_kind="acca", ticket_id=key,
+                    leg_id=str(index), match_date=match_date,
+                    match_id=match_id, market=market,
+                )
+                counts[verdict] += 1
+            if counts["LOSS"]:
+                outcome = "LOSS"
+            elif counts["PENDING"]:
+                outcome = "PENDING"
+            elif counts["VOID"]:
+                outcome = "VOID"
+            else:
+                outcome = "WIN"
+            with db:
+                db.execute(
+                    """INSERT INTO settled_tickets
+                    (snapshot_mode,ticket_id,match_date,outcome,win_legs,
+                    loss_legs,void_legs,pending_legs,updated_utc)
+                    VALUES (?,?,?,?,?,?,?,?,?)
+                    ON CONFLICT(snapshot_mode,ticket_id) DO UPDATE SET
+                    outcome=excluded.outcome,win_legs=excluded.win_legs,
+                    loss_legs=excluded.loss_legs,void_legs=excluded.void_legs,
+                    pending_legs=excluded.pending_legs,updated_utc=excluded.updated_utc""",
+                    (mode, key, match_date, outcome, counts["WIN"],
+                     counts["LOSS"], counts["VOID"], counts["PENDING"], utc_now()),
+                )
+            total += 1
+    return total
+
+
 def settlement_report(db: sqlite3.Connection, match_date: str) -> dict:
     fixtures = db.execute(
         "SELECT result_status,COUNT(*) AS c FROM settled_fixtures "
@@ -188,12 +251,20 @@ def settlement_report(db: sqlite3.Connection, match_date: str) -> dict:
         decided = values.get("WIN", 0) + values.get("LOSS", 0)
         values["settled"] = decided
         values["win_rate_pct"] = round(values.get("WIN", 0) / decided * 100, 1) if decided else None
+    tickets = db.execute(
+        "SELECT snapshot_mode,outcome,COUNT(*) AS c FROM settled_tickets "
+        "WHERE match_date=? GROUP BY snapshot_mode,outcome", (match_date,)
+    ).fetchall()
+    ticket_summary = {}
+    for row in tickets:
+        ticket_summary.setdefault(row["snapshot_mode"], {})[row["outcome"]] = row["c"]
     return {"date": match_date, "fixtures": counts, "selections": by_kind,
-            "updated_at_utc": utc_now()}
+            "tickets": ticket_summary, "updated_at_utc": utc_now()}
 
 
 def sync_date(db: sqlite3.Connection, day: str, fixture_rows: list[dict],
-              predictions: list[dict], bot_data: dict | None = None) -> dict:
+              predictions: list[dict], bot_data: dict | None = None,
+              build_snapshot: dict | None = None) -> dict:
     """Reconcile public predictions/bots without changing their source files."""
     init(db)
     started = utc_now()
@@ -230,6 +301,7 @@ def sync_date(db: sqlite3.Connection, day: str, fixture_rows: list[dict],
                 leg_id=str(i), match_date=day, match_id=str(bet["match_id"]),
                 market=str(bet["selection"]),
             )
+    settle_snapshot_tickets(db, day, build_snapshot)
     status = "partial" if errors else "completed"
     with db:
         db.execute(
