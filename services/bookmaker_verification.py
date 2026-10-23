@@ -151,7 +151,7 @@ def verify_and_reprice(
         })
     total = math.prod(q["odds"] for q in quoted)
     payload = [
-        [q["event_id"], q["market_id"], q["specifier"], q["outcome_id"], round(q["odds"], 4)]
+        [q["event_id"], q["market_id"], q["specifier"], q["outcome_id"], round(q["odds"], 4), q["start_ms"]]
         for q in quoted
     ]
     signature = hashlib.sha256(
