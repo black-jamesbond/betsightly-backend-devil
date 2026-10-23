@@ -30,6 +30,10 @@ not deployments and have not accessed the running VPS.
   code retrieval requests from different Flask workers and the renewal timer
   cannot clobber one another. Quotes older than 15 minutes without a successful
   recheck are labelled `stale_quote` and their quick-open links are withheld.
+- The legacy Flask dashboard result cache now uses the same 90-minute
+  adjudication as the durable settlement service. LiveScore AET/penalties
+  never silently overwrite regulation-time results; only explicit FT can be
+  folded from the live score API into the old dashboard's predictions view.
 - Offline end-to-end regression tests exercise collection, withdrawal,
   publication, 90-minute settlement and rerun idempotency.
 
