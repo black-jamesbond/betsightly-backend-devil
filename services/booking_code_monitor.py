@@ -42,8 +42,11 @@ def refresh_tracked_codes(
                 expected_legs.append({
                     "home": selection.get("home", ""),
                     "away": selection.get("away", ""),
-                    "match_date": day,
-                    "kick_off_utc": clock,
+                    # The event ID is unchanged and names still match; a
+                    # rescheduled kickoff should trigger a new code rather
+                    # than forcing the old datetime to match the live board.
+                    "match_date": "",
+                    "kick_off_utc": "",
                 })
             quote = verify_and_reprice(
                 selections, board, expected_legs=expected_legs,
