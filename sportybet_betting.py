@@ -442,8 +442,15 @@ def build_index(events) -> dict:
     idx = {}
     for e in events:
         h, a = normalize_name(e.get("home", "")), normalize_name(e.get("away", ""))
-        if h and a:
-            idx.setdefault((h, a), e)
+        if not h or not a:
+            continue
+        key = (h, a)
+        if key not in idx:
+            idx[key] = e
+        elif idx[key] is not None and str(idx[key].get("event_id")) != str(e.get("event_id")):
+            # Two distinct fixtures share the same teams. Name-only resolution
+            # would choose the wrong one; a caller needs the actual event ID.
+            idx[key] = None
     return idx
 
 
@@ -455,9 +462,10 @@ def find_event(index, home: str, away: str):
     """
     h, a = normalize_name(home), normalize_name(away)
     if (h, a) in index:
-        return index[(h, a)], "exact"
+        e = index[(h, a)]
+        return (e, "exact") if e else (None, None)
     candidates = [e for (h2, a2), e in index.items()
-                  if _close(h, h2) and _close(a, a2)]
+                  if e and _close(h, h2) and _close(a, a2)]
     ids = {str(e.get("event_id") or "") for e in candidates}
     if len(ids) == 1:
         return candidates[0], "fuzzy"
