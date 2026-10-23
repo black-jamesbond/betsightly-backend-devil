@@ -60,6 +60,9 @@ def settle_day(db: sqlite3.Connection, day: date, *, cache_dir: Path,
     bot_path = ROOT / "bot_results" / ("bots_" + day_str + ".json")
     predictions = read_json(pred_path, [])
     bots = read_json(bot_path, {"bots": []})
+    frozen = read_json(cache_dir / ("build_" + day_str + ".json"), {})
+    if not isinstance(frozen, dict):
+        raise ValueError("invalid frozen build snapshot")
     if not isinstance(predictions, list):
         raise ValueError("invalid predictions cache " + pred_path.name)
     if not isinstance(bots, dict):
