@@ -836,6 +836,35 @@ function escHtml(s) {
 }
 
 // Consistent request deadline and HTTP errors; never leave a tab spinning forever.
+// Operator token stays only in memory and is never included in a URL.
+// Do not send administration secrets over the VPS's direct HTTP port.
+let _operatorToken = '';
+async function operatorJSON(url, timeoutMs = 25000) {
+  if (location.protocol !== 'https:' && !['localhost', '127.0.0.1'].includes(location.hostname)) {
+    throw new Error('Administration requires HTTPS or a localhost SSH tunnel');
+  }
+  if (!_operatorToken) {
+    const entered = window.prompt('Enter your dashboard operator token (not saved):');
+    if (!entered) throw new Error('Operator authentication cancelled');
+    _operatorToken = entered;
+  }
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const res = await fetch(url, {signal: controller.signal, cache: 'no-store',
+      headers: {'X-Betsightly-Admin-Token': _operatorToken}});
+    const data = await res.json();
+    if (res.status === 401) _operatorToken = '';
+    if (!res.ok) throw new Error(data.error || 'HTTP ' + res.status);
+    return data;
+  } catch (error) {
+    if (error.name === 'AbortError') throw new Error('Operator request timed out');
+    throw error;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function fetchJSON(url, timeoutMs = 20000) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -1200,9 +1229,8 @@ async function getGroupCode(ids, outId, btn) {
   btn.textContent = 'Getting code…';
   out.innerHTML = '';
   try {
-    const res = await fetch(api(`/api/group-code?date=${dt}&ids=${ids.join(',')}`));
-    const d = await res.json();
-    if (!res.ok) {
+    const d = await operatorJSON(api(`/api/group-code?date=${dt}&ids=${ids.join(',')}`));
+    if (d.error) {
       const why = (d.skipped || []).slice(0, 4)
         .map(s => `${s.match} — ${s.reason}`).join('; ');
       out.innerHTML = `<span style="color:var(--red)">${escHtml(d.error || 'failed')}</span>`
@@ -1465,9 +1493,8 @@ async function getBuildCode(section, target, index, expect, outId, btn) {
               + `&index=${index}&market=${buildMarket()}`
               + `&all=${window._buildAllGames ? 1 : 0}`
               + `&expect=${encodeURIComponent(expect)}`;
-    const res = await fetch(api(url));
-    const d = await res.json();
-    if (!res.ok) {
+    const d = await operatorJSON(api(url));
+    if (d.error) {
       out.innerHTML = `<span style="color:var(--red)">${escHtml(d.error || 'failed')}</span>`;
       btn.disabled = false;
       btn.textContent = original;
@@ -1545,7 +1572,8 @@ async function loadBuild() {
     // One-shot: rebuild discards today's frozen set and builds a fresh one.
     const rebuild = window._buildRebuild ? '&rebuild=1' : '';
     window._buildRebuild = false;
-    const data = await fetchJSON(api(`/api/build?date=${dt}${allGames}${market}${rebuild}`), 30000);
+    const buildURL = api(`/api/build?date=${dt}${allGames}${market}${rebuild}`);
+    const data = rebuild ? await operatorJSON(buildURL, 30000) : await fetchJSON(buildURL, 30000);
     const allTickets = data.tickets || [];
     // When the legs carry SportyBet's real prices, the ticket odds are already
     // what a punter would get — no fair-odds margin adjustment needed.
@@ -1890,7 +1918,7 @@ async function generateForDate() {
   _genBanner(`Fetching games and predicting for ${dt}… this can take a minute.`);
 
   try {
-    const start = await fetchJSON(api(`/api/generate?date=${dt}`), 20000);
+    const start = await operatorJSON(api(`/api/generate?date=${dt}`), 20000);
     if (start.status !== 'started' && start.status !== 'running') throw new Error(start.error || 'Job was not accepted');
   } catch (e) {
     _genBanner('Generation could not start: ' + e.message, 'error');
