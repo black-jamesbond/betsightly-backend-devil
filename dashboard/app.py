@@ -48,6 +48,10 @@ _operator_limiter = WindowLimiter(max_events=8, window_sec=60)
 def protect_operator_actions():
     if not needs_operator_auth(request.path, request.method, request.args):
         return None
+    # Direct public HTTP must never carry operator credentials. Use HTTPS
+    # through a configured reverse proxy or an SSH tunnel to localhost.
+    if not request.is_secure and request.remote_addr not in ("127.0.0.1", "::1"):
+        return jsonify({"error": "HTTPS or localhost tunnel required"}), 403
     token = os.environ.get("BETSIGHTLY_DASHBOARD_ADMIN_TOKEN", "")
     if len(token) < 32:
         return jsonify({"error": "Admin operations disabled: configure a strong operator token"}), 503
