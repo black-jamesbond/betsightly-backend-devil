@@ -67,7 +67,7 @@ def settle_day(db: sqlite3.Connection, day: date, *, cache_dir: Path,
         raise ValueError("invalid predictions cache " + pred_path.name)
     if not isinstance(bots, dict):
         raise ValueError("invalid bot results cache " + bot_path.name)
-    report = sync_date(db, day_str, fixtures, predictions, bots)
+    report = sync_date(db, day_str, fixtures, predictions, bots, frozen)
     report["feed"] = "fresh" if not error else "stale_fallback"
     if error:
         report["source_error"] = error[:400]
