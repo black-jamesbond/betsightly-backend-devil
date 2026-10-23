@@ -121,15 +121,21 @@ def verify_and_reprice(
                 raise BookingValidationError("Home/away fixture mismatch for " + event_id)
             date_str = str(leg.get("match_date") or "")
             kickoff = str(leg.get("kick_off_utc") or "")
-            if date_str and kickoff:
+            if kickoff:
                 try:
-                    expected_ms = int(datetime.strptime(
-                        date_str + " " + kickoff[:5], "%Y-%m-%d %H:%M"
-                    ).replace(tzinfo=timezone.utc).timestamp() * 1000)
-                except ValueError:
+                    expected_minute = int(kickoff[:2]) * 60 + int(kickoff[3:5])
+                    actual = datetime.fromtimestamp(int(event["start_ms"]) / 1000, timezone.utc)
+                    delta = abs(expected_minute - (actual.hour * 60 + actual.minute))
+                    if min(delta, 1440 - delta) > MAX_KICKOFF_MISMATCH_SECONDS // 60:
+                        raise BookingValidationError("Kickoff mismatch for " + event_id)
+                    if date_str:
+                        expected_ms = int(datetime.strptime(
+                            date_str + " " + kickoff[:5], "%Y-%m-%d %H:%M"
+                        ).replace(tzinfo=timezone.utc).timestamp() * 1000)
+                        if abs(expected_ms - int(event["start_ms"])) > MAX_KICKOFF_MISMATCH_SECONDS * 1000:
+                            raise BookingValidationError("Kickoff date mismatch for " + event_id)
+                except (ValueError, IndexError):
                     raise BookingValidationError("Invalid fixture kickoff timestamp")
-                if abs(expected_ms - int(event["start_ms"])) > MAX_KICKOFF_MISMATCH_SECONDS * 1000:
-                    raise BookingValidationError("Kickoff mismatch for " + event_id)
         odds, _market = _selected_market(event, selection)
         quoted.append({
             "event_id": event_id,
