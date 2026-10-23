@@ -99,7 +99,7 @@ def _line_prices(markets):
     out = {}
     for m in markets or []:
         spec = m.get("specifier")
-        if m.get("id") != OU_MARKET_ID or spec not in LINES.values():
+        if str(m.get("id")) != OU_MARKET_ID or spec not in LINES.values():
             continue
         key = next(k for k, v in LINES.items() if v == spec)
         over = under = None
@@ -446,19 +446,19 @@ def build_index(events) -> dict:
 
 
 def find_event(index, home: str, away: str):
-    """(event, "exact"|"fuzzy") for a fixture, or (None, None).
+    """Prefer ordered home/away pairs. Refuse ambiguous fuzzy matches.
 
-    Fuzzy is the same pair-level rule the SportyBet fixture filter uses, so a
-    "UE Sant Andreu" / "Sant Andreu" spelling difference doesn't cost the price.
+    Reversed home/away pairs can be different fixtures; they must not be
+    accepted when generating a bookmaker code.
     """
     h, a = normalize_name(home), normalize_name(away)
     if (h, a) in index:
         return index[(h, a)], "exact"
-    if (a, h) in index:
-        return index[(a, h)], "exact"
-    for (h2, a2), e in index.items():
-        if _close(h, h2) and _close(a, a2):
-            return e, "fuzzy"
+    candidates = [e for (h2, a2), e in index.items()
+                  if _close(h, h2) and _close(a, a2)]
+    ids = {str(e.get("event_id") or "") for e in candidates}
+    if len(ids) == 1:
+        return candidates[0], "fuzzy"
     return None, None
 
 
@@ -517,21 +517,48 @@ def codes_cache() -> dict:
         return {}
 
 
-def booking_code_for(selections: list, use_cache: bool = True) -> dict:
-    """create_booking_code() with a local cache, so repeat lookups are free."""
+def booking_code_for(selections: list, use_cache: bool = True,
+                     *, quote_signature: str | None = None,
+                     deadline_ms: int | None = None,
+                     max_cache_seconds: int = 300) -> dict:
+    """Only reuse a code when the freshly rechecked bookmaker quote matches.
+
+    Legacy cache records and calls without a verified odds signature do not
+    qualify for reuse. A changed price/market/selection issues a fresh request.
+    Returned status means the bookmaker issued a code, not that a separate
+    bookmaker ticket-readback endpoint verified its final contents.
+    """
+    from services.bookmaker_verification import ensure_not_expired
     key = fingerprint(selections)
-    cache = codes_cache() if use_cache else {}
-    if key in cache:
-        return {**cache[key], "cached": True}
+    cache = codes_cache()
+    now_ms = int(time.time() * 1000)
+    cached = cache.get(key)
+    fresh = (
+        use_cache and bool(quote_signature) and cached is not None
+        and cached.get("quote_signature") == quote_signature
+        and ensure_not_expired(cached, now_ms)
+        and now_ms - int(cached.get("issued_at_ms") or 0)
+            < max(0, max_cache_seconds) * 1000
+    )
+    if fresh:
+        return {**cached, "cached": True, "verification": "issued_not_readback_verified"}
 
     result = create_booking_code(selections)
-    cache[key] = result
+    saved = {
+        **result, "quote_signature": quote_signature,
+        "issued_at_ms": now_ms, "deadline_ms": deadline_ms,
+        "selections": [dict(s) for s in selections],
+        "verification": "issued_not_readback_verified",
+    }
+    cache[key] = saved
     CODE_CACHE.parent.mkdir(parents=True, exist_ok=True)
     try:
-        CODE_CACHE.write_text(json.dumps(cache, indent=1), encoding="utf-8")
+        temp = CODE_CACHE.with_suffix(".json.tmp")
+        temp.write_text(json.dumps(cache, indent=1), encoding="utf-8")
+        temp.replace(CODE_CACHE)
     except OSError as exc:
         log.warning("could not persist booking code: %s", exc)
-    return {**result, "cached": False}
+    return {**saved, "cached": False}
 
 
 if __name__ == "__main__":
