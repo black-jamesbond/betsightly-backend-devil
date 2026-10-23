@@ -503,6 +503,25 @@ def create_booking_code(selections: list) -> dict:
     }
 
 
+def read_booking_code(share_code: str) -> dict:
+    """Read back the slip from SportyBet's undocumented non-staking GET API.
+
+    No verification is claimed if that endpoint is unavailable or its response
+    format changes.
+    """
+    import re
+    from urllib.parse import quote
+    code = str(share_code or "").strip().upper()
+    if not re.fullmatch(r"[A-Z0-9]{4,12}", code):
+        raise SportyBetUnavailable("invalid bookmaker share code")
+    try:
+        return _get_json(f"{SHARE_URL}/{quote(code, safe='')}")
+    except Exception as exc:
+        raise SportyBetUnavailable(
+            "SportyBet code readback unavailable: " + str(exc)
+        ) from exc
+
+
 def fingerprint(selections) -> str:
     """Stable id for a set of selections, used to detect a changed ticket."""
     parts = sorted(f"{s['event_id']}|{s['market_id']}|{s.get('specifier','')}|{s['outcome_id']}"
@@ -544,14 +563,29 @@ def booking_code_for(selections: list, use_cache: bool = True,
     )
     if fresh:
         return {**cached, "cached": True, "tracking_id": tracking_id,
-                "verification": "issued_not_readback_verified"}
+                "verification": cached.get("verification", "issued_unverified")}
 
     result = create_booking_code(selections)
+    verification = "issued_unverified"
+    verification_error = ""
+    verified_legs = 0
+    try:
+        from services.booking_code_readback import verify_code_readback
+        readback = read_booking_code(result["share_code"])
+        detail = verify_code_readback(result["share_code"], selections, readback)
+        verification = detail["verification"]
+        verified_legs = detail["verified_legs"]
+    except Exception as exc:
+        verification_error = str(exc)[:250]
+        log.warning("Share code %s not independently verified: %s",
+                    result.get("share_code"), verification_error)
     saved = {
         **result, "quote_signature": quote_signature,
         "issued_at_ms": now_ms, "deadline_ms": deadline_ms,
         "selections": [dict(s) for s in selections],
-        "verification": "issued_not_readback_verified",
+        "verification": verification,
+        "verification_error": verification_error,
+        "verified_legs": verified_legs,
     }
     cache[key] = saved
     CODE_CACHE.parent.mkdir(parents=True, exist_ok=True)
