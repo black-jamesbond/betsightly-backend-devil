@@ -1508,7 +1508,10 @@ def api_build():
                     continue
             missing.append(leg.get("match", ""))
         # A ticket is only bookable if every leg carries SportyBet identifiers.
-        bookable = all(leg.get("sb") for leg in a["legs"])
+        bookable = bool(a["legs"]) and all(
+            leg.get("sb") and str(leg.get("match_id", "")) not in started_ids
+            for leg in a["legs"]
+        )
         fingerprint = None
         if bookable:
             import sportybet_betting as sbb
