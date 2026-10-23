@@ -140,6 +140,12 @@ class BookingCodeMonitorTests(unittest.TestCase):
         self.assertIsNone(actual)
         self.assertIsNone(kind)
 
+    def test_duplicate_pair_different_event_ids_is_ambiguous(self):
+        idx = sbb.build_index([event("sr:match:1"), event("sr:match:2")])
+        found, kind = sbb.find_event(idx, "Home FC", "Away FC")
+        self.assertIsNone(found)
+        self.assertIsNone(kind)
+
     def test_missing_board_kickoff_rejected(self):
         from build_accas import event_matches_leg
         leg = {"kick_off_utc": "15:00"}
