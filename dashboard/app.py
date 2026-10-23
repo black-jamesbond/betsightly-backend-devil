@@ -1459,6 +1459,7 @@ def api_build():
     pool, early_pool = inputs["pool"], inputs["early"]
     played_pool = inputs.get("played", [])
     id_lookup = inputs.get("id_lookup")
+    started_ids = _started_match_ids(date_str)
     total_preds = inputs["total"]
     sportybet_status = inputs["sportybet"]
     # Live state first, and wait for it: fetch_final_scores() folds finished
