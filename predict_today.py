@@ -621,6 +621,9 @@ def main():
     parser.add_argument("--date", default=datetime.now().strftime("%Y-%m-%d"))
     parser.add_argument("--league", default=None, help="Filter by league name (substring)")
     parser.add_argument("--save", default=None, help="Save predictions to JSON file")
+    parser.add_argument("--fixture-file", default=None, help="Read already-imported fixtures from this JSON file")
+    parser.add_argument("--no-cache", action="store_true", help="Only write --save output, for supervised atomic publication")
+    parser.add_argument("--require-history", action="store_true", help="Fail instead of predicting from default priors")
     parser.add_argument("--top", type=int, default=None, help="Show only top N most confident")
     parser.add_argument("--raw", action="store_true",
                         help="Skip the calibration layer (show raw engine probabilities)")
@@ -632,9 +635,17 @@ def main():
 
     # 1. Load fixtures
     print("\n[1/3] Loading fixtures...")
-    fixtures = fetch_fixtures(args.date)
+    if args.fixture_file:
+        with open(args.fixture_file, "r", encoding="utf-8") as f:
+            fixtures = json.load(f)
+        if not isinstance(fixtures, list):
+            raise SystemExit("Fixture file must contain a JSON list")
+    else:
+        fixtures = fetch_fixtures(args.date)
     if not fixtures:
         print("No fixtures found!")
+        if args.fixture_file:
+            raise SystemExit(2)
         return
 
     # Remember SportyBet's own identifiers for today's board while the games are
@@ -669,6 +680,8 @@ def main():
     print("\n[2/3] Loading historical data...")
     hist = load_historical()
     if hist is None:
+        if args.require_history:
+            raise SystemExit("Historical data missing; refusing prior-only automated card")
         print("No historical data - predictions will use default priors only.")
 
     # 3. Generate predictions
@@ -810,11 +823,12 @@ def main():
             json.dump(predictions, f, ensure_ascii=False, indent=2)
         print(f"\n  Saved to {args.save}")
 
-    # Always save predictions cache
-    pred_cache = CACHE_DIR / f"predictions_{args.date}.json"
-    with open(pred_cache, "w", encoding="utf-8") as f:
-        json.dump(predictions, f, ensure_ascii=False, indent=2)
-    print(f"  Predictions cached to {pred_cache}")
+    # Scheduled publisher uses --no-cache to validate first and publish atomically.
+    if not args.no_cache:
+        pred_cache = CACHE_DIR / f"predictions_{args.date}.json"
+        with open(pred_cache, "w", encoding="utf-8") as f:
+            json.dump(predictions, f, ensure_ascii=False, indent=2)
+        print(f"  Predictions cached to {pred_cache}")
 
 
 if __name__ == "__main__":
