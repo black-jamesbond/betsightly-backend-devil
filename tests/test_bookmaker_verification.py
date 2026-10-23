@@ -3,7 +3,7 @@ import unittest
 from datetime import datetime, timezone
 
 from services.bookmaker_verification import (
-    BookingValidationError, ensure_not_expired, verify_and_reprice,
+    BookingValidationError, ensure_not_expired, quote_is_recent, verify_and_reprice,
 )
 
 
@@ -111,6 +111,19 @@ class BookingVerificationTests(unittest.TestCase):
     def test_code_expired_at_first_kickoff(self):
         quote = self.verify()
         self.assertFalse(ensure_not_expired(quote, KICKOFF + 1))
+
+    def test_share_code_is_not_treated_as_forever_live(self):
+        issued = {"issued_at_ms": NOW, "deadline_ms": KICKOFF}
+        self.assertTrue(quote_is_recent(issued, now_ms=NOW + 120000))
+        self.assertFalse(quote_is_recent(issued, now_ms=NOW + 16 * 60000))
+        self.assertTrue(quote_is_recent(
+            issued, quote_checked_at_ms=NOW + 15 * 60000,
+            now_ms=NOW + 20 * 60000))
+
+    def test_invalid_monitor_timestamp_cannot_prove_freshness(self):
+        issued = {"issued_at_ms": 0, "deadline_ms": KICKOFF}
+        self.assertFalse(quote_is_recent(
+            issued, quote_checked_at_ms="bogus", now_ms=NOW))
 
     def test_conflicting_records_refused(self):
         with self.assertRaisesRegex(BookingValidationError, "Conflicting"):
