@@ -127,6 +127,27 @@ class SettlementTests(unittest.TestCase):
         self.assertEqual(result2["selections"]["prediction"]["WIN"], 1)
         self.assertEqual(result2["selections"]["bot"]["WIN"], 1)
 
+    def test_frozen_ticket_settles_idempotently(self):
+        settle_fixture(self.db, fixture())
+        frozen = {"modes": {"sportybet": [{"legs": [
+            {"match_id": "abc", "selection": "Home Win"},
+            {"match_id": "abc", "selection": "Over 1.5"},
+        ]}]}}
+        self.assertEqual(settle_snapshot_tickets(self.db, DAY, frozen), 1)
+        self.assertEqual(settle_snapshot_tickets(self.db, DAY, frozen), 1)
+        self.assertEqual(settlement_report(self.db, DAY)["tickets"]["sportybet"]["WIN"], 1)
+        self.assertEqual(self.db.execute("SELECT COUNT(*) FROM settled_tickets").fetchone()[0], 1)
+
+    def test_frozen_ticket_with_void_is_not_reported_as_clean_win(self):
+        settle_fixture(self.db, fixture())
+        settle_fixture(self.db, fixture(match_id="cancelled", status="Cancelled"))
+        frozen = {"modes": {"sportybet": [{"legs": [
+            {"match_id": "abc", "selection": "Over 1.5"},
+            {"match_id": "cancelled", "selection": "Under 2.5"},
+        ]}]}}
+        settle_snapshot_tickets(self.db, DAY, frozen)
+        self.assertEqual(settlement_report(self.db, DAY)["tickets"]["sportybet"]["VOID"], 1)
+
     def test_wrong_score_is_not_zero(self):
         row = fixture(home="oops", away="1")
         self.assertEqual(normalize_final(row)["status"], "pending")
