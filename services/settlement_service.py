@@ -266,6 +266,11 @@ def sync_date(db: sqlite3.Connection, day: str, fixture_rows: list[dict],
               predictions: list[dict], bot_data: dict | None = None,
               build_snapshot: dict | None = None) -> dict:
     """Reconcile public predictions/bots without changing their source files."""
+    # CLI/config callers use ISO strings, but date-scoped integration jobs
+    # may pass datetime.date. Persist exactly one canonical YYYY-MM-DD value.
+    from datetime import date as _date
+    day = day.isoformat() if isinstance(day, _date) else str(day)
+    _date.fromisoformat(day)
     init(db)
     started = utc_now()
     settled = pending = void = errors = 0
@@ -306,6 +311,18 @@ def sync_date(db: sqlite3.Connection, day: str, fixture_rows: list[dict],
             except (TypeError, ValueError):
                 pass
         if selection in RULES:
+            # Publication provenance can change across replay runs when a
+            # source drops kickoff details. An audited vs unverified status is
+            # one identity, not two distinct predictions. Avoid counting both.
+            ticket_id = day + ":" + str(p["match_id"])
+            leg_id = str(p["match_id"])
+            with db:
+                db.execute(
+                    "DELETE FROM settled_selections WHERE ticket_id=? "
+                    "AND leg_id=? AND ticket_kind IN "
+                    "('prediction','prediction_unverified')",
+                    (ticket_id, leg_id),
+                )
             record_selection(
                 db, ticket_kind="prediction" if verified_pre_match else "prediction_unverified",
                 ticket_id=day + ":" + str(p["match_id"]),

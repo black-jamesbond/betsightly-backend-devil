@@ -141,9 +141,14 @@ def _auto_generate_predictions():
     except Exception as e:
         logger.error(f"Auto-generate predictions failed: {e}")
 
-# Start auto-generation in background thread on app startup
-threading.Thread(target=_auto_generate_predictions, daemon=True).start()
-logger.info("Background prediction auto-generation scheduled")
+# The durable scheduled publisher is the source of truth. A web worker must
+# not start expensive prediction jobs as a side effect of importing main.py:
+# multiple Gunicorn workers would each spawn the same job simultaneously.
+if os.getenv("BETSIGHTLY_LEGACY_STARTUP_PREDICTIONS") == "1":
+    threading.Thread(target=_auto_generate_predictions, daemon=True).start()
+    logger.warning("Legacy worker-start prediction generation explicitly enabled")
+else:
+    logger.info("Worker-start prediction generation disabled; use scheduled publisher")
 
 
 @app.get("/")

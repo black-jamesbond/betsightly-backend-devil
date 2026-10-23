@@ -27,6 +27,7 @@ Outputs:
 """
 
 import json
+import os
 import sys
 from pathlib import Path
 from datetime import datetime
@@ -42,7 +43,9 @@ import pandas as pd
 
 # ---------------------------------------------------------------------------
 MATCHES_CSV  = Path("data/api-football/matches.csv")
-MODELS_DIR   = Path("models/api_football")
+# Scheduled training writes to a separate staging directory. A full model
+# promotion requires explicit evaluation; do not overwrite production by default.
+MODELS_DIR   = Path(os.getenv("BETSIGHTLY_MODELS_OUTPUT_DIR", "models/api_football"))
 FORM_WINDOW  = 5    # last N games for form features
 H2H_WINDOW   = 10   # last N head-to-head meetings
 

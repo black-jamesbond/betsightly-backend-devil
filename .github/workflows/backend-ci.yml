@@ -44,4 +44,6 @@ jobs:
       - name: Check for syntax and critical lint errors
         run: |
           python -m compileall -q main.py api services dashboard tests
+          python -m compileall -q scripts/fixture_collection.py scripts/publish_daily_predictions.py scripts/refresh_booking_codes.py scripts/settle_results.py scripts/stage_weekly_training.py
+          bash -n deploy/audit_vps_baseline.sh deploy/install_fixture_timers.sh deploy/install_prediction_timers.sh deploy/install_booking_monitor_timer.sh deploy/install_settlement_timer.sh deploy/install_training_timer.sh
           python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics

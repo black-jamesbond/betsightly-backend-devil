@@ -37,6 +37,8 @@ from __future__ import annotations
 import json
 import logging
 import time
+import threading
+from contextlib import contextmanager
 import urllib.error
 import urllib.request
 from datetime import datetime, timedelta
@@ -541,6 +543,31 @@ def fingerprint(selections) -> str:
     return "&".join(parts)
 
 
+_CODE_CACHE_MUTEX = threading.RLock()
+
+
+@contextmanager
+def _code_cache_lock():
+    """Serialize bookmaker-code cache reads, issuance and atomic writes.
+
+    On Linux, flock protects across Gunicorn workers; the in-process lock
+    also handles threads. Windows development gets the thread lock only.
+    """
+    with _CODE_CACHE_MUTEX:
+        CODE_CACHE.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            import fcntl
+        except ImportError:
+            yield
+        else:
+            with open(CODE_CACHE.with_suffix(".lock"), "a+b") as handle:
+                fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
+                try:
+                    yield
+                finally:
+                    fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+
+
 def codes_cache() -> dict:
     try:
         return json.loads(CODE_CACHE.read_text(encoding="utf-8"))
@@ -561,54 +588,54 @@ def booking_code_for(selections: list, use_cache: bool = True,
     """
     from services.bookmaker_verification import ensure_not_expired
     import hashlib
-    key = fingerprint(selections)
-    tracking_id = hashlib.sha256(key.encode("utf-8")).hexdigest()[:24]
-    cache = codes_cache()
-    now_ms = int(time.time() * 1000)
-    cached = cache.get(key)
-    fresh = (
-        use_cache and bool(quote_signature) and cached is not None
-        and cached.get("quote_signature") == quote_signature
-        and ensure_not_expired(cached, now_ms)
-        and now_ms - int(cached.get("issued_at_ms") or 0)
-            < max(0, max_cache_seconds) * 1000
-    )
-    if fresh:
-        return {**cached, "cached": True, "tracking_id": tracking_id,
-                "verification": cached.get("verification", "issued_unverified")}
-
-    result = create_booking_code(selections)
-    verification = "issued_unverified"
-    verification_error = ""
-    verified_legs = 0
-    try:
-        from services.booking_code_readback import verify_code_readback
-        readback = read_booking_code(result["share_code"])
-        detail = verify_code_readback(result["share_code"], selections, readback)
-        verification = detail["verification"]
-        verified_legs = detail["verified_legs"]
-    except Exception as exc:
-        verification_error = str(exc)[:250]
-        log.warning("Share code %s not independently verified: %s",
-                    result.get("share_code"), verification_error)
-    saved = {
-        **result, "quote_signature": quote_signature,
-        "issued_at_ms": now_ms, "deadline_ms": deadline_ms,
-        "selections": [dict(s) for s in selections],
-        "verification": verification,
-        "verification_error": verification_error,
-        "verified_legs": verified_legs,
-    }
-    cache[key] = saved
-    CODE_CACHE.parent.mkdir(parents=True, exist_ok=True)
-    try:
-        temp = CODE_CACHE.with_suffix(".json.tmp")
-        temp.write_text(json.dumps(cache, indent=1), encoding="utf-8")
-        temp.replace(CODE_CACHE)
-    except OSError as exc:
-        log.warning("could not persist booking code: %s", exc)
-    return {**saved, "cached": False, "tracking_id": tracking_id}
-
+    with _code_cache_lock():
+        key = fingerprint(selections)
+        tracking_id = hashlib.sha256(key.encode("utf-8")).hexdigest()[:24]
+        cache = codes_cache()
+        now_ms = int(time.time() * 1000)
+        cached = cache.get(key)
+        fresh = (
+            use_cache and bool(quote_signature) and cached is not None
+            and cached.get("quote_signature") == quote_signature
+            and ensure_not_expired(cached, now_ms)
+            and now_ms - int(cached.get("issued_at_ms") or 0)
+                < max(0, max_cache_seconds) * 1000
+        )
+        if fresh:
+            return {**cached, "cached": True, "tracking_id": tracking_id,
+                    "verification": cached.get("verification", "issued_unverified")}
+    
+        result = create_booking_code(selections)
+        verification = "issued_unverified"
+        verification_error = ""
+        verified_legs = 0
+        try:
+            from services.booking_code_readback import verify_code_readback
+            readback = read_booking_code(result["share_code"])
+            detail = verify_code_readback(result["share_code"], selections, readback)
+            verification = detail["verification"]
+            verified_legs = detail["verified_legs"]
+        except Exception as exc:
+            verification_error = str(exc)[:250]
+            log.warning("Share code %s not independently verified: %s",
+                        result.get("share_code"), verification_error)
+        saved = {
+            **result, "quote_signature": quote_signature,
+            "issued_at_ms": now_ms, "deadline_ms": deadline_ms,
+            "selections": [dict(s) for s in selections],
+            "verification": verification,
+            "verification_error": verification_error,
+            "verified_legs": verified_legs,
+        }
+        cache[key] = saved
+        CODE_CACHE.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            from services.weekly_fixture_collector import _atomic_json
+            _atomic_json(CODE_CACHE, cache)
+        except OSError as exc:
+            log.warning("could not persist booking code: %s", exc)
+        return {**saved, "cached": False, "tracking_id": tracking_id}
+    
 
 if __name__ == "__main__":
     import sys

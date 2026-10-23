@@ -90,6 +90,7 @@ def _event_live(ev: dict) -> dict:
     date_str, time_str = _kickoff(ev.get("Esd"))
     return {
         "status": status,
+        "raw_status": str(ev.get("Eps") or "").strip(),
         "minute": minute,
         "score": f"{hs}-{as_}" if hs != "" and as_ != "" else "",
         "home_score": hs,

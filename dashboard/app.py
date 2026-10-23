@@ -36,6 +36,41 @@ except Exception:            # keep the dashboard usable if that module is missi
 
 app = Flask(__name__)
 
+# Browser-visible endpoints that create expensive jobs or SportyBet share
+# codes require a long operator key (never put it in a URL or HTML template).
+# Read-only predictions/results/dashboard remain public.
+from services.dashboard_security import (WindowLimiter, needs_operator_auth,
+                                         valid_operator_token)
+_operator_limiter = WindowLimiter(max_events=8, window_sec=60)
+
+
+@app.before_request
+def protect_operator_actions():
+    if not needs_operator_auth(request.path, request.method, request.args):
+        return None
+    # Direct public HTTP must never carry operator credentials. Use HTTPS
+    # through a configured reverse proxy or an SSH tunnel to localhost.
+    if not request.is_secure and request.remote_addr not in ("127.0.0.1", "::1"):
+        return jsonify({"error": "HTTPS or localhost tunnel required"}), 403
+    token = os.environ.get("BETSIGHTLY_DASHBOARD_ADMIN_TOKEN", "")
+    if len(token) < 32:
+        return jsonify({"error": "Admin operations disabled: configure a strong operator token"}), 503
+    provided = request.headers.get("X-Betsightly-Admin-Token", "")
+    if not valid_operator_token(provided, token):
+        return jsonify({"error": "Operator authorization required"}), 401
+    client = request.remote_addr or "unknown"
+    if not _operator_limiter.allowed(client + ":" + request.path):
+        return jsonify({"error": "Too many operator requests"}), 429
+    return None
+
+
+@app.after_request
+def add_security_headers(response):
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "same-origin"
+    return response
+
 # Reload templates from disk on every render. Without this a running server
 # keeps the template it read at startup, so UI edits look like they "didn't
 # apply" until the process is restarted. Static files (theme.css) are always
@@ -417,9 +452,12 @@ def _with_live_finals(date_str, scores):
         return scores or {}
     out = dict(scores or {})
     for mid, rec in live.items():
-        if rec.get("status") == "Finished" and rec.get("score"):
-            out[str(mid)] = {"hs": rec.get("home_score") or 0,
-                             "as": rec.get("away_score") or 0}
+        # LiveScore can call AET/penalties "Finished" while its score includes
+        # goals from outside the 90-minute market. Merge only an explicit FT.
+        if rec.get("status") == "Finished" and rec.get("raw_status") == "FT" \
+                and rec.get("home_score") not in (None, "") \
+                and rec.get("away_score") not in (None, ""):
+            out[str(mid)] = {"hs": rec["home_score"], "as": rec["away_score"]}
     return out
 
 
@@ -464,15 +502,16 @@ def _do_fetch_scores(date_str):
         except Exception:
             pass
 
+    from services.settlement_service import normalize_final
     for m in data:
-        mid = str(m.get("match_id", ""))
-        if m.get("match_status") not in _FINISHED_STATUSES:
+        mid = str(m.get("match_id") or "")
+        if not mid:
             continue
-        # Settle on the 90-minute full-time score (not extra time / penalties).
-        hs = m.get("match_hometeam_ft_score") or m.get("match_hometeam_score", "")
-        aws = m.get("match_awayteam_ft_score") or m.get("match_awayteam_score", "")
-        if hs != "":
-            scores[mid] = {"hs": hs, "as": aws}  # add/update, never remove
+        final = normalize_final(m)
+        # Extra time, in-play, awarded and malformed scores cannot settle 90m.
+        if final["status"] == "finished":
+            scores[mid] = {"hs": final["home_score"],
+                           "as": final["away_score"]}
 
     try:
         CACHE_DIR.mkdir(parents=True, exist_ok=True)
@@ -753,6 +792,11 @@ def api_jackpot():
     import sportybet_jackpot as jp
 
     data = jp.load_jackpot()
+    freshness = jp.snapshot_freshness(data)
+    if not freshness["fresh"]:
+        return jsonify({"status": "stale", "error": freshness["reason"],
+                        "round": data.get("round", ""), "games": [],
+                        "source": data.get("source", "")}), 503
     games = data.get("games", [])
     round_id = str(data.get("round") or "current")
     hit = _jackpot_cache.get(round_id)
@@ -1733,7 +1777,7 @@ def api_booking_status():
     import hashlib
     import re
     import sportybet_betting as sbb
-    from services.bookmaker_verification import ensure_not_expired
+    from services.bookmaker_verification import ensure_not_expired, quote_is_recent
     ticket_id = (request.args.get("ticket_id") or "").strip().lower()
     if not re.fullmatch(r"[0-9a-f]{24}", ticket_id):
         return jsonify({"error": "invalid booking tracking ID"}), 400
@@ -1754,11 +1798,19 @@ def api_booking_status():
                 watch = json.load(f)
             record = (watch.get("tickets") or {}).get(identity)
             if record:
-                recent_check = record.get("quote_checked_at_ms")
-                if record.get("status") in ("unavailable", "error"):
-                    status = record["status"]
+                # An older monitor report must not invalidate a code that was
+                # issued later in a separate operator request.
+                monitor_at = int(record.get("quote_checked_at_ms") or 0)
+                issued_at = int(saved.get("issued_at_ms") or 0)
+                if monitor_at >= issued_at:
+                    recent_check = monitor_at
+                    if record.get("status") in ("unavailable", "error"):
+                        status = record["status"]
         except (ValueError, OSError, TypeError):
             pass
+    if status in ("readback_verified", "issued_unverified") and not quote_is_recent(
+            saved, recent_check):
+        status = "stale_quote"
     return jsonify({
         "ticket_id": ticket_id, "status": status,
         "share_code": saved.get("share_code") if status in ("readback_verified", "issued_unverified") else None,
@@ -1876,6 +1928,17 @@ def api_build_code():
                   "odds": leg["odds"], "kick_off": leg["kick_off"]}
                  for leg in legs],
     })
+
+
+@app.route("/api/operations/health")
+def api_operations_health():
+    """Read-only independent process/job status; no secrets or external calls."""
+    from services.operational_health import inspect
+    payload = inspect(ROOT)
+    response = jsonify(payload)
+    response.status_code = 200 if payload["status"] == "healthy" else 503
+    response.headers["Cache-Control"] = "no-store"
+    return response
 
 
 @app.route("/api/settlement-report")

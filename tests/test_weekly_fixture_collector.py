@@ -157,6 +157,44 @@ class FixtureCollectorTests(unittest.TestCase):
         shown = json.loads((self.cache / "events_2026-10-25.json").read_text())
         self.assertEqual([game["match_id"] for game in shown], ["still"])
 
+    def test_active_membership_drives_prediction_input(self):
+        from services.daily_prediction_publisher import load_fixtures
+        day = self.day.isoformat()
+        first = collect_day(self.db, self.day, fetcher=lambda d: [
+            fixture(d, "kept"), fixture(d, "withdrawn")
+        ], cache_dir=self.cache, publish_cache=True)
+        self.assertEqual(first["status"], "success")
+        self.assertEqual({p["match_id"] for p in load_fixtures(self.db, self.day)},
+                         {"kept", "withdrawn"})
+        second = collect_day(self.db, self.day, fetcher=lambda d: [
+            fixture(d, "kept")
+        ], cache_dir=self.cache, publish_cache=True)
+        self.assertEqual(second["status"], "success")
+        self.assertEqual([p["match_id"] for p in load_fixtures(self.db, self.day)], ["kept"])
+        self.assertEqual({row["source_id"] for row in self._stored()},
+                         {"kept", "withdrawn"})
+        self.assertEqual(status_summary(self.db, self.day)["counts"][day], 1)
+
+    def test_failure_preserves_last_successful_active_ids(self):
+        from services.daily_prediction_publisher import load_fixtures
+        collect_day(self.db, self.day, fetcher=lambda d: [fixture(d, "retained")])
+        failed = collect_day(self.db, self.day, fetcher=lambda d: [], attempts=1)
+        self.assertEqual(failed["status"], "error")
+        self.assertEqual([p["match_id"] for p in load_fixtures(self.db, self.day)],
+                         ["retained"])
+
+    def test_historical_row_alone_never_becomes_new_prediction(self):
+        from services.daily_prediction_publisher import load_fixtures
+        old = fixture(self.day.isoformat(), "archive-only")
+        with self.db:
+            self.db.execute(
+                "INSERT INTO collected_fixtures "
+                "(source,source_id,match_date,match_time,status,payload_json,"
+                "first_seen_utc,last_seen_utc) VALUES (?,?,?,?,?,?,?,?)",
+                ("livescore", "archive-only", self.day.isoformat(), "18:30",
+                 "Not Started", json.dumps(old), "2026-10-20", "2026-10-20"))
+        self.assertEqual(load_fixtures(self.db, self.day), [])
+
     def test_atomic_cache_has_compatible_payload(self):
         result = collect_day(self.db, self.day,
                              fetcher=lambda day: [fixture(day, "abc")],

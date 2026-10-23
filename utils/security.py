@@ -212,7 +212,15 @@ def require_api_key(request: Request) -> None:
     import os
     expected_key = os.getenv("API_KEY", "")
     if not expected_key:
-        # Dev / unprotected mode — skip auth
+        # A missing secret must never silently unlock the production API.
+        if os.getenv("ENVIRONMENT", "development").strip().lower() in {
+            "production", "prod", "staging"
+        }:
+            raise HTTPException(
+                status_code=503,
+                detail={"error": "API auth not configured",
+                        "message": "Set API_KEY before enabling protected endpoints."},
+            )
         return
 
     provided_key = request.headers.get("X-API-Key", "")

@@ -162,6 +162,23 @@ class SettlementTests(unittest.TestCase):
         self.assertNotIn("prediction", result["selections"])
         self.assertEqual(result["selections"]["prediction_unverified"]["WIN"], 1)
 
+    def test_pre_match_provenance_changing_cannot_double_count(self):
+        confirmed = [{"match_id": "abc", "prediction": "Home Win",
+                      "published_at_utc": "2026-10-23T09:00:00+00:00"}]
+        first = sync_date(self.db, DAY, [fixture()], confirmed)
+        self.assertEqual(first["selections"]["prediction"]["WIN"], 1)
+        # The source's next response omits kickoff. A more conservative
+        # reclassification must replace the old row, not count two wins.
+        no_time = fixture()
+        no_time["match_time"] = ""
+        second = sync_date(self.db, DAY, [no_time], confirmed)
+        self.assertNotIn("prediction", second["selections"])
+        self.assertEqual(second["selections"]["prediction_unverified"]["WIN"], 1)
+        self.assertEqual(self.db.execute(
+            "SELECT COUNT(*) FROM settled_selections "
+            "WHERE ticket_kind IN ('prediction','prediction_unverified')"
+        ).fetchone()[0], 1)
+
     def test_wrong_score_is_not_zero(self):
         row = fixture(home="oops", away="1")
         self.assertEqual(normalize_final(row)["status"], "pending")
