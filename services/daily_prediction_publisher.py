@@ -58,10 +58,18 @@ def record_run(
 
 
 def load_fixtures(db: sqlite3.Connection, day: date) -> list[dict]:
-    """Only stored, valid fixtures for this UTC fixture date."""
+    """Only IDs confirmed by the latest successful day import.
+
+    Fail closed on legacy databases missing the active ID snapshot; otherwise
+    removed/rescheduled fixtures survive in historical storage and would be
+    incorrectly published as fresh predictions.
+    """
     rows = db.execute(
-        "SELECT payload_json FROM collected_fixtures WHERE match_date=? "
-        "ORDER BY match_time, source_id", (day.isoformat(),)
+        "SELECT c.payload_json FROM active_fixture_ids a "
+        "JOIN collected_fixtures c ON c.source=a.source "
+        "AND c.source_id=a.source_id AND c.match_date=a.match_date "
+        "WHERE a.match_date=? ORDER BY c.match_time, c.source_id",
+        (day.isoformat(),),
     ).fetchall()
     return [json.loads(row["payload_json"]) for row in rows]
 
