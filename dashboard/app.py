@@ -1713,8 +1713,56 @@ def api_group_code():
         "share_code": code["share_code"], "share_url": code["share_url"],
         "cached": code.get("cached", False), "variant": variant,
         "verification": "issued_not_readback_verified",
+        "tracking_id": code["tracking_id"],
         "quote_checked_at_ms": quote["checked_at_ms"],
         "legs": legs, "skipped": [],
+    })
+
+
+@app.route("/api/booking/status")
+def api_booking_status():
+    """Read-only tracking for an issued code, including automatic renewals.
+
+    No claim of a full SportyBet ticket readback is made. A cached code that
+    crossed kickoff is marked expired. Upstream failures cannot be 'bookable'.
+    """
+    import hashlib
+    import re
+    import sportybet_betting as sbb
+    from services.bookmaker_verification import ensure_not_expired
+    ticket_id = (request.args.get("ticket_id") or "").strip().lower()
+    if not re.fullmatch(r"[0-9a-f]{24}", ticket_id):
+        return jsonify({"error": "invalid booking tracking ID"}), 400
+    saved = None
+    identity = None
+    for key, record in sbb.codes_cache().items():
+        if hashlib.sha256(key.encode("utf-8")).hexdigest()[:24] == ticket_id:
+            saved, identity = record, key
+            break
+    if not saved:
+        return jsonify({"error": "booking code not found"}), 404
+    status = "issued_not_readback_verified" if ensure_not_expired(saved) else "expired"
+    recent_check = None
+    watch_path = ROOT / "cache" / "booking_monitor_status.json"
+    if watch_path.exists():
+        try:
+            with open(watch_path, "r", encoding="utf-8") as f:
+                watch = json.load(f)
+            record = (watch.get("tickets") or {}).get(identity)
+            if record:
+                recent_check = record.get("quote_checked_at_ms")
+                if record.get("status") in ("unavailable", "error"):
+                    status = record["status"]
+        except (ValueError, OSError, TypeError):
+            pass
+    return jsonify({
+        "ticket_id": ticket_id, "status": status,
+        "share_code": saved.get("share_code") if status == "issued_not_readback_verified" else None,
+        "share_url": saved.get("share_url") if status == "issued_not_readback_verified" else None,
+        "updated_at_ms": saved.get("issued_at_ms"),
+        "quote_checked_at_ms": recent_check,
+        "deadline_ms": saved.get("deadline_ms"),
+        "verification": "issued_not_readback_verified",
     })
 
 
@@ -1817,6 +1865,7 @@ def api_build_code():
         "n_legs": len(legs), "odds": quote["odds"],
         "fingerprint": fingerprint, "cached": code.get("cached", False),
         "verification": "issued_not_readback_verified",
+        "tracking_id": code["tracking_id"],
         "quote_checked_at_ms": quote["checked_at_ms"],
         "share_code": code["share_code"], "share_url": code["share_url"],
         "legs": [{"match": leg["match"], "selection": leg["selection"],
