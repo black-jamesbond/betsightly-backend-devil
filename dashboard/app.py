@@ -452,9 +452,12 @@ def _with_live_finals(date_str, scores):
         return scores or {}
     out = dict(scores or {})
     for mid, rec in live.items():
-        if rec.get("status") == "Finished" and rec.get("score"):
-            out[str(mid)] = {"hs": rec.get("home_score") or 0,
-                             "as": rec.get("away_score") or 0}
+        # LiveScore can call AET/penalties "Finished" while its score includes
+        # goals from outside the 90-minute market. Merge only an explicit FT.
+        if rec.get("status") == "Finished" and rec.get("raw_status") == "FT" \
+                and rec.get("home_score") not in (None, "") \
+                and rec.get("away_score") not in (None, ""):
+            out[str(mid)] = {"hs": rec["home_score"], "as": rec["away_score"]}
     return out
 
 
