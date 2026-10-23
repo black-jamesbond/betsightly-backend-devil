@@ -158,7 +158,8 @@ def to_apifootball(payload: dict) -> list:
             if not home or not away:
                 continue
             date_str, time_str = _kickoff(ev.get("Esd"))
-            status = _map_status(ev.get("Eps"))
+            raw_phase = str(ev.get("Eps") or "")
+            status = _map_status(raw_phase)
             h_score, a_score = _score(ev, 1), _score(ev, 2)
             # Half-time scores: only present once a match has kicked off.
             h_ht = "" if ev.get("Trh1") in (None, "") else str(ev.get("Trh1"))
@@ -168,12 +169,14 @@ def to_apifootball(payload: dict) -> list:
                 "match_date": date_str,
                 "match_time": time_str,
                 "match_status": status,
+                "match_raw_status": raw_phase,
                 "match_hometeam_name": home,
                 "match_awayteam_name": away,
                 "match_hometeam_score": h_score,
                 "match_awayteam_score": a_score,
-                "match_hometeam_ft_score": h_score if status == "Finished" else "",
-                "match_awayteam_ft_score": a_score if status == "Finished" else "",
+                # Extra time/penalties scores are not 90-minute FT scores.
+                "match_hometeam_ft_score": h_score if raw_phase == "FT" else "",
+                "match_awayteam_ft_score": a_score if raw_phase == "FT" else "",
                 "match_hometeam_ht_score": h_ht,
                 "match_awayteam_ht_score": a_ht,
                 "league_name": league,
