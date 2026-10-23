@@ -169,6 +169,7 @@ def to_apifootball(payload: dict) -> list:
                 "match_date": date_str,
                 "match_time": time_str,
                 "match_status": status,
+                "match_raw_status": raw_phase,
                 "match_hometeam_name": home,
                 "match_awayteam_name": away,
                 "match_hometeam_score": h_score,
