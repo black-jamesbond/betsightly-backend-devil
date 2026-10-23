@@ -63,7 +63,8 @@ def normalize_final(fixture: dict) -> dict:
     An awarded result is VOID, not a sporting outcome.
     """
     raw = str(fixture.get("match_status") or "").strip()
-    status = raw.lower()
+    phase = str(fixture.get("match_raw_status") or "").strip().lower()
+    status = (phase if phase in VOID | EXTRA_TIME else raw.lower())
     if status in VOID:
         return {"status": "void", "home_score": None, "away_score": None, "raw": raw}
     if status not in FINISHED | EXTRA_TIME:
