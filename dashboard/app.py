@@ -1712,7 +1712,7 @@ def api_group_code():
         "date": date_str, "n_legs": len(legs), "odds": quote["odds"],
         "share_code": code["share_code"], "share_url": code["share_url"],
         "cached": code.get("cached", False), "variant": variant,
-        "verification": "issued_not_readback_verified",
+        "verification": code.get("verification", "issued_unverified"),
         "tracking_id": code["tracking_id"],
         "quote_checked_at_ms": quote["checked_at_ms"],
         "legs": legs, "skipped": [],
@@ -1741,7 +1741,7 @@ def api_booking_status():
             break
     if not saved:
         return jsonify({"error": "booking code not found"}), 404
-    status = "issued_not_readback_verified" if ensure_not_expired(saved) else "expired"
+    status = saved.get("verification", "issued_unverified") if ensure_not_expired(saved) else "expired"
     recent_check = None
     watch_path = ROOT / "cache" / "booking_monitor_status.json"
     if watch_path.exists():
@@ -1757,12 +1757,12 @@ def api_booking_status():
             pass
     return jsonify({
         "ticket_id": ticket_id, "status": status,
-        "share_code": saved.get("share_code") if status == "issued_not_readback_verified" else None,
-        "share_url": saved.get("share_url") if status == "issued_not_readback_verified" else None,
+        "share_code": saved.get("share_code") if status in ("readback_verified", "issued_unverified") else None,
+        "share_url": saved.get("share_url") if status in ("readback_verified", "issued_unverified") else None,
         "updated_at_ms": saved.get("issued_at_ms"),
         "quote_checked_at_ms": recent_check,
         "deadline_ms": saved.get("deadline_ms"),
-        "verification": "issued_not_readback_verified",
+        "verification": saved.get("verification", "issued_unverified"),
     })
 
 
@@ -1864,7 +1864,7 @@ def api_build_code():
         "date": date_str, "section": section, "target": target, "index": index,
         "n_legs": len(legs), "odds": quote["odds"],
         "fingerprint": fingerprint, "cached": code.get("cached", False),
-        "verification": "issued_not_readback_verified",
+        "verification": code.get("verification", "issued_unverified"),
         "tracking_id": code["tracking_id"],
         "quote_checked_at_ms": quote["checked_at_ms"],
         "share_code": code["share_code"], "share_url": code["share_url"],
