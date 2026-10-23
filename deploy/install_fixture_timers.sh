@@ -8,9 +8,9 @@ if [[ "$EUID" -ne 0 || "$#" -ne 3 ]]; then
   exit 2
 fi
 APP_ROOT="$(realpath "$1")"
-PYTHON="$(realpath "$2")"
+PYTHON="$2"  # preserve virtualenv symlinks; realpath would lose venv context
 SERVICE_USER="$3"
-if [[ "$APP_ROOT" == *" "* || "$PYTHON" == *" "* ]]; then
+if [[ "$APP_ROOT" == *" "* || "$PYTHON" == *" "* || "$PYTHON" != /* ]]; then
   echo "Paths containing spaces are not supported" >&2
   exit 2
 fi
