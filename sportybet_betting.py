@@ -99,11 +99,13 @@ def _line_prices(markets):
     out = {}
     for m in markets or []:
         spec = m.get("specifier")
-        if m.get("id") != OU_MARKET_ID or spec not in LINES.values():
+        if str(m.get("id")) != OU_MARKET_ID or spec not in LINES.values():
             continue
         key = next(k for k, v in LINES.items() if v == spec)
         over = under = None
         for o in m.get("outcomes") or []:
+            if str(o.get("isActive", 1)).lower() not in ("1", "true"):
+                continue  # suspended outcome cannot be booked
             desc = (o.get("desc") or "").lower()
             if desc.startswith("over"):
                 over = o
@@ -440,25 +442,33 @@ def build_index(events) -> dict:
     idx = {}
     for e in events:
         h, a = normalize_name(e.get("home", "")), normalize_name(e.get("away", ""))
-        if h and a:
-            idx.setdefault((h, a), e)
+        if not h or not a:
+            continue
+        key = (h, a)
+        if key not in idx:
+            idx[key] = e
+        elif idx[key] is not None and str(idx[key].get("event_id")) != str(e.get("event_id")):
+            # Two distinct fixtures share the same teams. Name-only resolution
+            # would choose the wrong one; a caller needs the actual event ID.
+            idx[key] = None
     return idx
 
 
 def find_event(index, home: str, away: str):
-    """(event, "exact"|"fuzzy") for a fixture, or (None, None).
+    """Prefer ordered home/away pairs. Refuse ambiguous fuzzy matches.
 
-    Fuzzy is the same pair-level rule the SportyBet fixture filter uses, so a
-    "UE Sant Andreu" / "Sant Andreu" spelling difference doesn't cost the price.
+    Reversed home/away pairs can be different fixtures; they must not be
+    accepted when generating a bookmaker code.
     """
     h, a = normalize_name(home), normalize_name(away)
     if (h, a) in index:
-        return index[(h, a)], "exact"
-    if (a, h) in index:
-        return index[(a, h)], "exact"
-    for (h2, a2), e in index.items():
-        if _close(h, h2) and _close(a, a2):
-            return e, "fuzzy"
+        e = index[(h, a)]
+        return (e, "exact") if e else (None, None)
+    candidates = [e for (h2, a2), e in index.items()
+                  if e and _close(h, h2) and _close(a, a2)]
+    ids = {str(e.get("event_id") or "") for e in candidates}
+    if len(ids) == 1:
+        return candidates[0], "fuzzy"
     return None, None
 
 
@@ -493,14 +503,35 @@ def create_booking_code(selections: list) -> dict:
 
     data = resp.get("data") or {}
     code = data.get("shareCode")
-    if resp.get("bizCode") != 10000 or not code:
+    if str(resp.get("bizCode")) != "10000" or not code:
         raise SportyBetUnavailable(
             f"SportyBet rejected the slip: {resp.get('message') or resp}")
+    if data.get("unavailableOutcomes"):
+        raise SportyBetUnavailable("SportyBet rejected one or more selected outcomes")
     return {
         "share_code": code,
         "share_url": data.get("shareURL") or f"https://www.sportybet.com/ng/?shareCode={code}",
         "deadline": data.get("deadline"),
     }
+
+
+def read_booking_code(share_code: str) -> dict:
+    """Read back the slip from SportyBet's undocumented non-staking GET API.
+
+    No verification is claimed if that endpoint is unavailable or its response
+    format changes.
+    """
+    import re
+    from urllib.parse import quote
+    code = str(share_code or "").strip().upper()
+    if not re.fullmatch(r"[A-Z0-9]{4,12}", code):
+        raise SportyBetUnavailable("invalid bookmaker share code")
+    try:
+        return _get_json(f"{SHARE_URL}/{quote(code, safe='')}")
+    except Exception as exc:
+        raise SportyBetUnavailable(
+            "SportyBet code readback unavailable: " + str(exc)
+        ) from exc
 
 
 def fingerprint(selections) -> str:
@@ -517,21 +548,66 @@ def codes_cache() -> dict:
         return {}
 
 
-def booking_code_for(selections: list, use_cache: bool = True) -> dict:
-    """create_booking_code() with a local cache, so repeat lookups are free."""
+def booking_code_for(selections: list, use_cache: bool = True,
+                     *, quote_signature: str | None = None,
+                     deadline_ms: int | None = None,
+                     max_cache_seconds: int = 300) -> dict:
+    """Only reuse a code when the freshly rechecked bookmaker quote matches.
+
+    Legacy cache records and calls without a verified odds signature do not
+    qualify for reuse. A changed price/market/selection issues a fresh request.
+    Returned status means the bookmaker issued a code, not that a separate
+    bookmaker ticket-readback endpoint verified its final contents.
+    """
+    from services.bookmaker_verification import ensure_not_expired
+    import hashlib
     key = fingerprint(selections)
-    cache = codes_cache() if use_cache else {}
-    if key in cache:
-        return {**cache[key], "cached": True}
+    tracking_id = hashlib.sha256(key.encode("utf-8")).hexdigest()[:24]
+    cache = codes_cache()
+    now_ms = int(time.time() * 1000)
+    cached = cache.get(key)
+    fresh = (
+        use_cache and bool(quote_signature) and cached is not None
+        and cached.get("quote_signature") == quote_signature
+        and ensure_not_expired(cached, now_ms)
+        and now_ms - int(cached.get("issued_at_ms") or 0)
+            < max(0, max_cache_seconds) * 1000
+    )
+    if fresh:
+        return {**cached, "cached": True, "tracking_id": tracking_id,
+                "verification": cached.get("verification", "issued_unverified")}
 
     result = create_booking_code(selections)
-    cache[key] = result
+    verification = "issued_unverified"
+    verification_error = ""
+    verified_legs = 0
+    try:
+        from services.booking_code_readback import verify_code_readback
+        readback = read_booking_code(result["share_code"])
+        detail = verify_code_readback(result["share_code"], selections, readback)
+        verification = detail["verification"]
+        verified_legs = detail["verified_legs"]
+    except Exception as exc:
+        verification_error = str(exc)[:250]
+        log.warning("Share code %s not independently verified: %s",
+                    result.get("share_code"), verification_error)
+    saved = {
+        **result, "quote_signature": quote_signature,
+        "issued_at_ms": now_ms, "deadline_ms": deadline_ms,
+        "selections": [dict(s) for s in selections],
+        "verification": verification,
+        "verification_error": verification_error,
+        "verified_legs": verified_legs,
+    }
+    cache[key] = saved
     CODE_CACHE.parent.mkdir(parents=True, exist_ok=True)
     try:
-        CODE_CACHE.write_text(json.dumps(cache, indent=1), encoding="utf-8")
+        temp = CODE_CACHE.with_suffix(".json.tmp")
+        temp.write_text(json.dumps(cache, indent=1), encoding="utf-8")
+        temp.replace(CODE_CACHE)
     except OSError as exc:
         log.warning("could not persist booking code: %s", exc)
-    return {**result, "cached": False}
+    return {**saved, "cached": False, "tracking_id": tracking_id}
 
 
 if __name__ == "__main__":

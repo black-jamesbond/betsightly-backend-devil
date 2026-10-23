@@ -38,6 +38,9 @@ jobs:
           DATABASE_URL: "sqlite:///:memory:"
         run: python -m pytest tests/ -v
 
+      - name: Validate dashboard inline JavaScript
+        run: python scripts/check_dashboard_js.py
+
       - name: Check for syntax and critical lint errors
         run: |
           python -m compileall -q main.py api services dashboard tests

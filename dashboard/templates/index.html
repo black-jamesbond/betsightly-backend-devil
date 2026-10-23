@@ -1211,18 +1211,9 @@ async function getGroupCode(ids, outId, btn) {
       btn.textContent = original;
       return;
     }
-    const skip = (d.skipped || []);
-    const skipNote = skip.length
-      ? `<span style="color:var(--text-dim);margin-left:8px"
-           title="${escHtml(skip.map(s => `${s.match}: ${s.reason}`).join(' · '))}"
-         >${skip.length} game${skip.length > 1 ? 's' : ''} left out</span>` : '';
-    out.innerHTML = `<span style="color:var(--green);font-weight:700">${escHtml(d.share_code)}</span>`
-      + `<a href="${escHtml(d.share_url)}" target="_blank" rel="noopener"
-            style="color:var(--accent);margin-left:8px">open slip</a>`
-      + `<span style="color:var(--text-dim);margin-left:8px">${d.n_legs} legs @ ${d.odds}</span>`
-      + skipNote;
-    btn.textContent = 'Code ready';
-    btn.style.opacity = '0.55';
+    renderIssuedCode(out, d);
+    btn.disabled = false;
+    btn.textContent = 'Recheck code';
   } catch (e) {
     out.innerHTML = '<span style="color:var(--red)">request failed</span>';
     btn.disabled = false;
@@ -1235,17 +1226,17 @@ async function getGroupCode(ids, outId, btn) {
 // list is not enough, the group needs a game SportyBet prices for the 1.5 line
 // and that has not kicked off yet.
 function groupCanBeBooked(rows) {
-  // Older servers don't send sb_price; fall back to "listed by SportyBet".
-  const pricable = m => (m.sb_price === undefined ? !!m.sportybet : !!m.sb_price);
+  const pricable = m => m && m.sb_price === true;
   const notStarted = m => !['finished', 'Finished', 'live', 'In Play'].includes(m.status);
-  return (rows || []).some(m => m && notStarted(m) && pricable(m));
+  return (rows || []).length > 0 && rows.length <= 20
+    && rows.every(m => notStarted(m) && pricable(m));
 }
 
 function groupCodeHtml(ids) {
   const id = 'gcode-' + (++_groupSeq);
   const list = ids.map(i => `'${String(i).replace(/'/g, '')}'`).join(',');
   return `<button class="chip" style="padding:3px 10px;font-size:11px;margin-left:auto"
-      title="Booking code for every game in this group that SportyBet prices, using the Over/Under 1.5 pick shown"
+      title="Booking code for every game shown in this group; refuse partial slips"
       onclick="event.stopPropagation();getGroupCode([${list}], '${id}', this)"
     >Booking code</button><span id="${id}" style="font-size:11px"></span>`;
 }
@@ -1482,18 +1473,59 @@ async function getBuildCode(section, target, index, expect, outId, btn) {
       btn.textContent = original;
       return;
     }
-    out.innerHTML = `<span style="color:var(--green);font-weight:700">${escHtml(d.share_code)}</span>`
-      + `<a href="${escHtml(d.share_url)}" target="_blank" rel="noopener"
-            style="color:var(--accent);margin-left:8px">open slip</a>`
-      + `<span style="color:var(--text-dim);margin-left:8px">${d.n_legs} legs @ ${d.odds}</span>`;
-    btn.textContent = 'Code ready';
-    btn.style.opacity = '0.55';
+    renderIssuedCode(out, d);
+    btn.disabled = false;
+    btn.textContent = 'Recheck code';
   } catch (e) {
     out.innerHTML = `<span style="color:var(--red)">request failed</span>`;
     btn.disabled = false;
     btn.textContent = original;
   }
 }
+
+// All codes are bookmaker-issued only, pending independent ticket readback.
+// The VPS booking monitor can renew a changed quote; check its local status
+// periodically rather than leaving an obsolete code on the screen forever.
+function renderIssuedCode(out, d) {
+  out.dataset.ticketId = d.tracking_id || '';
+  out.dataset.shareCode = d.share_code || '';
+  out.innerHTML = `<span data-booking-code style="color:var(--green);font-weight:700">${escHtml(d.share_code)}</span>`
+    + `<a data-booking-link href="${escHtml(d.share_url)}" target="_blank" rel="noopener"
+           style="color:var(--accent);margin-left:8px">open slip</a>`
+    + `<span style="color:var(--text-dim);margin-left:8px">${d.n_legs} legs @ ${d.odds}</span>`
+    + `<small data-booking-status style="margin-left:8px;color:var(--text-dim)">${d.verification === 'readback_verified' ? 'Exact legs verified by bookmaker readback' : 'Issued · bookmaker readback unverified'}</small>`;
+}
+
+async function checkDisplayedBookingCodes() {
+  for (const out of document.querySelectorAll('[data-ticket-id]')) {
+    const ticket = out.dataset.ticketId;
+    if (!ticket) continue;
+    try {
+      const data = await fetchJSON(api(`/api/booking/status?ticket_id=${ticket}`), 10000);
+      const status = out.querySelector('[data-booking-status]');
+      if (!['readback_verified', 'issued_unverified'].includes(data.status)) {
+        if (status) status.textContent = 'Code ' + data.status + ' — recheck before use';
+        if (status) status.style.color = 'var(--red)';
+        const link = out.querySelector('[data-booking-link]');
+        if (link) link.removeAttribute('href');
+        continue;
+      }
+      if (data.share_code && data.share_code !== out.dataset.shareCode) {
+        out.dataset.shareCode = data.share_code;
+        const code = out.querySelector('[data-booking-code]');
+        if (code) code.textContent = data.share_code;
+        const link = out.querySelector('[data-booking-link]');
+        if (link && data.share_url) link.href = data.share_url;
+        if (status) status.textContent = data.verification === 'readback_verified'
+          ? 'Updated · exact legs verified by bookmaker readback'
+          : 'Updated · bookmaker readback unverified';
+      }
+    } catch (e) {
+      console.warn('Booking status refresh unavailable:', e);
+    }
+  }
+}
+setInterval(checkDisplayedBookingCodes, 60000);
 
 // The Build tab shows accumulator tickets. `_buildMarket` narrows them to one
 // line: 'over_1.5' keeps every leg on the Over/Under 1.5 market, '' uses the
@@ -1601,7 +1633,7 @@ async function loadBuild() {
       // and busted slips instead of only pending ones, and they keep a working
       // booking code wherever SportyBet still knows the fixture.
       { key: 'played', title: 'Played today',
-        note: `Built from ${data.played_pool || 0} matches that have already kicked off — these carry their results, and a booking code wherever SportyBet still lists the game.`,
+        note: `Tracks results for ${data.played_pool || 0} started matches — new booking codes are unavailable after kickoff.`,
         accent: 'var(--blue)' },
     ];
 

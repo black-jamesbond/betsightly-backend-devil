@@ -121,6 +121,7 @@ def predict_game(game: dict, hist, index: dict) -> dict:
         "league": game.get("league", ""),
         "country": game.get("country", ""),
         "kick_off": _utc_hhmm(game.get("start_ms")),
+        "match_date": datetime.utcfromtimestamp(int(game["start_ms"]) / 1000).strftime("%Y-%m-%d"),
         # The dashboard's live status and settlement are keyed on this id, so a
         # fixture we can follow keeps the LiveScore id; otherwise SportyBet's.
         "match_id": str((fixture or {}).get("match_id") or game.get("event_id") or ""),

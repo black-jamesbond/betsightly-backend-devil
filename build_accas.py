@@ -156,6 +156,7 @@ def build_pool(preds, open_ids, min_quality=("HIGH", "MEDIUM"),
                 # Raw UTC kick-off, kept next to the local one so the leg can be
                 # matched back to its own fixture later (see leg_ids_for).
                 "kick_off_utc": p.get("kick_off", ""),
+                "match_date": p.get("match_date", ""),
                 "selection": label,
                 "field": field,
                 "prob": prob,
@@ -235,7 +236,7 @@ def event_matches_leg(event, leg, started=None, now_ms=None):
         return False
     start = event.get("start_ms")
     if not start:
-        return True                     # nothing to check the fixture against
+        return False                    # no time proof: never assume identity
 
     leg_minutes = _hhmm_minutes(leg.get("kick_off_utc"))
     if leg_minutes is not None:
