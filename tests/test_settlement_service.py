@@ -7,7 +7,7 @@ from pathlib import Path
 
 from services.settlement_service import (
     init, normalize_final, record_selection, settle_fixture, settle_market,
-    settlement_report, sync_date,
+    settlement_report, settle_snapshot_tickets, sync_date,
 )
 
 DAY = "2026-10-23"
