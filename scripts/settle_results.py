@@ -42,19 +42,10 @@ def settle_day(db: sqlite3.Connection, day: date, *, cache_dir: Path,
             fresh = fetcher(day_str)
         if not isinstance(fresh, list) or not fresh:
             raise ValueError("source returned no fixtures")
-        with db:
-            for item in fresh:
-                fid = str(item.get("match_id") or "")
-                if not fid or item.get("match_date") != day_str:
-                    continue
-                # Preserve canonical records and visible snapshot compatibility.
-                row = db.execute(
-                    "SELECT payload_json FROM collected_fixtures "
-                    "WHERE source='livescore' AND source_id=?", (fid,)
-                ).fetchone()
-                # Do not overwrite weekly collector snapshots here; settlement
-                # reads fresh final status independently and records it below.
-        fixtures = fresh
+        # Results are stored in settlement tables only; neither the fixture
+        # collection snapshots nor the original published picks are altered.
+        fixtures = [item for item in fresh if isinstance(item, dict)
+                    and item.get("match_date") == day_str and item.get("match_id")]
     except Exception as exc:
         # Never mark a stale feed as successful. A failed network call may still
         # reconcile the previously stored data for auditing.
