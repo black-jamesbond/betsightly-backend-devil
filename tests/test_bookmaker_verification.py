@@ -54,6 +54,11 @@ class BookingVerificationTests(unittest.TestCase):
         new = self.verify([event(odds=1.42)])
         self.assertNotEqual(old["quote_signature"], new["quote_signature"])
 
+    def test_rescheduled_fixture_changes_quote_signature(self):
+        original = self.verify()
+        delayed = self.verify([event(kickoff=KICKOFF + 3600000)])
+        self.assertNotEqual(original["quote_signature"], delayed["quote_signature"])
+
     def test_started_event_refused(self):
         with self.assertRaisesRegex(BookingValidationError, "started"):
             self.verify([event(kickoff=NOW)])
