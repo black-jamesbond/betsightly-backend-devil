@@ -23,8 +23,9 @@ whatever this module returns.
 from __future__ import annotations
 
 import json
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 CACHE = Path(__file__).resolve().parent / "cache" / "sportybet_jackpot.json"
 
@@ -40,6 +41,26 @@ def load_jackpot() -> dict:
     return data
 
 
+def snapshot_freshness(payload: dict, now: datetime | None = None) -> dict:
+    """Do not present an old manual jackpot round as today's bookable fixture list."""
+    now = now or datetime.now(ZoneInfo("Africa/Lagos"))
+    fetched = str(payload.get("fetched") or "").strip()
+    if not fetched:
+        return {"fresh": False, "reason": "snapshot has no retrieval time"}
+    try:
+        stamped = datetime.fromisoformat(fetched)
+        if stamped.tzinfo is None:
+            stamped = stamped.replace(tzinfo=ZoneInfo("Africa/Lagos"))
+        age = (now.astimezone(timezone.utc) - stamped.astimezone(timezone.utc)).total_seconds()
+    except (ValueError, TypeError):
+        return {"fresh": False, "reason": "invalid snapshot timestamp"}
+    if age < -3600 or age > 7 * 86400:
+        return {"fresh": False, "reason": "jackpot snapshot is outdated"}
+    if not isinstance(payload.get("games"), list) or len(payload["games"]) != 12:
+        return {"fresh": False, "reason": "jackpot must contain exactly 12 fixtures"}
+    return {"fresh": True, "reason": "", "age_hours": round(max(0, age) / 3600, 1)}
+
+
 def games() -> list:
     """Just the fixtures, in jackpot order."""
     return load_jackpot().get("games", [])
@@ -48,8 +69,22 @@ def games() -> list:
 def save_snapshot(payload: dict) -> Path:
     """Write a fresh snapshot (round, prize, games)."""
     payload = dict(payload)
-    payload.setdefault("fetched", datetime.now().strftime("%Y-%m-%d %H:%M"))
-    payload.setdefault("source", "manual snapshot")
+    if not payload.get("round") or not isinstance(payload.get("games"), list) or len(payload["games"]) != 12:
+        raise ValueError("A jackpot round must have an ID and exactly 12 games")
+    seen = set()
+    for game in payload["games"]:
+        identity = (str(game.get("home") or "").strip(), str(game.get("away") or "").strip())
+        if not all(identity) or identity in seen:
+            raise ValueError("Jackpot game teams missing or duplicated")
+        seen.add(identity)
+        prices = game.get("odds") or []
+        try:
+            if len(prices) != 3 or any(float(x) <= 1.0 for x in prices):
+                raise ValueError("Jackpot game requires three valid 1X2 prices")
+        except (TypeError, ValueError):
+            raise ValueError("Jackpot game requires three valid 1X2 prices")
+    payload.setdefault("fetched", datetime.now(ZoneInfo("Africa/Lagos")).isoformat())
+    payload.setdefault("source", "manually verified snapshot")
     CACHE.parent.mkdir(parents=True, exist_ok=True)
     CACHE.write_text(json.dumps(payload, ensure_ascii=False, indent=2),
                      encoding="utf-8")
