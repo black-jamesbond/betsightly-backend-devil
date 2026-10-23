@@ -55,6 +55,11 @@ def next_sunday(day: date) -> date:
     return day + timedelta(days=(6 - day.weekday()) % 7)
 
 
+def current_sunday(day: date) -> date:
+    """The current Sunday-Saturday week (also correct after a missed timer run)."""
+    return day - timedelta(days=(day.weekday() + 1) % 7)
+
+
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
