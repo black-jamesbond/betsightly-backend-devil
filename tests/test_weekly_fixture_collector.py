@@ -145,6 +145,18 @@ class FixtureCollectorTests(unittest.TestCase):
         stored_runs = self.db.execute("SELECT COUNT(*) FROM fixture_import_runs").fetchone()[0]
         self.assertEqual(stored_runs, 7)
 
+    def test_missing_feed_fixture_is_kept_in_history_not_republished(self):
+        collect_day(self.db, self.day, fetcher=lambda day: [
+            fixture(day, "still"), fixture(day, "removed")
+        ], cache_dir=self.cache, publish_cache=True)
+        updated = collect_day(self.db, self.day, fetcher=lambda day: [
+            fixture(day, "still")
+        ], cache_dir=self.cache, publish_cache=True)
+        self.assertEqual(updated["status"], "success")
+        self.assertEqual(len(self._stored()), 2)
+        shown = json.loads((self.cache / "events_2026-10-25.json").read_text())
+        self.assertEqual([game["match_id"] for game in shown], ["still"])
+
     def test_atomic_cache_has_compatible_payload(self):
         result = collect_day(self.db, self.day,
                              fetcher=lambda day: [fixture(day, "abc")],
