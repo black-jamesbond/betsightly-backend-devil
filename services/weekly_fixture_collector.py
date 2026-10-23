@@ -128,12 +128,15 @@ def _atomic_json(path: Path, payload: list) -> None:
             os.unlink(temp_name)
 
 
-def _load_saved_day(db: sqlite3.Connection, day: str) -> list:
+def _load_saved_day(db: sqlite3.Connection, day: str, seen_ids: set[str]) -> list:
+    # Historical records stay in the DB, but a refreshed card must not advertise
+    # a match that the latest provider snapshot no longer contains.
     rows = db.execute(
-        "SELECT payload_json FROM collected_fixtures WHERE match_date=? "
+        "SELECT source_id,payload_json FROM collected_fixtures WHERE match_date=? "
         "ORDER BY match_time, source_id", (day,)
     ).fetchall()
-    return [json.loads(row["payload_json"]) for row in rows]
+    return [json.loads(row["payload_json"]) for row in rows
+            if row["source_id"] in seen_ids]
 
 
 def default_fetcher(day: str) -> list:
@@ -207,7 +210,7 @@ def collect_day(
             if cache_dir is None:
                 raise ValueError("cache_dir is required when publish_cache=True")
             _atomic_json(Path(cache_dir) / ("events_" + day_str + ".json"),
-                         _load_saved_day(db, day_str))
+                         _load_saved_day(db, day_str, set(unique)))
         result = {
             "date": day_str, "status": "success",
             "fetched": len(raw), "accepted": len(unique),
