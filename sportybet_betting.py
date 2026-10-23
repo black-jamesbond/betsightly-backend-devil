@@ -104,6 +104,8 @@ def _line_prices(markets):
         key = next(k for k, v in LINES.items() if v == spec)
         over = under = None
         for o in m.get("outcomes") or []:
+            if str(o.get("isActive", 1)).lower() not in ("1", "true"):
+                continue  # suspended outcome cannot be booked
             desc = (o.get("desc") or "").lower()
             if desc.startswith("over"):
                 over = o
@@ -493,9 +495,11 @@ def create_booking_code(selections: list) -> dict:
 
     data = resp.get("data") or {}
     code = data.get("shareCode")
-    if resp.get("bizCode") != 10000 or not code:
+    if str(resp.get("bizCode")) != "10000" or not code:
         raise SportyBetUnavailable(
             f"SportyBet rejected the slip: {resp.get('message') or resp}")
+    if data.get("unavailableOutcomes"):
+        raise SportyBetUnavailable("SportyBet rejected one or more selected outcomes")
     return {
         "share_code": code,
         "share_url": data.get("shareURL") or f"https://www.sportybet.com/ng/?shareCode={code}",
