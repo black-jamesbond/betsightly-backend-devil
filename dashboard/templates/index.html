@@ -815,9 +815,11 @@ body {
 
 <script>
 // Use the dashboard's local operating day, not the browser's UTC date.
-const today = new Intl.DateTimeFormat('en-CA', {
+const lagosParts = new Intl.DateTimeFormat('en-GB', {
   timeZone: 'Africa/Lagos', year: 'numeric', month: '2-digit', day: '2-digit'
-}).format(new Date());
+}).formatToParts(new Date());
+const lagosDate = Object.fromEntries(lagosParts.map(part => [part.type, part.value]));
+const today = `${lagosDate.year}-${lagosDate.month}-${lagosDate.day}`;
 document.getElementById('datePicker').value = today;
 
 function switchTab(name) {
@@ -1864,7 +1866,13 @@ async function generateForDate() {
     return;
   }
 
+  const deadline = Date.now() + 80 * 60 * 1000;
   const poll = async () => {
+    if (Date.now() > deadline) {
+      _genBanner('Generation status exceeded 80 minutes; check the server job before retrying.', 'error');
+      btn.disabled = false; btn.style.opacity = 1;
+      return;
+    }
     let st;
     try { st = await fetchJSON(api(`/api/generate-status?date=${dt}`), 12000); }
     catch (e) {
