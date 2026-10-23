@@ -23,6 +23,7 @@ whatever this module returns.
 from __future__ import annotations
 
 import json
+import math
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -79,15 +80,14 @@ def save_snapshot(payload: dict) -> Path:
         seen.add(identity)
         prices = game.get("odds") or []
         try:
-            if len(prices) != 3 or any(float(x) <= 1.0 for x in prices):
+            if len(prices) != 3 or any(not math.isfinite(float(x)) or float(x) <= 1.0 for x in prices):
                 raise ValueError("Jackpot game requires three valid 1X2 prices")
         except (TypeError, ValueError):
             raise ValueError("Jackpot game requires three valid 1X2 prices")
     payload.setdefault("fetched", datetime.now(ZoneInfo("Africa/Lagos")).isoformat())
     payload.setdefault("source", "manually verified snapshot")
-    CACHE.parent.mkdir(parents=True, exist_ok=True)
-    CACHE.write_text(json.dumps(payload, ensure_ascii=False, indent=2),
-                     encoding="utf-8")
+    from services.weekly_fixture_collector import _atomic_json
+    _atomic_json(CACHE, payload)
     return CACHE
 
 
