@@ -31,6 +31,14 @@ CREATE TABLE IF NOT EXISTS collected_fixtures (
     PRIMARY KEY (source, source_id)
 )
 """
+CREATE_ACTIVE = """
+CREATE TABLE IF NOT EXISTS active_fixture_ids (
+    match_date TEXT NOT NULL,
+    source TEXT NOT NULL,
+    source_id TEXT NOT NULL,
+    PRIMARY KEY (match_date, source, source_id)
+)
+"""
 CREATE_RUNS = """
 CREATE TABLE IF NOT EXISTS fixture_import_runs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -72,6 +80,7 @@ def connect(db_path: Path) -> sqlite3.Connection:
     db.execute("PRAGMA busy_timeout=15000")
     db.execute("PRAGMA journal_mode=WAL")
     db.execute(CREATE_FIXTURES)
+    db.execute(CREATE_ACTIVE)
     db.execute(CREATE_RUNS)
     db.execute(
         "CREATE INDEX IF NOT EXISTS idx_collected_fixtures_day "
@@ -185,6 +194,10 @@ def collect_day(
         stamped = utc_now()
         # An old feed response must never revert a final result to Not Started.
         with db:
+            # The active board contains ONLY IDs from the latest successful
+            # collection. Historical collected_fixtures rows are never deleted.
+            db.execute("DELETE FROM active_fixture_ids WHERE match_date=? "
+                       "AND source='livescore'", (day_str,))
             for event_id, item in unique.items():
                 existing = db.execute(
                     "SELECT status, payload_json FROM collected_fixtures "
@@ -192,6 +205,9 @@ def collect_day(
                 ).fetchone()
                 if existing and existing["status"] in TERMINAL and item["match_status"] not in TERMINAL:
                     item = json.loads(existing["payload_json"])
+                db.execute(
+                    "INSERT INTO active_fixture_ids(match_date,source,source_id) "
+                    "VALUES (?,?,?)", (day_str, "livescore", event_id))
                 db.execute(
                     "INSERT INTO collected_fixtures "
                     "(source,source_id,match_date,match_time,status,payload_json,"
@@ -252,7 +268,7 @@ def status_summary(db: sqlite3.Connection, start: date, days: int = 7) -> dict:
     dates = [(start + timedelta(days=offset)).isoformat()
              for offset in range(days)]
     counts = dict(db.execute(
-        "SELECT match_date,COUNT(*) AS n FROM collected_fixtures "
+        "SELECT match_date,COUNT(*) AS n FROM active_fixture_ids "
         "WHERE match_date>=? AND match_date<=? GROUP BY match_date",
         (dates[0], dates[-1]),
     ).fetchall())
