@@ -15,6 +15,24 @@ not deployments and have not accessed the running VPS.
 5. PR #5 — conservative final-score settlement, voids, accurate reports.
 6. PR #6 — operational security, health, training staging, stale jackpot guard.
 
+### Cross-batch integration fixes (release hardening)
+
+- A successful fixture collection records the currently active source IDs in
+  SQLite table `active_fixture_ids`. Historical `collected_fixtures` rows remain
+  preserved, but new predictions read **only the active IDs** so a withdrawn
+  fixture cannot reappear in a new daily prediction card.
+- Empty/failed fixture imports preserve the last successful active IDs.
+  Before enabling a prediction runner on an existing SQLite file, perform at
+  least one successful weekly/daily import to populate this new table.
+- Repeated settlement runs keep exactly one audited/unverified prediction
+  record per fixture, even if upstream loses kickoff-time evidence.
+- The bookmaker-code cache is written atomically under an interprocess lock;
+  code retrieval requests from different Flask workers and the renewal timer
+  cannot clobber one another. Quotes older than 15 minutes without a successful
+  recheck are labelled `stale_quote` and their quick-open links are withheld.
+- Offline end-to-end regression tests exercise collection, withdrawal,
+  publication, 90-minute settlement and rerun idempotency.
+
 ### Automated checks
 
 - Python unit tests under tests/
