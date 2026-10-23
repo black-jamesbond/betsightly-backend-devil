@@ -62,6 +62,13 @@ class SettlementTests(unittest.TestCase):
         result = normalize_final(row)
         self.assertEqual(settle_market("Draw", result), "WIN")
 
+    def test_raw_extra_time_phase_cannot_settle_as_ninety_minute(self):
+        row = fixture(status="Finished", home="3", away="2")
+        row["match_raw_status"] = "AET"
+        row["match_hometeam_ft_score"] = ""
+        row["match_awayteam_ft_score"] = ""
+        self.assertEqual(normalize_final(row)["status"], "pending")
+
     def test_missing_or_invalid_score_remains_pending(self):
         for val in ("", None, "-1", "3.5", "unknown"):
             with self.subTest(val=val):
