@@ -9,7 +9,7 @@ from datetime import date, timedelta
 from pathlib import Path
 
 from services.weekly_fixture_collector import (
-    collect_day, collect_week, connect, next_sunday, status_summary,
+    collect_day, collect_week, connect, current_sunday, next_sunday, status_summary,
 )
 
 
@@ -46,6 +46,7 @@ class FixtureCollectorTests(unittest.TestCase):
     def test_sunday_window(self):
         self.assertEqual(next_sunday(date(2026, 10, 23)), date(2026, 10, 25))
         self.assertEqual(next_sunday(date(2026, 10, 25)), date(2026, 10, 25))
+        self.assertEqual(current_sunday(date(2026, 10, 26)), date(2026, 10, 25))
 
     def test_week_fetches_exactly_seven_dates(self):
         seen = []
