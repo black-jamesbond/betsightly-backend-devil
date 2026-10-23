@@ -158,7 +158,8 @@ def to_apifootball(payload: dict) -> list:
             if not home or not away:
                 continue
             date_str, time_str = _kickoff(ev.get("Esd"))
-            status = _map_status(ev.get("Eps"))
+            raw_phase = str(ev.get("Eps") or "")
+            status = _map_status(raw_phase)
             h_score, a_score = _score(ev, 1), _score(ev, 2)
             # Half-time scores: only present once a match has kicked off.
             h_ht = "" if ev.get("Trh1") in (None, "") else str(ev.get("Trh1"))
