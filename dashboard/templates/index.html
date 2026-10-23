@@ -814,7 +814,10 @@ body {
 </div>
 
 <script>
-const today = new Date().toISOString().split('T')[0];
+// Use the dashboard's local operating day, not the browser's UTC date.
+const today = new Intl.DateTimeFormat('en-CA', {
+  timeZone: 'Africa/Lagos', year: 'numeric', month: '2-digit', day: '2-digit'
+}).format(new Date());
 document.getElementById('datePicker').value = today;
 
 function switchTab(name) {
@@ -830,7 +833,24 @@ function escHtml(s) {
   return d.innerHTML;
 }
 
+// Consistent request deadline and HTTP errors; never leave a tab spinning forever.
+async function fetchJSON(url, timeoutMs = 20000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, { signal: controller.signal });
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    return await response.json();
+  } catch (error) {
+    if (error.name === 'AbortError') throw new Error('Request timed out — retry');
+    throw error;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 let _preds = [];
+let _predLoadId = 0;
 let _predSort = 'league';
 
 function setPredSort(mode) {
@@ -1231,11 +1251,12 @@ function groupCodeHtml(ids) {
 async function loadPredictions() {
   const dt = document.getElementById('datePicker').value;
   const container = document.getElementById('predictionsContainer');
-  container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading predictions...</div>';
+  const loadId = ++_predLoadId;
+  if (!_preds.length) container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading predictions...</div>';
 
   try {
-    const res = await fetch(api(`/api/predictions?date=${dt}`));
-    const data = await res.json();
+    const data = await fetchJSON(api(`/api/predictions?date=${dt}`));
+    if (loadId !== _predLoadId || dt !== document.getElementById('datePicker').value) return;
     const preds = data.predictions || [];
     _preds = preds;
     window._sportybetInfo = data.sportybet || null;
@@ -1258,7 +1279,9 @@ async function loadPredictions() {
 
     renderPredictions();
   } catch (e) {
-    container.innerHTML = `<div class="loading">Error loading predictions: ${e.message}</div>`;
+    if (loadId !== _predLoadId) return;
+    if (!_preds.length) container.innerHTML = `<div class="loading">Could not load predictions: ${escHtml(e.message)}. <button onclick="loadPredictions()">Retry</button></div>`;
+    else console.warn('Prediction refresh failed:', e);
   }
 }
 
@@ -1268,8 +1291,7 @@ async function loadHourly() {
   container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
 
   try {
-    const res = await fetch(api(`/api/hourly-breakdown?date=${dt}`));
-    const data = await res.json();
+    const data = await fetchJSON(api(`/api/hourly-breakdown?date=${dt}`));
     const hours = data.hours || {};
 
     if (Object.keys(hours).length === 0) {
@@ -1349,12 +1371,10 @@ async function loadPipeline() {
   container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
 
   try {
-    const [fetchRes, modelRes] = await Promise.all([
-      fetch('/api/fetch-status'),
-      fetch('/api/model-info'),
+    const [fetchData, modelData] = await Promise.all([
+      fetchJSON(api('/api/fetch-status')),
+      fetchJSON(api('/api/model-info')),
     ]);
-    const fetchData = await fetchRes.json();
-    const modelData = await modelRes.json();
 
     const pct = fetchData.chunks_total > 0
       ? Math.round(fetchData.chunks_done / fetchData.chunks_total * 100) : 0;
@@ -1415,6 +1435,18 @@ async function loadPipeline() {
     container.innerHTML = `<div class="loading">Error: ${e.message}</div>`;
   }
 }
+// Actual dataset counts, queried separately from the predictions card.
+async function loadCoverage() {
+  try {
+    const data = await fetchJSON(api('/api/coverage'), 45000);
+    document.getElementById('statTraining').textContent = Number(data.total_matches || 0).toLocaleString();
+    document.getElementById('statLeagues').textContent = Number(data.total_leagues || (data.leagues || []).length).toLocaleString();
+  } catch (e) {
+    document.getElementById('statTrainingSub').textContent = 'Coverage unavailable — retry Load';
+    console.warn('Coverage request failed:', e);
+  }
+}
+
 // Force a fresh predictions pull for the selected date.
 async function refreshPredictions() {
   const dt = document.getElementById('datePicker').value;
@@ -1479,8 +1511,7 @@ async function loadBuild() {
     // One-shot: rebuild discards today's frozen set and builds a fresh one.
     const rebuild = window._buildRebuild ? '&rebuild=1' : '';
     window._buildRebuild = false;
-    const res = await fetch(api(`/api/build?date=${dt}${allGames}${market}${rebuild}`));
-    const data = await res.json();
+    const data = await fetchJSON(api(`/api/build?date=${dt}${allGames}${market}${rebuild}`), 30000);
     const allTickets = data.tickets || [];
     // When the legs carry SportyBet's real prices, the ticket odds are already
     // what a punter would get — no fair-odds margin adjustment needed.
@@ -1734,7 +1765,7 @@ async function loadJackpot() {
   const container = document.getElementById('jackpotContainer');
   container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading jackpot...</div>';
   try {
-    const data = await (await fetch(api('/api/jackpot'))).json();
+    const data = await fetchJSON(api('/api/jackpot'), 45000);
     const games = data.games || [];
     if (!games.length) {
       container.innerHTML = '<div class="loading">No jackpot snapshot cached yet.</div>';
@@ -1824,12 +1855,23 @@ async function generateForDate() {
   btn.disabled = true; btn.style.opacity = 0.6;
   _genBanner(`Fetching games and predicting for ${dt}… this can take a minute.`);
 
-  try { await fetch(api(`/api/generate?date=${dt}`)); } catch (e) {}
+  try {
+    const start = await fetchJSON(api(`/api/generate?date=${dt}`), 20000);
+    if (start.status !== 'started' && start.status !== 'running') throw new Error(start.error || 'Job was not accepted');
+  } catch (e) {
+    _genBanner('Generation could not start: ' + e.message, 'error');
+    btn.disabled = false; btn.style.opacity = 1;
+    return;
+  }
 
   const poll = async () => {
     let st;
-    try { st = await (await fetch(api(`/api/generate-status?date=${dt}`))).json(); }
-    catch (e) { st = { status: 'running', step: 'working' }; }
+    try { st = await fetchJSON(api(`/api/generate-status?date=${dt}`), 12000); }
+    catch (e) {
+      _genBanner('Generation status unavailable: ' + e.message, 'error');
+      btn.disabled = false; btn.style.opacity = 1;
+      return;
+    }
 
     if (st.status === 'running') {
       _genBanner(`Working: ${st.step || 'predicting'}…  (loading history + predicting + bots)`);
@@ -1854,6 +1896,7 @@ function loadAll(refresh) {
   loadPipeline();
   loadBuild();
   loadJackpot();
+  loadCoverage();
   _forceRefresh = false;  // each loader read the flag synchronously at its fetch
 }
 
